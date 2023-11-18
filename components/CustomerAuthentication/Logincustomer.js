@@ -35,14 +35,14 @@ const Logincustomer = () => {
             </View>
           </TouchableOpacity>
           <View style={{ flexDirection: "row", gap: 10 }}>
-            <Text>Not have an account? </Text>
+            <Text  style={{fontSize:16}}>Not have an account? </Text>
             <TouchableOpacity
               style={{ paddingTop: 0 }}
               onPress={(e) => {
                 navigation.navigate("Signupcustomer");
               }}
             >
-              <Text style={{ color: COLORS.primary }}>sign up</Text>
+              <Text style={{ color: COLORS.primary,fontSize:16 }}>sign up</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -68,7 +68,7 @@ const styles = StyleSheet.create({
   box3: {
     flex: 3,
 
-    gap: 10,
+    gap: 30,
     alignItems: "center",
   },
   box1text: {

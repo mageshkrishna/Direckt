@@ -4,6 +4,8 @@ import { createStackNavigator } from "@react-navigation/stack";
 import Home from "./components/Home/Home";
 import Logincustomer from "./components/CustomerAuthentication/Logincustomer";
 import Signupcustomer from "./components/CustomerAuthentication/Signupcustomer";
+import UserLogin from "./components/Userauthentication/UserLogin";
+import Userregister from "./components/Userauthentication/Userregister";
 
 const Stack = createStackNavigator();
 
@@ -19,12 +21,22 @@ const App = () => {
         <Stack.Screen
           name="Logincustomer"
           component={Logincustomer}
-          options={{ headerTransparent: true,title:"" }}
+          options={{ headerTransparent: true, title: "" }}
         />
         <Stack.Screen
           name="Signupcustomer"
           component={Signupcustomer}
-          options={{ headerTransparent: true,title:"" }}
+          options={{ headerTransparent: true, title: "" }}
+        />
+        <Stack.Screen
+          name="Userlogin"
+          component={UserLogin}
+          options={{ headerTransparent: true, title: "" }}
+        />
+         <Stack.Screen
+          name="Userregister"
+          component={Userregister}
+          options={{ headerTransparent: true, title: "" }}
         />
       </Stack.Navigator>
     </NavigationContainer>
@@ -32,7 +44,6 @@ const App = () => {
 };
 
 export default App;
-
 
 // import { StatusBar } from "expo-status-bar";
 // import { StyleSheet, Text, View } from "react-native";
@@ -58,4 +69,3 @@ export default App;
 //   );
 // };
 // export default App;
-

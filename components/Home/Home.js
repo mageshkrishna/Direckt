@@ -70,7 +70,7 @@ export default function Home() {
             <TouchableOpacity
               underlayColor="white"
               onPress={(e) => {
-                handlebutton("Shop Owner");
+               navigation.navigate("Userlogin");
               }}
             >
               <View style={styles.ownbutton}>

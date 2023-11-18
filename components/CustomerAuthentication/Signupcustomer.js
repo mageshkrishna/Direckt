@@ -20,6 +20,7 @@ const Signupcustomer = () => {
           <Text style={styles.box1text}>Create Your{"\n"}Account</Text>
         </View>
         <View style={styles.box2}>
+          <TextInput style={styles.box2input} placeholder="Name" />
           <TextInput style={styles.box2input} placeholder="Username" />
           <TextInput style={styles.box2input} placeholder="Password" />
         </View>
@@ -34,14 +35,14 @@ const Signupcustomer = () => {
             </View>
           </TouchableOpacity>
           <View style={{ flexDirection: "row", gap: 10 }}>
-            <Text>Already have an account? </Text>
+            <Text style={{fontSize:16}}>Already have an account? </Text>
             <TouchableOpacity
               style={{ paddingTop: 0 }}
               onPress={(e) => {
                 navigation.navigate("Logincustomer");
               }}
             >
-              <Text style={{ color: COLORS.primary }}>Log in</Text>
+              <Text style={{ color: COLORS.primary,fontSize:16 }}>Log in</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -59,7 +60,7 @@ const styles = StyleSheet.create({
     justifyContent: "flex-end",
   },
   box2: {
-    flex: 2,
+    flex: 3,
 
     alignItems: "center",
     justifyContent: "space-evenly",
@@ -67,7 +68,7 @@ const styles = StyleSheet.create({
   box3: {
     flex: 3,
 
-    gap: 10,
+    gap: 30,
     alignItems: "center",
   },
   box1text: {
