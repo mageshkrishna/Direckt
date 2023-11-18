@@ -1,26 +1,61 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
-import Home from './components/Home/Home';
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
-const stack = createStackNavigator();
-const App=()=> {
+import React from "react";
+import { NavigationContainer } from "@react-navigation/native";
+import { createStackNavigator } from "@react-navigation/stack";
+import Home from "./components/Home/Home";
+import Logincustomer from "./components/CustomerAuthentication/Logincustomer";
+import Signupcustomer from "./components/CustomerAuthentication/Signupcustomer";
+
+const Stack = createStackNavigator();
+
+const App = () => {
   return (
     <NavigationContainer>
-       <stack.Navigator screenOptions={{headerShown:false}} initialRouteName='Home'>
-        <stack.Screen name ="Home" component={Home}/>
-      </stack.Navigator>
+      <Stack.Navigator initialRouteName="Home">
+        <Stack.Screen
+          name="Home"
+          component={Home}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="Logincustomer"
+          component={Logincustomer}
+          options={{ headerTransparent: true,title:"" }}
+        />
+        <Stack.Screen
+          name="Signupcustomer"
+          component={Signupcustomer}
+          options={{ headerTransparent: true,title:"" }}
+        />
+      </Stack.Navigator>
     </NavigationContainer>
-
   );
-}
-export default App; 
+};
 
-// const styles = StyleSheet.create({
-//   container: {
-//     flex: 1,
-//     backgroundColor: '#fff',
-//     alignItems: 'center',
-//     justifyContent: 'center',
-//   },
-// });
+export default App;
+
+
+// import { StatusBar } from "expo-status-bar";
+// import { StyleSheet, Text, View } from "react-native";
+// import Home from "./components/Home/Home";
+// import { NavigationContainer } from "@react-navigation/native";
+// import { createStackNavigator } from "@react-navigation/stack";
+// import Logincustomer from "./components/CustomerAuthentication/Logincustomer";
+
+// import Signupcustomer from "./components/CustomerAuthentication/Signupcustomer";
+// const stack = createStackNavigator();
+// const App = () => {
+//   return (
+//     <NavigationContainer>
+//       <stack.Navigator
+//         screenOptions={{ headerShown: false }}
+//         initialRouteName="Home"
+//       >
+//         <stack.Screen name="Home" component={Home} />
+//         <stack.Screen name="Logincustomer" component={Logincustomer} />
+//         <stack.Screen name="Signupcustomer" component={Signupcustomer} />
+//       </stack.Navigator>
+//     </NavigationContainer>
+//   );
+// };
+// export default App;
+
