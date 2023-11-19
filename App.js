@@ -6,6 +6,7 @@ import Logincustomer from "./components/CustomerAuthentication/Logincustomer";
 import Signupcustomer from "./components/CustomerAuthentication/Signupcustomer";
 import UserLogin from "./components/Userauthentication/UserLogin";
 import Userregister from "./components/Userauthentication/Userregister";
+import Finalverification from "./components/Userauthentication/Finalverification";
 
 const Stack = createStackNavigator();
 
@@ -36,6 +37,11 @@ const App = () => {
          <Stack.Screen
           name="Userregister"
           component={Userregister}
+          options={{ headerTransparent: true, title: "" }}
+        />
+         <Stack.Screen
+          name="Optverification"
+          component={Finalverification}
           options={{ headerTransparent: true, title: "" }}
         />
       </Stack.Navigator>

@@ -88,7 +88,7 @@ const Userregister = () => {
                 <TouchableOpacity
                   underlayColor="white"
                   onPress={() => {
-                    setstate(0);
+                    navigation.navigate('Optverification')
                   }}
                 >
                   <View style={styles.box3opacity2}>
@@ -99,7 +99,7 @@ const Userregister = () => {
                         fontWeight: "bold",
                       }}
                     >
-                      Sign up
+                   Get OTP
                     </Text>
                   </View>
                 </TouchableOpacity>
