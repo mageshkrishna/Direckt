@@ -7,13 +7,15 @@ import Signupcustomer from "./components/CustomerAuthentication/Signupcustomer";
 import UserLogin from "./components/Userauthentication/UserLogin";
 import Userregister from "./components/Userauthentication/Userregister";
 import Finalverification from "./components/Userauthentication/Finalverification";
+import Customerhome from "./components/customerhomepage/Customerhome";
+import Direcktsvg from "./components/Home/Homesvg";
 
 const Stack = createStackNavigator();
 
 const App = () => {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Home">
+      <Stack.Navigator initialRouteName="Direcktsvg">
         <Stack.Screen
           name="Home"
           component={Home}
@@ -43,6 +45,16 @@ const App = () => {
           name="Optverification"
           component={Finalverification}
           options={{ headerTransparent: true, title: "" }}
+        />
+         <Stack.Screen
+          name="Customerhome"
+          component={Customerhome}
+          options={{ headerShown:false }}
+        />
+        <Stack.Screen
+          name="Direcktsvg"
+          component={Direcktsvg}
+          options={{ headerShown:false }}
         />
       </Stack.Navigator>
     </NavigationContainer>
