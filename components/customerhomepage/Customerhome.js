@@ -1,13 +1,17 @@
-import { View, Text,Alert,Button, SafeAreaView, BackHandler } from 'react-native'
+import { View, Text,Alert,Button, SafeAreaView, BackHandler, Dimensions, StyleSheet } from 'react-native'
 import React, { useEffect } from 'react'
 import { useFocusEffect, useNavigation, useRoute } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs"
-import Threads from './Threads';
+
 import Createthread from './Createthread';
 import Profile from './Profile';
 import { Ionicons } from '@expo/vector-icons';
 import { COLORS } from '../../constants/Theme';
+
+import ImagePickerExample from './getImage';
+const Width = Dimensions.get("window").width;
+const Height = Dimensions.get("window").height;
 const Customerhome = () => {
     const navigation = useNavigation();
   
@@ -63,6 +67,12 @@ const Customerhome = () => {
   };
 const Tab = createBottomTabNavigator()
 return (
+  <View style={{flex:1}}>
+    <View style={{height:50}}>
+       <View style={styles.box1}>
+        <Text>hello</Text>
+       </View>
+    </View>
   <View style={{ flex: 1 }}>
     <Tab.Navigator
      screenOptions={({ route }) => ({
@@ -94,12 +104,17 @@ return (
       },
     })}
     >
-      <Tab.Screen name="home" component={Threads} options={{ tabBarLabel: 'Home' }} />
-      <Tab.Screen name="Page1" component={Createthread} options={{ tabBarLabel: 'Create' }} />
-      <Tab.Screen name="Page2" component={Profile} options={{ tabBarLabel: 'Profile' }} />
+      <Tab.Screen name="home" component={ImagePickerExample} options={{ tabBarLabel: 'Home' ,headerShown:false}} />
+      <Tab.Screen name="Page1" component={Createthread} options={{ tabBarLabel: 'Create',headerShown:false }} />
+      <Tab.Screen name="Page2" component={Profile} options={{ tabBarLabel: 'Profile' ,headerShown:false}} />
     </Tab.Navigator>
+  </View>
   </View>
 );
 };
-
+const styles = StyleSheet.create({
+  box1:{
+    backgroundColor:COLORS.primary,height:100,width:Width
+  }
+})
 export default Customerhome

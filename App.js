@@ -9,12 +9,15 @@ import Userregister from "./components/Userauthentication/Userregister";
 import Finalverification from "./components/Userauthentication/Finalverification";
 import Customerhome from "./components/customerhomepage/Customerhome";
 import Direcktsvg from "./components/Home/Homesvg";
+import { StatusBar } from "react-native";
+import { COLORS } from "./constants/Theme";
 
 const Stack = createStackNavigator();
 
 const App = () => {
   return (
     <NavigationContainer>
+      <StatusBar hidden={false} backgroundColor={COLORS.primary}/>
       <Stack.Navigator initialRouteName="Direcktsvg">
         <Stack.Screen
           name="Home"
