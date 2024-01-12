@@ -5,6 +5,7 @@ import logo from "../Home/Direcktsvg.png"
 import { useEffect } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/native";
+
 const Width = Dimensions.get("window").width;
 const Height = Dimensions.get("window").height;
 const Direcktsvg = () => {
@@ -14,11 +15,15 @@ const Direcktsvg = () => {
         const retrieveData = async () => {
           try {
             const storedData = await AsyncStorage.getItem('customerdata');
+            const storedData2 = await AsyncStorage.getItem('shopownerdata');
+            if(storedData){
+              navigation.navigate("Customerhome")
+            } else if(storedData2){
+                 navigation.navigate("Shopownernav")
 
-            if(!storedData){
-              navigation.navigate("Home")
-            } else{
-                navigation.navigate("Customerhome")
+            }
+            else{
+                navigation.navigate("Home")
             }
         
           } catch (error) {

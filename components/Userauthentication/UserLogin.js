@@ -4,16 +4,81 @@ import {
     Dimensions,
     TextInput,
     TouchableOpacity,
+    ActivityIndicator,
+    Alert,
   } from "react-native";
-  import React from "react";
+  import React, { useState } from "react";
   import { SafeAreaView, StyleSheet } from "react-native";
   import { COLORS } from "../../constants/Theme";
   import { useNavigation } from "@react-navigation/native";
+import axios from "axios";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
   const Width = Dimensions.get("window").width;
   const Height = Dimensions.get("window").height;
+
   const UserLogin = () => {
     const navigation = useNavigation();
+    const[email,setemail]=  useState(null)
+    const[password,setpassword]= useState(null);
+    const[loading,setLoading]= useState(null);
+    const handleLogin = async () => {
+      if (!email) {
+        Alert.alert("Validation Error", "Please enter email");
+        return;
+      }
+  
+      if (!password) {
+        Alert.alert("Validation Error", "Please enter password");
+        return;
+      }
+  
+      setLoading(true);
+  
+      const formDataLogin = { email, password };
+  
+      try {
+        const response = await axios.post(
+          "https://direckt-copy1.onrender.com/auth/login",
+          formDataLogin,
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+  
+        const { status, data } = response.data;
+  
+        if (status) {
+          console.log(status);
+          Alert.alert("Success", "Successfully signed in");
+  
+          const storedData = await AsyncStorage.setItem(
+            "shopownerdata",
+            JSON.stringify(data)
+          );
+  
+          
+          navigation.navigate("Shopownernav");
+        } else {
+          console.log(status);
+          Alert.alert("Error", "Invalid login data");
+        }
+      } catch (error) {
+        console.error(error);
+        Alert.alert("Error", "An error occurred. Please try again.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+
+
+
+
+
+
     return (
       <SafeAreaView style={{ flex: 1 }}>
         <View style={{ flex: 1 }}>
@@ -21,11 +86,16 @@ import {
             <Text style={styles.box1text}>Login Your{"\n"}Account</Text>
           </View>
           <View style={styles.box2}>
-            <TextInput style={styles.box2input} placeholder="Username" />
-            <TextInput style={styles.box2input} placeholder="Password" />
+            <TextInput style={styles.box2input} placeholder="email" value={email} onChangeText={(val) => setemail(val)} />
+            <TextInput style={styles.box2input} placeholder="Password"  value={password} onChangeText={(val) => setpassword(val)}  />
           </View>
           <View style={styles.box3}>
-            <TouchableOpacity underlayColor="white">
+          {loading && (
+        <View style={styles.activityIndicatorContainer}>
+          <ActivityIndicator size="large" color="#0000ff" />
+        </View>
+      )}
+            <TouchableOpacity underlayColor="white" onPress={handleLogin}>
               <View style={styles.box3opacity}>
                 <Text
                   style={{ color: "white", fontSize: 18, fontWeight: "bold" }}

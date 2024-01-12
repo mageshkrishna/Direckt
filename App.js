@@ -11,6 +11,10 @@ import Customerhome from "./components/customerhomepage/Customerhome";
 import Direcktsvg from "./components/Home/Homesvg";
 import { StatusBar } from "react-native";
 import { COLORS } from "./constants/Theme";
+import CustomerSearchBar from "./components/customerhomepage/Customersearchbar";
+import Shopownerhomepage from "./components/ShopownerHomepage/Shopownerhomepage";
+import Shopownernav from "./components/ShopownerHomepage/Shopownernavigation";
+import EditOwnerProfile from "./components/ShopownerHomepage/Editshopownerprofile";
 
 const Stack = createStackNavigator();
 
@@ -54,9 +58,29 @@ const App = () => {
           component={Customerhome}
           options={{ headerShown:false }}
         />
+          <Stack.Screen
+          name="Shopownerhomepage"
+          component={Shopownerhomepage}
+          options={{ headerShown:false }}
+        />
         <Stack.Screen
           name="Direcktsvg"
           component={Direcktsvg}
+          options={{ headerShown:false }}
+        />
+        <Stack.Screen
+          name="Customersearchbar"
+          component={CustomerSearchBar}
+          options={{ headerShown:false }}
+        />
+         <Stack.Screen
+          name="Shopownernav"
+          component={Shopownernav}
+          options={{ headerShown:false }}
+        />
+        <Stack.Screen
+          name="EditOwnerProfile"
+          component={EditOwnerProfile}
           options={{ headerShown:false }}
         />
       </Stack.Navigator>

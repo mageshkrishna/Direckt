@@ -1,22 +1,42 @@
-import { View, Text,Alert,Button, SafeAreaView, BackHandler, Dimensions, StyleSheet } from 'react-native'
-import React, { useEffect } from 'react'
-import { useFocusEffect, useNavigation, useRoute } from '@react-navigation/native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs"
+import {
+  View,
+  Text,
+  Alert,
+  Button,
+  SafeAreaView,
+  BackHandler,
+  Dimensions,
+  StyleSheet,
+} from "react-native";
+import React, { useEffect } from "react";
+import {
+  useFocusEffect,
+  useNavigation,
+  useRoute,
+} from "@react-navigation/native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
-import Createthread from './Createthread';
-import Profile from './Profile';
-import { Ionicons } from '@expo/vector-icons';
-import { COLORS } from '../../constants/Theme';
+import Profile from "./Profile";
+import { Ionicons, Feather, Entypo } from "@expo/vector-icons";
+import { COLORS } from "../../constants/Theme";
 
-import ImagePickerExample from './getImage';
+import Createthread from "./Createthread/Createthread";
+import Threadsavailable from "./Threadsavailable";
+import { TextInput } from "react-native-gesture-handler";
 const Width = Dimensions.get("window").width;
 const Height = Dimensions.get("window").height;
 const Customerhome = () => {
-    const navigation = useNavigation();
-  
+  const navigation = useNavigation();
+
   const route = useRoute();
- 
+
+  const handleFocus = () => {
+    // Navigate to a different screen or perform navigation action
+    navigation.navigate("Customersearchbar");
+    inputRef.current.blur();
+  };
+  const inputRef = React.createRef();
   useFocusEffect(
     React.useCallback(() => {
       const handleBackPress = () => {
@@ -27,7 +47,10 @@ const Customerhome = () => {
         return false; // Allow the default back action on other screens
       };
 
-      const backHandler = BackHandler.addEventListener("hardwareBackPress", handleBackPress);
+      const backHandler = BackHandler.addEventListener(
+        "hardwareBackPress",
+        handleBackPress
+      );
 
       return () => {
         backHandler.remove();
@@ -37,84 +60,134 @@ const Customerhome = () => {
   const removeData = async () => {
     try {
       // Remove data
-      await AsyncStorage.removeItem('customerdata');
-      navigation.navigate('Home')
-      console.log('Data removed successfully');
+      await AsyncStorage.removeItem("customerdata");
+      navigation.navigate("Home");
+      console.log("Data removed successfully");
     } catch (error) {
-      console.error('Error removing data:', error);
+      console.error("Error removing data:", error);
     }
   };
   const handleLogout = () => {
     Alert.alert(
-      'Logout',
-      'Are you sure you want to logout?',
+      "Logout",
+      "Are you sure you want to logout?",
       [
         {
-          text: 'Cancel',
-          style: 'cancel',
+          text: "Cancel",
+          style: "cancel",
         },
         {
-          text: 'Logout',
+          text: "Logout",
           onPress: () => {
-           removeData()
-            
-            console.log('Logging out...');
+            removeData();
+
+            console.log("Logging out...");
           },
         },
       ],
       { cancelable: false }
     );
   };
-const Tab = createBottomTabNavigator()
-return (
-  <View style={{flex:1}}>
-    <View style={{height:50}}>
-       <View style={styles.box1}>
-        <Text>hello</Text>
-       </View>
+  const Tab = createBottomTabNavigator();
+  return (
+    <View style={{ flex: 1 }}>
+      <View
+        style={{
+          width: "100%",
+          height: "10%",
+          alignItems: "center",
+          justifyContent: "center",
+          backgroundColor: COLORS.primary,
+        }}
+      >
+        <View style={styles.searchbar}>
+          <TextInput
+            ref={inputRef}
+            style={styles.searchinput}
+            placeholder={"   Search shops near you..."}
+            onFocus={handleFocus}
+          />
+          <Feather name="search" size={30} color="black" />
+        </View>
+      </View>
+
+      <View style={{ flex: 1 }}>
+        <Tab.Navigator
+          screenOptions={({ route }) => ({
+            tabBarIcon: ({ focused, color, size }) => {
+              let iconName;
+
+              if (route.name === "homeCustomer") {
+                iconName = focused ? "ios-home" : "ios-home-outline";
+              } else if (route.name === "Createthread") {
+                iconName = focused
+                  ? "ios-add-circle"
+                  : "ios-add-circle-outline";
+              } else if (route.name === "Customerprofile") {
+                iconName = focused ? "ios-person" : "ios-person-outline";
+              }
+
+              return <Ionicons name={iconName} size={size} color={color} />;
+            },
+            tabBarLabelStyle: {
+              fontSize: 12,
+            },
+            tabBarActiveTintColor: COLORS.primary,
+            tabBarInactiveTintColor: "gray",
+            tabBarShowLabel: true,
+            tabBarStyle: {
+              borderTopWidth: 0,
+              borderTopColor: "gray",
+              paddingBottom: 8,
+              height: 60,
+              // Optional: Border color
+            },
+          })}
+        >
+          <Tab.Screen
+            name="homeCustomer"
+            component={Threadsavailable}
+            options={{ tabBarLabel: "Home", headerShown: false }}
+          />
+          <Tab.Screen
+            name="Createthread"
+            component={Createthread}
+            options={{ tabBarLabel: "Create", headerShown: false }}
+          />
+          <Tab.Screen
+            name="Customerprofile"
+            component={Profile}
+            options={{ tabBarLabel: "Profile", headerShown: false }}
+          />
+        </Tab.Navigator>
+      </View>
     </View>
-  <View style={{ flex: 1 }}>
-    <Tab.Navigator
-     screenOptions={({ route }) => ({
-      tabBarIcon: ({ focused, color, size }) => {
-        let iconName;
-
-        if (route.name === 'home') {
-          iconName = focused ? 'ios-home' : 'ios-home-outline';
-        } else if (route.name === 'Page1') {
-          iconName = focused ? 'ios-add-circle' : 'ios-add-circle-outline';
-        } else if (route.name === 'Page2') {
-          iconName = focused ? 'ios-person' : 'ios-person-outline';
-        }
-
-        return <Ionicons name={iconName} size={size} color={color} />;
-      },
-      tabBarLabelStyle:{
-        fontSize:12
-      },
-      tabBarActiveTintColor: COLORS.primary,
-      tabBarInactiveTintColor: 'gray',
-      tabBarShowLabel: true,
-      tabBarStyle: {
-         borderTopWidth:0,
-        borderTopColor: 'gray',
-        paddingBottom:8,
-        height:60,
-        // Optional: Border color
-      },
-    })}
-    >
-      <Tab.Screen name="home" component={ImagePickerExample} options={{ tabBarLabel: 'Home' ,headerShown:false}} />
-      <Tab.Screen name="Page1" component={Createthread} options={{ tabBarLabel: 'Create',headerShown:false }} />
-      <Tab.Screen name="Page2" component={Profile} options={{ tabBarLabel: 'Profile' ,headerShown:false}} />
-    </Tab.Navigator>
-  </View>
-  </View>
-);
+  );
 };
 const styles = StyleSheet.create({
-  box1:{
-    backgroundColor:COLORS.primary,height:100,width:Width
-  }
-})
-export default Customerhome
+  box1: {
+    backgroundColor: COLORS.primary,
+    height: 100,
+    width: Width,
+  },
+  searchbar: {
+    width: "90%",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    height: 50,
+    backgroundColor: "white",
+    elevation: 5,
+    borderRadius: 10,
+    shadowOffset: {
+      height: 2,
+      width: 2,
+    },
+    shadowColor: "black",
+  },
+  searchinput: {
+    height: "100%",
+    width: "80%",
+  },
+});
+export default Customerhome;

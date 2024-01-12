@@ -4,17 +4,66 @@ import {
   Dimensions,
   TextInput,
   TouchableOpacity,
+  Alert,
+  ActivityIndicator,
 } from "react-native";
 import React, { useState } from "react";
 import { SafeAreaView, StyleSheet } from "react-native";
 import { COLORS } from "../../constants/Theme";
 import { useNavigation } from "@react-navigation/native";
 import { State } from "react-native-gesture-handler";
+import axios from "axios";
 const Width = Dimensions.get("window").width;
 const Height = Dimensions.get("window").height;
 const Userregister = () => {
   const navigation = useNavigation();
-  const [state, setstate] = useState(0);
+  const[businessname,setbuinessname] = useState(null);
+  const[phonenumber,setphonenumber] = useState(null);
+  const[email,setemail] = useState(null);
+  const[password,setpassword] = useState(null)
+  const [loading, setLoading] = useState(false);
+  const handleRegister= async()=>{
+    if(!businessname||!phonenumber||!email||!password){
+      Alert.alert("please fill all the feilds")
+      return;
+    }
+     
+      try {
+        setLoading(true); // Set loading to true when the request starts
+  
+        const formdata ={
+          businessname:businessname,
+          phonenumber:phonenumber,
+          email:email,
+          password:password
+        }
+        const response = await axios.post('https://direckt-copy1.onrender.com/auth/register', formdata, {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+  
+        const { status } = response.data;
+  
+        if (status) {
+          Alert.alert('Success', 'Account created successfully');
+          setbuinessname(null)
+          setemail(null)
+          setphonenumber(null)
+          setpassword(null)
+        } else {
+          Alert.alert('Error', 'Email is already used. Try again');
+        }
+      } catch (error) {
+        console.error(error);
+        Alert.alert('Error', 'An error occurred. Please try again.');
+      } finally {
+        setLoading(false); 
+      }
+
+
+  }
+
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <View style={{ flex: 1 }}>
@@ -22,7 +71,7 @@ const Userregister = () => {
           <Text style={styles.box1text}>Create Your{"\n"}Account</Text>
         </View>
         <View style={styles.box2}>
-          {state === 0 ? (
+          
             <View
               style={{
                 flex: 1,
@@ -30,82 +79,29 @@ const Userregister = () => {
                 justifyContent: "space-evenly",
               }}
             >
-              <TextInput style={styles.box2input} placeholder="Name" />
-              <TextInput style={styles.box2input} placeholder="BusinessName" />
-              <TextInput style={styles.box2input} placeholder="Location" />
-              <TextInput style={styles.box2input} placeholder="category" />
+              <TextInput style={styles.box2input} placeholder="BusinessName" value={businessname} onChangeText={(val)=>setbuinessname(val)}/>
+              <TextInput style={styles.box2input} placeholder="Phonenumber"  value={phonenumber} onChangeText={(val)=>setphonenumber(val)} keyboardType="numeric" />
+              <TextInput style={styles.box2input} placeholder="email"  value={email} onChangeText={(val)=>setemail(val)} />
+              <TextInput style={styles.box2input} placeholder="password"  value={password} onChangeText={(val)=>setpassword(val)} />
               <TouchableOpacity
                 underlayColor="white"
-                onPress={() => {
-                  setstate(1);
-                }}
+                onPress={handleRegister}
               >
+                 {loading && (
+        <View style={styles.activityIndicatorContainer}>
+          <ActivityIndicator size="large" color="#0000ff" />
+        </View>
+      )}
                 <View style={styles.box3opacity}>
                   <Text
                     style={{ color: "white", fontSize: 18, fontWeight: "bold" }}
                   >
-                    Next
+                    Register
                   </Text>
                 </View>
               </TouchableOpacity>
             </View>
-          ) : (
-            <View
-              style={{
-                flex: 1,
-                alignItems: "center",
-                justifyContent: "space-evenly",
-              }}
-            >
-              <TextInput style={styles.box2input} placeholder="Phonenumber" />
-              <TextInput style={styles.box2input} placeholder="Username" />
-              <TextInput style={styles.box2input} placeholder="Password" />
-              <View
-                style={{
-                  flexDirection: "row",
-                  justifyContent: "space-evenly",
-                  gap: 30,
-                }}
-              >
-                <TouchableOpacity
-                  underlayColor="white"
-                  onPress={() => {
-                    setstate(0);
-                  }}
-                >
-                  <View style={styles.box3opacity2}>
-                    <Text
-                      style={{
-                        color: "white",
-                        fontSize: 18,
-                        fontWeight: "bold",
-                      }}
-                    >
-                      Back
-                    </Text>
-                  </View>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  underlayColor="white"
-                  onPress={() => {
-                    navigation.navigate('Optverification')
-                  }}
-                >
-                  <View style={styles.box3opacity2}>
-                    <Text
-                      style={{
-                        color: "white",
-                        fontSize: 18,
-                        fontWeight: "bold",
-                      }}
-                    >
-                   Get OTP
-                    </Text>
-                  </View>
-                </TouchableOpacity>
-              </View>
-            </View>
-          )}
+      
         </View>
         <View style={styles.box3}>
     

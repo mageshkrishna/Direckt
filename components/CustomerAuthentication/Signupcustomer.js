@@ -86,7 +86,7 @@ const Signupcustomer = () => {
           <View style={{ flexDirection: "row", gap: 10 }}>
             <Text style={{fontSize:16}}>Already have an account? </Text>
             <TouchableOpacity
-              style={{ padding: 20 }}
+              style={{ padding: 2 }}
               onPress={(e) => {
                 navigation.navigate("Logincustomer");
               }}

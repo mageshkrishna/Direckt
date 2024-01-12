@@ -1,0 +1,393 @@
+import {
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+  Dimensions,
+  TouchableOpacity,
+  LayoutAnimation,
+  UIManager,
+  Image,
+  ImageBackground,
+  Pressable,
+  Linking,
+  Alert,
+  TextInput,
+  ActivityIndicator,
+  ViewComponent,
+} from "react-native";
+import { useState, useEffect } from "react";
+import {
+  MaterialIcons,
+  AntDesign,
+  Ionicons,
+  FontAwesome5,
+} from "@expo/vector-icons";
+import "react-native";
+import React from "react";
+import ImagePopup from "./Imagepopup";
+import axios from "axios";
+const height = Dimensions.get("window").height;
+const width = Dimensions.get("window").width;
+import Checkbox from "expo-checkbox";
+UIManager.setLayoutAnimationEnabledExperimental &&
+  UIManager.setLayoutAnimationEnabledExperimental(true);
+
+const JobCard = ({ item, ownerdetail }) => {
+  const job_id = item._id;
+  const [deliverystatus, setdeliverystatus] = useState(false);
+  const [replymessage, setreplymessage] = useState(null);
+  const [uploading, setuploading] = useState(false);
+
+  const createreply = async () => {
+    setuploading(true);
+    if (!deliverystatus || !replymessage) {
+      Alert.alert("Please fill both fields");
+      setuploading(false);
+      return;
+    }
+    if (!job_id || !ownerdetail) {
+      Alert.alert("Something went wrong. Refresh the app");
+      setuploading(false);
+      return;
+    }
+    const formdata = {
+      job_id: job_id,
+      shopowner_id: ownerdetail,
+      deliverystatus: deliverystatus,
+      replymessage: replymessage,
+    };
+    try {
+      const response = await axios.post(
+        "https://direckt-copy1.onrender.com/shopowner/createjobreply",
+        formdata
+      );
+      console.log(response.status);
+      setuploading(false);
+      Alert.alert("Created job reply successfully");
+    } catch (e) {
+      setuploading(false);
+      console.log(e);
+    }
+  };
+
+  const [expanded, setExpanded] = useState(false);
+  const [showPopup, setShowPopup] = useState(false);
+  const toggleExpand = () => {
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+    setExpanded(!expanded);
+  };
+
+  return (
+    <View>
+      <View>
+        <View style={styles.job}>
+          <TouchableOpacity
+            style={styles.jobImage}
+            onPress={() => setShowPopup(true)}
+          >
+            <Image
+              source={{ uri: item.image_url }}
+              style={{ height: "100%", width: "90%", backgroundColor: "red" }}
+            />
+            <View style={{ flexDirection: "row", alignItems: "center" }}>
+              <MaterialIcons name="category" size={17} color="black" />
+              <Text style={styles.jobcategory} numberOfLines={1}>
+                {item.category}
+              </Text>
+            </View>
+          </TouchableOpacity>
+          <Pressable style={styles.jobdetails} onPress={toggleExpand}>
+            <Text style={styles.jobtitle} numberOfLines={2}>
+              {item.jobtitle}
+            </Text>
+            <Text style={styles.jobdes} numberOfLines={3}>
+              {item.jobdescription}
+            </Text>
+            <View
+              style={{
+                flexDirection: "row",
+                marginTop: 3,
+                alignItems: "center",
+              }}
+            >
+              <Text style={styles.location}>{}</Text>
+              <View style={styles.viewdetails}>
+                <Text>View details</Text>
+              </View>
+            </View>
+          </Pressable>
+        </View>
+      </View>
+      {showPopup && (
+        <ImagePopup
+          imageUrl={item.image_url}
+          onClose={() => setShowPopup(false)}
+        />
+      )}
+      {expanded && (
+        <View style={styles.jobdetailcontainer}>
+          <View style={styles.detailcard}>
+            <View>
+              <View>
+                <Text style={styles.detailtitle}>Title*</Text>
+                <Text>{item.jobtitle}</Text>
+              </View>
+              <View>
+                <Text style={styles.detailtitle}>Description*</Text>
+                <Text>{item.jobdescription}</Text>
+              </View>
+              <View>
+                <Text style={styles.detailtitle}>Location*</Text>
+                <Text>{item.location}</Text>
+              </View>
+            </View>
+          </View>
+          <View style={styles.jobresponsesection}>
+            <View
+              style={{
+                width: "100%",
+               
+                
+                gap: 30,
+              }}
+            >
+              <View>
+                <Text style={{ color: "grey", paddingBottom: 10 }}>
+                  Write a Reply Message (optional)
+                </Text>
+                <TextInput
+                  style={styles.replyinput}
+                  multiline={true}
+                  numberOfLines={5}
+                  onChangeText={(val) => {
+                    setreplymessage(val);
+                  }}
+                />
+              </View>
+              <View
+                style={{ flexDirection: "row", alignContent: "center" ,justifyContent:'flex-start',gap:(width*20)/100}}
+              >
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    justifyContent: "flex-start",
+                    columnGap: 10,
+                   
+                  }}
+                >
+                  <Text style={{ color: "grey" }}>Delivery option</Text>
+                  <Checkbox
+                    value={deliverystatus}
+                    onValueChange={setdeliverystatus}
+                    color={deliverystatus ? "#4630EB" : undefined}
+                  />
+                </View>
+                <TouchableOpacity
+                  onPress={() => {
+                    createreply();
+                  }}
+                  style={styles.acceptorder}
+                >
+                  {uploading && (
+                    <ActivityIndicator
+                      color="white"
+                      style={{ height: 10, width: 10 }}
+                    />
+                  )}
+                  <Text style={{ color: "white" }}>Accept</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        </View>
+      )}
+    </View>
+  );
+};
+
+export default JobCard;
+
+const styles = StyleSheet.create({
+  job: {
+    flex: 1,
+    alignItems: "center",
+    flexDirection: "row",
+    height: (height * 18) / 100,
+    backgroundColor: "white",
+    elevation: 1,
+    marginVertical: "3%",
+    marginHorizontal: "3%",
+    borderRadius: 5,
+  },
+  jobImage: {
+    width: (width * 35) / 100,
+    height: "70%",
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 5,
+  },
+  jobcategory: {
+    paddingVertical: 5,
+  },
+  jobdetails: {
+    flex: 1,
+    height: "100%",
+    justifyContent: "center",
+    width: (width * 65) / 100,
+    padding: 7,
+  },
+  jobsection: {
+    flex: 1,
+    justifyContent: "space-evenly",
+    alignItems: "flex-start",
+    marginRight: 5,
+    height: "100%",
+    width: "40%",
+  },
+  jobtitle: {
+    fontSize: 18,
+    fontWeight: "medium",
+  },
+  jobdes: {
+    fontSize: 13,
+    color: "grey",
+  },
+  jobowner: {
+    color: "green",
+    textDecorationLine: "underline",
+  },
+  viewdetails: {
+    padding: 4,
+    backgroundColor: "#f4f5fb",
+    borderRadius: 5,
+    marginHorizontal: 5,
+  },
+  jobdetailcontainer: {
+    backgroundColor: "#ffff",
+    marginVertical: "1%",
+    marginHorizontal: "3%",
+    borderRadius: (width * 3) / 100,
+    padding: 10,
+  },
+  detailcard: {
+    paddingHorizontal: 20,
+    borderColor: "#cad0dc",
+    borderRadius: 15,
+    borderWidth: 0.5,
+    paddingVertical: 20,
+  },
+  detailtitle: {
+    fontSize: 17,
+    paddingVertical: 10,
+    color: "grey",
+  },
+  jobimageviewer: {
+    paddingVertical: 20,
+    flexDirection: "row",
+    justifyContent: "space-evenly",
+    alignItems: "center",
+  },
+  imagebtn: {
+    borderWidth: 1,
+    borderColor: "grey",
+    padding: 2,
+  },
+  jobresponsesection: {
+    padding: 10,
+    flexDirection: "column",
+  },
+  replyinput: {
+    borderColor: "#cad0dc",
+    borderRadius: 3,
+    borderWidth: 0.9,
+    width: "100%",
+  },
+  acceptorder: {
+    flexDirection: "row",
+    backgroundColor: "#4daa57",
+    alignItems:'center',
+    justifyContent:'center',
+    borderRadius: 20,
+    paddingHorizontal:10,
+    paddingVertical:6,
+    width: "30%",
+    gap:10
+  },
+});
+
+// <Text style={{ color: "grey" }} >Delivery option</Text>
+// <Checkbox
+//    value={deliverystatus}
+//    onValueChange={setdeliverystatus}
+//    color={deliverystatus ? "#4630EB" : undefined}
+//  />
+{
+  /* <Text style={{ color: "grey" }}>
+                Write a Reply Message (optional)
+              </Text> */
+}
+//   <TextInput
+//   style={styles.replyinput}
+//   multiline={true}
+//   onChangeText={(val) => {
+//     setreplymessage(val);
+//   }}
+// />
+
+//     <TouchableOpacity
+//     onPress={() => {
+//       createreply();
+//     }}
+//     style={styles.acceptorder} >
+
+//     {uploading&&<ActivityIndicator  color="white" style={{height:10,width:10}} />}
+//     <Text style={{ color: "white" }}>Accept</Text>
+
+// </TouchableOpacity>
+
+// <View>
+// <View  style={{
+//       flexDirection: "row",
+//       alignItems: 'center',
+//       justifyContent: 'flex-start',
+//       columnGap:10,
+//      marginBottom:10
+//     }}>
+//     <Text style={{ color: "grey" }} >Delivery option</Text>
+//    <Checkbox
+//       value={deliverystatus}
+//       onValueChange={setdeliverystatus}
+//       color={deliverystatus ? "#4630EB" : undefined}
+//     />
+//     </View>
+//   <Text style={{ color: "grey" }}>
+//     Write a Reply Message (optional)
+//   </Text>
+//   <View
+//     style={{
+//       flexDirection: "row",
+//       alignItems: "flex-end",
+//       justifyContent: "space-between",
+//     }}
+//   >
+//     <TextInput
+//       style={styles.replyinput}
+//       multiline={true}
+//       onChangeText={(val) => {
+//         setreplymessage(val);
+//       }}
+//     />
+//      <TouchableOpacity
+//         onPress={() => {
+//           createreply();
+//         }}
+//         style={styles.acceptorder} >
+
+//         {uploading&&<ActivityIndicator  color="white" style={{height:10,width:10}} />}
+//         <Text style={{ color: "white" }}>Accept</Text>
+
+//     </TouchableOpacity>
+//   </View>
+// </View>

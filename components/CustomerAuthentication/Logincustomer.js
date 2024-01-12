@@ -18,7 +18,6 @@ const Height = Dimensions.get("window").height;
 const Logincustomer = () => {
   const navigation = useNavigation();
 
-
   const [email, setemail] = useState("");
   const [password, setpassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -54,15 +53,17 @@ const Logincustomer = () => {
         console.log(status);
         Alert.alert("Success", "Successfully signed in");
 
-        
-     const storedData= await AsyncStorage.setItem('customerdata',JSON.stringify(data))
-       
-        const storeddata = await AsyncStorage.getItem('customerdata');
-        
-        // Parse the stored data (since AsyncStorage stores strings)
-        const parsedData = JSON.parse(storeddata);
-        console.log(parsedData);
-        navigation.navigate('Customerhome')
+        const storedData = await AsyncStorage.setItem(
+          "customerdata",
+          JSON.stringify(data)
+        );
+
+        // const storeddata = await AsyncStorage.getItem("customerdata");
+
+        // // Parse the stored data (since AsyncStorage stores strings)
+        // const parsedData = JSON.parse(storeddata);
+        // console.log(parsedData);
+        navigation.navigate("Customerhome");
       } else {
         console.log(status);
         Alert.alert("Error", "Invalid login data");
@@ -112,7 +113,7 @@ const Logincustomer = () => {
           <View style={{ flexDirection: "row", gap: 10 }}>
             <Text style={{ fontSize: 16 }}>Not have an account? </Text>
             <TouchableOpacity
-              style={{ padding: 20 }}
+              style={{ padding: 4 }}
               onPress={(e) => {
                 navigation.navigate("Signupcustomer");
               }}
