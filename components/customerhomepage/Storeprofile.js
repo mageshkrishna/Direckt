@@ -1,0 +1,414 @@
+import { StyleSheet, Text, View, ScrollView, ImageBackground, TouchableOpacity, Dimensions, Image, Linking, ActivityIndicator } from 'react-native'
+import { FontAwesome5, AntDesign } from '@expo/vector-icons';
+import { MaterialIcons } from '@expo/vector-icons';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import {React,useDeferredValue,useEffect,useState} from 'react'
+import axios from 'axios';
+import { useRoute } from '@react-navigation/native';
+import ImagePopup from '../ShopownerHomepage/Imagepopup';
+const height = Dimensions.get("window").height
+const width = Dimensions.get("window").width
+
+const StoreProfile = () => {
+    const route = useRoute();
+  const { _id } = route.params;
+   
+  const [storedata, setstoredata] = useState();
+  const [showPopup, setShowPopup] = useState(false);
+  const [activeImageIndex, setActiveImageIndex] = useState(null);
+
+  const handleImagePress = (index) => {
+    setActiveImageIndex(index);
+  };
+
+  const handleClosePopup = () => {
+    setActiveImageIndex(null);
+  };
+    const shopPhotos = [
+        "Photo",
+        "Only", "5", "can be", "A"
+    ]
+    const categorylist = [
+        "plumbing",
+        "electronics",
+        "grocery"
+    ]
+    useEffect(() => {
+        console.log("started")
+        try {
+          axios.get(`https://direckt-copy1.onrender.com/shopowner/getshopownerprofile?_id=${_id}`)
+            .then(response => {
+             
+              console.log(response.data);
+              setstoredata(response.data)
+              console.log(storedata.category);
+            })
+            .catch(err => {
+              console.log(err);
+            });
+        } catch (err) {
+          console.log(err);
+        }
+      }, [_id]);
+      if(!storedata && _id){
+        return(
+            <ActivityIndicator color={'purple'} size={24}/>
+        )
+      }
+    return (
+        <ScrollView
+            style={styles.container}
+        >
+            <ImageBackground
+                source={
+                    require('../../assets/icon.png')
+                }
+                style={styles.headercontainer}>
+                <View style={styles.profilecontainer}>
+                    <TouchableOpacity
+                     onPress={() => setShowPopup(true)}
+                    >
+                    <Image style={styles.headerprofileImage}
+                         source={{ uri: storedata.profilepic }}
+                    />
+                    </TouchableOpacity>
+                    {showPopup && (
+        <ImagePopup
+          imageUrl={storedata.profilepic}
+          onClose={() => setShowPopup(false)}
+        />
+      )}
+                </View>
+            </ImageBackground>
+            <View style={styles.bodycontainer}>
+                <View >
+                    <Text style={styles.bodyshopname} numberOfLines={2}>{storedata.businessname}</Text>
+                </View>
+                <View>
+                <Text style={styles.bodyshopdescription}>{storedata.businessabout}</Text>
+                </View>
+               
+                <View style={{justifyContent:'center',alignItems:'center'}}>
+                {storedata.deliveryStatus ? (
+              <Text>Delivery:<Text style={{color:'green'}}> YES</Text></Text>
+            ) : (
+              <Text>Delivery:<Text  style={{color:'red'}}> NO</Text></Text>
+            )}
+                </View>
+                
+               
+            </View>
+            <View style={styles.ctccontainer}>
+                <View style={styles.ctccard}>
+                    <View style={styles.ctcsection}>
+                        <View style={storedata ? [styles.storestatus, styles.ctcicon] : [styles.storestatusoff, styles.ctcicon]}>
+                        {storedata  ? <MaterialCommunityIcons name="store-check" size={42} color="white" /> : <MaterialCommunityIcons name="store-remove" size={42} color="white" />}
+                        </View>
+                        {storedata  ? <Text style={{ fontSize: 10 }}>Store: Open</Text> : <Text style={{ fontSize: 10 }}>Store: Closed</Text>}
+                    </View>
+                    <View style={styles.ctcsection}>
+                        <TouchableOpacity
+                            style={[styles.ctcicon, styles.ctccall]}>
+                            <MaterialIcons name="phone-in-talk" size={42} color="#5271FF" />
+                        </TouchableOpacity>
+                        <Text style={{ fontSize: 10 }}>Call Now</Text>
+                    </View>
+                    <View style={styles.ctcsection}>
+                    <TouchableOpacity
+                        style={[styles.ctcicon, styles.ctcdirection]}>
+                        <FontAwesome5 name="directions" size={42} color="#5271FF" />
+                    </TouchableOpacity>
+                        <Text style={{ fontSize: 10 }}>View Shop</Text>
+                    </View>
+                </View>
+            </View>
+            <View style={styles.otherdetails}>
+                <View style={styles.detailitem}>
+                    <Text style={styles.shopdetailstitle}>Location</Text>
+                    <View style={styles.shopdetailsbox}>
+                        <Text style={styles.shopdetailsvalue} numberOfLines={1}>{storedata.location}</Text>
+                    </View>
+                </View>
+                <View style={styles.detailitem}>
+                    <Text style={styles.shopdetailstitle}>Address</Text>
+                    <View style={styles.shopdetailsbox}>
+                        <Text style={styles.shopdetailsvalue} numberOfLines={2}>{storedata.address}</Text>
+                    </View>
+                </View>
+                <View style={styles.detailitem}>
+                    <Text style={styles.shopdetailstitle}>Delivery or Servicable Locations</Text>
+                    <View style={styles.shopdetailsbox}>
+                        <Text style={styles.shopdetailsvalue} numberOfLines={2}>{storedata.deliverylocation}</Text>
+                    </View>
+                </View>
+                <View style={styles.detailitem}>
+                    <Text style={styles.shopdetailstitle}>Product or Services</Text>
+                    <View style={styles.shopdetailsbox}>
+                    <View style={styles.deliverylocationContainer}>
+                        {storedata.category.map((item, index) => (
+                            <View key={index} style={styles.locations}>
+                                <Text>{item}</Text>
+                            </View>
+                        ))
+                        }
+                    </View>
+                    </View>
+                </View>
+              
+                <View style={styles.detailitem}>
+                    <Text style={styles.shopdetailstitle}>Mobile number</Text>
+                    <View style={styles.shopdetailsbox}>
+                        <Text style={styles.shopdetailsvalue}>{storedata.phonenumber}</Text>
+                    </View>
+                </View>
+            </View>
+            
+            <View style={styles.shopImages}>
+                <Text style={styles.heading}>Photos</Text>
+                <ScrollView style={styles.imagecontainer} horizontal={true}>
+                {storedata.photos.map((item, index) => (
+        <View key={index}>
+          <TouchableOpacity
+            style={styles.jobImage}
+            onPress={() => handleImagePress(index)}
+          >
+            <Image
+              source={{ uri: item }}
+              style={{ height: 100, width: 100, backgroundColor: 'red', marginRight: 10, borderRadius: 5 }}
+            />
+          </TouchableOpacity>
+        </View>
+      ))}
+      {activeImageIndex !== null && (
+        <ImagePopup
+          imageUrl={storedata.photos[activeImageIndex]}
+          onClose={handleClosePopup}
+        />
+      )}
+                </ScrollView>
+            </View>
+        </ScrollView>
+    )
+}
+
+export default StoreProfile
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: 'white'
+    },
+    headercontainer: {
+        flex: 1,
+        justifyContent: "flex-end",
+        alignItems: 'center',
+        height: (height * 30) / 100,
+        padding: 20,
+    },
+    profilecontainer: {
+        flex: 1,
+        justifyContent: 'flex-end',
+        height: (height * 30) / 100,
+    },
+    headerprofileImage: {
+        height: 120,
+        width: 120,
+        borderRadius: 70,
+        borderWidth: 2,
+        borderColor: 'white',
+    },
+    bodycontainer: {
+        flex: 1,
+        shadowOffset: {
+            height: 2,
+            width: 2
+        },
+        justifyContent: 'space-evenly',
+        shadowColor: "black",
+        borderTopLeftRadius: 15,
+        borderTopRightRadius: 15,
+        backgroundColor: "white",
+        height: (height * 20) / 100,
+        paddingHorizontal: 25,
+        marginTop: -10,
+    },
+    bodyshopname: {
+        textAlign: 'center',
+        fontSize: 30,
+        fontWeight: 'bold',
+    },
+    bodyshopdescription: {
+        textAlign: 'center',
+        color: 'grey',
+    },
+    bodydelivery: {
+        textAlign: 'center',
+    },
+    imagecontainer: {
+        flex: 1,
+        flexDirection: 'row'
+    },
+    ctccontainer: {
+        flex: 1,
+        height: (height * 14) / 100,
+        paddingHorizontal: '4%',
+    },
+    ctccard: {
+        flex: 1,
+        alignItems: 'center',
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        height: 90,
+        backgroundColor: 'white',
+        borderRadius: 30,
+        elevation: 3,
+        paddingHorizontal: 18,
+    },
+    ctcsection: {
+      width: '33%',
+      height: '80%',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+    },
+    ctcicon: {
+      flex: 1,
+      alignItems: 'center',
+      justifyContent: 'center',
+      height: 50,
+      width: 70,
+      marginBottom: 3,
+      borderRadius: 40,
+    },
+    storestatus: {
+        borderColor: '#00BF63',
+        backgroundColor: '#06A659',
+        borderWidth: 1,
+    },
+    storestatusoff: {
+        borderColor: 'red',
+        backgroundColor: 'red',
+        borderWidth: 1,
+    },
+    ctccall: {
+        borderColor: '#5271FF',
+        borderWidth: 2,
+    },
+    ctcdirection: {
+        borderColor: '#5271FF',
+        borderWidth: 2,
+    },
+    card: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: "center",
+        height: 100,
+        width: 100,
+        borderRadius: 10,
+        margin: 4,
+        elevation: 4,
+        shadowOffset: {
+            width: 1,
+            height: 1
+        },
+        shadowColor: "grey",
+        backgroundColor: "red",
+    },
+    addimagecard: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: "center",
+        height: 100,
+        width: 100,
+        borderRadius: 10,
+        borderWidth: 1,
+        borderStyle: 'dotted',
+        margin: 4,
+        shadowOffset: {
+            width: 1,
+            height: 1
+        },
+        shadowColor: "grey",
+    },
+    shopImages: {
+        height: (height * 25) / 100,
+        paddingHorizontal: 30,
+        paddingVertical: 20,
+    },
+    heading: {
+        padding: 10,
+        fontWeight: 'medium',
+    }, otherdetails: {
+        flex: 1,
+        paddingHorizontal: 30,
+        paddingVertical: 10,
+    },
+    detailitem: {
+        paddingVertical: 5,
+    },
+    deliverylocationtitle: {
+        padding: 10,
+        fontWeight: 'medium',
+    },
+    deliverylocationContainer: {
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        padding: 5,
+    },
+    locations: {
+        backgroundColor: '#e0e0e0',
+        padding: 10,
+        borderRadius: 5,
+        marginRight: 10,
+        marginBottom: 10,
+    },
+    shopdetailstitle: {
+        padding: 10,
+        fontWeight: 'medium',
+    },
+    shopdetailsbox: {
+        flex: 1,
+        padding: 10,
+        borderBottomWidth: 0.5,
+        borderColor: 'gray',
+    },
+    shopdetailsvalue: {
+        fontSize: 15,
+    },
+    bodyfooter: {
+        flex: 1,
+        height: (height * 55) / 100,
+        padding: 20,
+    },
+    footertitle: {
+        fontSize: 18,
+        fontWeight: 'medium',
+        paddingHorizontal: 20,
+    },
+    sociallinks: {
+        flex: 1,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: "space-between",
+        paddingHorizontal: 20,
+    },
+    aboutlist: {
+        height: (height * 30) / 100,
+        justifyContent: 'space-evenly',
+    },
+    aboutdetails: {
+        flexDirection: 'row',
+        padding: 20,
+        alignItems: 'center',
+        borderBottomWidth: 1,
+        borderColor: 'grey',
+    },
+    aboutdireckt: {
+        paddingHorizontal: 20,
+    },
+    pp: {
+        paddingHorizontal: 20,
+    },
+    tc: {
+        paddingHorizontal: 20,
+    }
+})

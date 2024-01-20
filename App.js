@@ -15,6 +15,7 @@ import CustomerSearchBar from "./components/customerhomepage/Customersearchbar";
 import Shopownerhomepage from "./components/ShopownerHomepage/Shopownerhomepage";
 import Shopownernav from "./components/ShopownerHomepage/Shopownernavigation";
 import EditOwnerProfile from "./components/ShopownerHomepage/Editshopownerprofile";
+import StoreProfile from "./components/customerhomepage/Storeprofile";
 
 const Stack = createStackNavigator();
 
@@ -81,6 +82,11 @@ const App = () => {
         <Stack.Screen
           name="EditOwnerProfile"
           component={EditOwnerProfile}
+          options={{ headerShown:false }}
+        />
+         <Stack.Screen
+          name="storeprofile"
+          component={StoreProfile}
           options={{ headerShown:false }}
         />
       </Stack.Navigator>

@@ -35,7 +35,7 @@ const InsideAccorditon = ({ data }) => {
       style={{
         flexDirection: "row",
         width: "100%",
-        height: 150,
+      
         borderStyle:'solid',
         borderWidth:1,
         borderColor:'#5271FF',
@@ -76,7 +76,7 @@ const InsideAccorditon = ({ data }) => {
         }}
       >
         <Text  style={{color:'#5271FF'}} >Reply message:</Text>
-        <View style={{ height: 63,borderRadius:5}}>
+        <View style={{borderRadius:5}}>
           <ScrollView style={{ borderRadius: 2,borderWidth:0.1 }}>
             <Text style={{padding:5}}>
               {data.replymessage}

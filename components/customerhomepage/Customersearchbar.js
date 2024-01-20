@@ -28,6 +28,7 @@ const CustomerSearchBar = () => {
   const [category, setcategory] = useState(null);
   const [availabilitystatus, setavailabilitystatus] = useState(false);
   const[shopowner,setshopowner]  = useState([])
+  const navigation = useNavigation();
   const storeresult = [
     {
       storename: "Anbu",
@@ -151,7 +152,10 @@ const CustomerSearchBar = () => {
                   }}
                 ></Image>
               </View>
-              <TouchableOpacity>
+              <TouchableOpacity
+               onPress={()=>{
+                navigation.navigate('storeprofile', { _id: data._id })
+              }}>
                 <View
                   style={{ height:50,justifyContent: "center", alignItems: "center" }}
                 >
