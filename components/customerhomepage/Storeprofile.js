@@ -52,7 +52,10 @@ const StoreProfile = () => {
       }, [_id]);
       if(!storedata && _id){
         return(
-            <ActivityIndicator color={'purple'} size={24}/>
+            <View style={{ height:"100%",width:'100%',justifyContent:"center",alignItems:'center'}}>
+            <ActivityIndicator color={'purple'} size={67}/>
+            <Text>Loading store details</Text>
+            </View>
         )
       }
     return (
@@ -107,14 +110,15 @@ const StoreProfile = () => {
                         {storedata  ? <Text style={{ fontSize: 10 }}>Store: Open</Text> : <Text style={{ fontSize: 10 }}>Store: Closed</Text>}
                     </View>
                     <View style={styles.ctcsection}>
-                        <TouchableOpacity
+                        <TouchableOpacity  onPress={() => { Linking.openURL(`tel:${storedata. phonenumber}`)} }
                             style={[styles.ctcicon, styles.ctccall]}>
                             <MaterialIcons name="phone-in-talk" size={42} color="#5271FF" />
-                        </TouchableOpacity>
+                        </TouchableOpacity >
                         <Text style={{ fontSize: 10 }}>Call Now</Text>
                     </View>
                     <View style={styles.ctcsection}>
-                    <TouchableOpacity
+                    <TouchableOpacity  
+                    onPress={() => { Linking.openURL(storedata.gmaplink)}} 
                         style={[styles.ctcicon, styles.ctcdirection]}>
                         <FontAwesome5 name="directions" size={42} color="#5271FF" />
                     </TouchableOpacity>

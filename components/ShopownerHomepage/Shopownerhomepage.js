@@ -27,8 +27,8 @@ const Shopownerhomepage = () => {
   
 
   useEffect(() => {
-    if(refreshing ){
-     
+    if(refreshing){
+     return ;
     }
     else{
     const fetchData = async () => {

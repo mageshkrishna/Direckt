@@ -10,6 +10,7 @@ import {
   Button,
   Alert,
   Image,
+  ActivityIndicator,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
@@ -34,9 +35,27 @@ const Createthread = () => {
   const [email, setemail] = useState(null);
   const [onFirebaseImage, setonFirebaseImage] = useState(null);
   const [image, setimage] = useState(null);
-
+  const [indicator, setindicator] = useState(false);
   const handleSubmit = async (firebaseImageUrl) => {
+
+    if(!jobtitle){
+       return Alert.alert('Enter Job Title');
+    }
+    if(!jobdescription){
+       return Alert.alert('Enter jobdescription');
+    }
+    if(!location){
+    return Alert.alert('Enter Location');
+    }
+    if(!category){
+       return Alert.alert('Enter Job Title');
+    }
+  if(!email){
+    return Alert.alert('Something Went Wrong refresh the app')
+  }
+
     try {
+      setindicator(true)
       console.log("Data:", firebaseImageUrl);
       
       const data = {
@@ -58,15 +77,45 @@ const Createthread = () => {
       setjobtitle("");
       setjobdescription("");
       setSelectedImage(null);
-
-      Alert.alert("Job Created Successfully");
+      setindicator(false)
+    
+        Alert.alert("Job Created Successfully");
+       
+        
+      
     } catch (error) {
-      console.error("Error:", error);
-      Alert.alert("Error", "Failed to create job");
+      setindicator(false)
+      if (error.response.status === 400) {
+        return Alert.alert(
+          "Error",
+          "User can only create 5 jobs at a time. Delete the old job to create a new one."
+        );
+      }
+      
+      else{
+      Alert.alert("Error");
+      }
+     
     }
   };
   const handlesubmitimage = async () => {
+    if(!jobtitle){
+      return Alert.alert('Enter Job Title');
+   }
+   if(!jobdescription){
+      return Alert.alert('Enter jobdescription');
+   }
+   if(!location){
+   return Alert.alert('Enter Location');
+   }
+   if(!category){
+      return Alert.alert('Enter Job Title');
+   }
+ if(!email){
+   return Alert.alert('Something Went Wrong refresh the app')
+ }
     try {
+      setindicator(true)
       if (selectedImage) {
         console.log("Selected Image:", selectedImage);
 
@@ -77,6 +126,7 @@ const Createthread = () => {
           await handleSubmit(firebaseImageUrl);
         }
       }
+
     } catch (error) {
       console.error("Error in handlesubmit:", error);
     }
@@ -119,6 +169,7 @@ const Createthread = () => {
             style={styles.box1input}
             onChangeText={(text) => setjobtitle(text)}
             value={jobtitle}
+            maxLength={75}
           />
           <Text style={styles.box2text}>Job Descripton</Text>
           <TextInput
@@ -128,6 +179,7 @@ const Createthread = () => {
             textAlignVertical="top"
             onChangeText={(text) => setjobdescription(text)}
             value={jobdescription}
+            maxLength={75}
           />
           <Text style={styles.box1text}>Choose Category</Text>
           <SelectList
@@ -168,7 +220,9 @@ const Createthread = () => {
                 />
               ) : null}
             </View>
-
+    {indicator ? (<View>
+      <ActivityIndicator color={COLORS.primary} size={40}/>
+    </View>):<>
             {!selectedImage ? (
               <TouchableOpacity
                 underlayColor="white"
@@ -180,7 +234,7 @@ const Createthread = () => {
                   <Text
                     style={{ color: "white", fontSize: 18, fontWeight: "bold" }}
                   >
-                    Post
+                    Post Job
                   </Text>
                 </View>
               </TouchableOpacity>
@@ -195,11 +249,11 @@ const Createthread = () => {
                   <Text
                     style={{ color: "white", fontSize: 18, fontWeight: "bold" }}
                   >
-                    Image Post
+                   Post Job
                   </Text>
                 </View>
               </TouchableOpacity>
-            )}
+            )}</>}
           </View>
         </View>
       </SafeAreaView>
