@@ -27,6 +27,7 @@ import Threadsavailable from "./Threadsavailable";
 import { TextInput } from "react-native-gesture-handler";
 const Width = Dimensions.get("window").width;
 const Height = Dimensions.get("window").height;
+// cuStomer home checking
 const Customerhome = () => {
   const navigation = useNavigation();
 
