@@ -1,8 +1,8 @@
-import { StyleSheet, Text, View, ScrollView, ImageBackground, TouchableOpacity, Dimensions, Image, Linking, ActivityIndicator } from 'react-native'
+import { StyleSheet, Text, View, ScrollView, ImageBackground, TouchableOpacity, Dimensions, Image, Linking, ActivityIndicator, Alert } from 'react-native'
 import { FontAwesome5, AntDesign } from '@expo/vector-icons';
 import { MaterialIcons } from '@expo/vector-icons';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import {React,useDeferredValue,useEffect,useState} from 'react'
+import { React, useDeferredValue, useEffect, useState } from 'react'
 import axios from 'axios';
 import { useRoute } from '@react-navigation/native';
 import ImagePopup from '../ShopownerHomepage/Imagepopup';
@@ -11,53 +11,44 @@ const width = Dimensions.get("window").width
 
 const StoreProfile = () => {
     const route = useRoute();
-  const { _id } = route.params;
-   
-  const [storedata, setstoredata] = useState();
-  const [showPopup, setShowPopup] = useState(false);
-  const [activeImageIndex, setActiveImageIndex] = useState(null);
+    const { _id } = route.params;
 
-  const handleImagePress = (index) => {
-    setActiveImageIndex(index);
-  };
+    const [storedata, setstoredata] = useState();
+    const [showPopup, setShowPopup] = useState(false);
+    const [activeImageIndex, setActiveImageIndex] = useState(null);
 
-  const handleClosePopup = () => {
-    setActiveImageIndex(null);
-  };
-    const shopPhotos = [
-        "Photo",
-        "Only", "5", "can be", "A"
-    ]
-    const categorylist = [
-        "plumbing",
-        "electronics",
-        "grocery"
-    ]
+    const handleImagePress = (index) => {
+        setActiveImageIndex(index);
+    };
+
+    const handleClosePopup = () => {
+        setActiveImageIndex(null);
+    };
     useEffect(() => {
         console.log("started")
         try {
-          axios.get(`https://direckt-copy1.onrender.com/shopowner/getshopownerprofile?_id=${_id}`)
-            .then(response => {
-             
-              console.log(response.data);
-              setstoredata(response.data)
-              console.log(storedata.category);
-            })
-            .catch(err => {
-              console.log(err);
-            });
+            axios.get(`https://direckt-copy1.onrender.com/shopowner/getshopownerprofile?_id=${_id}`)
+                .then(response => {
+
+                    console.log(response.data);
+                    setstoredata(response.data)
+                    console.log(storedata.category);
+                })
+                .catch(err => {
+                    console.log(err);
+                });
         } catch (err) {
-          console.log(err);
+            console.log(err);
         }
-      }, [_id]);
-      if(!storedata && _id){
-        return(
-            <View style={{ height:"100%",width:'100%',justifyContent:"center",alignItems:'center'}}>
-            <ActivityIndicator color={'purple'} size={67}/>
-            <Text>Loading store details</Text>
+    }, [_id]);
+    if (!storedata && _id) {
+        return (
+            <View style={{ height: "100%", width: '100%', justifyContent: "center", alignItems: 'center' }}>
+                <ActivityIndicator color={'purple'} size={67} />
+                <Text>Loading store details</Text>
             </View>
         )
-      }
+    }
     return (
         <ScrollView
             style={styles.container}
@@ -69,18 +60,25 @@ const StoreProfile = () => {
                 style={styles.headercontainer}>
                 <View style={styles.profilecontainer}>
                     <TouchableOpacity
-                     onPress={() => setShowPopup(true)}
+                        onPress={() => setShowPopup(true)}
                     >
-                    <Image style={styles.headerprofileImage}
-                         source={{ uri: storedata.profilepic }}
-                    />
+                        {storedata.profilepic ? <Image
+                            source={{
+                                uri: storedata.profilepic,
+                            }}
+                            style={styles.headerprofileImage}
+                        /> : <Image
+                            source={require('../../assets/shop.png')}
+                            style={styles.headerprofileImage}
+                        />
+                        }
                     </TouchableOpacity>
                     {showPopup && (
-        <ImagePopup
-          imageUrl={storedata.profilepic}
-          onClose={() => setShowPopup(false)}
-        />
-      )}
+                        <ImagePopup
+                            imageUrl={storedata.profilepic}
+                            onClose={() => setShowPopup(false)}
+                        />
+                    )}
                 </View>
             </ImageBackground>
             <View style={styles.bodycontainer}>
@@ -88,40 +86,42 @@ const StoreProfile = () => {
                     <Text style={styles.bodyshopname} numberOfLines={2}>{storedata.businessname}</Text>
                 </View>
                 <View>
-                <Text style={styles.bodyshopdescription}>{storedata.businessabout}</Text>
+                    <Text style={styles.bodyshopdescription}>{storedata.businessabout?storedata.businessabout:"There is no description available for this shop"}</Text>
                 </View>
-               
-                <View style={{justifyContent:'center',alignItems:'center'}}>
-                {storedata.deliveryStatus ? (
-              <Text>Delivery:<Text style={{color:'green'}}> YES</Text></Text>
-            ) : (
-              <Text>Delivery:<Text  style={{color:'red'}}> NO</Text></Text>
-            )}
+
+                <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+                    {storedata.deliveryStatus ? (
+                        <Text>Delivery:<Text style={{ color: 'green' }}> YES</Text></Text>
+                    ) : (
+                        <Text>Delivery:<Text style={{ color: 'red' }}> NO</Text></Text>
+                    )}
                 </View>
-                
-               
+
+
             </View>
             <View style={styles.ctccontainer}>
                 <View style={styles.ctccard}>
                     <View style={styles.ctcsection}>
                         <View style={storedata ? [styles.storestatus, styles.ctcicon] : [styles.storestatusoff, styles.ctcicon]}>
-                        {storedata  ? <MaterialCommunityIcons name="store-check" size={42} color="white" /> : <MaterialCommunityIcons name="store-remove" size={42} color="white" />}
+                            {storedata ? <MaterialCommunityIcons name="store-check" size={42} color="white" /> : <MaterialCommunityIcons name="store-remove" size={42} color="white" />}
                         </View>
-                        {storedata  ? <Text style={{ fontSize: 10 }}>Store: Open</Text> : <Text style={{ fontSize: 10 }}>Store: Closed</Text>}
+                        {storedata ? <Text style={{ fontSize: 10 }}>Store: Open</Text> : <Text style={{ fontSize: 10 }}>Store: Closed</Text>}
                     </View>
                     <View style={styles.ctcsection}>
-                        <TouchableOpacity  onPress={() => { Linking.openURL(`tel:${storedata. phonenumber}`)} }
+                        <TouchableOpacity onPress={() => { Linking.openURL(`tel:${storedata.phonenumber}`) }}
                             style={[styles.ctcicon, styles.ctccall]}>
                             <MaterialIcons name="phone-in-talk" size={42} color="#5271FF" />
                         </TouchableOpacity >
                         <Text style={{ fontSize: 10 }}>Call Now</Text>
                     </View>
                     <View style={styles.ctcsection}>
-                    <TouchableOpacity  
-                    onPress={() => { Linking.openURL(storedata.gmaplink)}} 
-                        style={[styles.ctcicon, styles.ctcdirection]}>
-                        <FontAwesome5 name="directions" size={42} color="#5271FF" />
-                    </TouchableOpacity>
+                        <TouchableOpacity
+                            onPress={() => {
+                                storedata.gmaplink?Linking.openURL(storedata.gmaplink):Alert.alert("Google map is not linked")
+                            }}
+                            style={[styles.ctcicon, styles.ctcdirection]}>
+                            <FontAwesome5 name="directions" size={42} color="#5271FF" />
+                        </TouchableOpacity>
                         <Text style={{ fontSize: 10 }}>View Shop</Text>
                     </View>
                 </View>
@@ -130,35 +130,36 @@ const StoreProfile = () => {
                 <View style={styles.detailitem}>
                     <Text style={styles.shopdetailstitle}>Location</Text>
                     <View style={styles.shopdetailsbox}>
-                        <Text style={styles.shopdetailsvalue} numberOfLines={1}>{storedata.location}</Text>
+                        <Text style={styles.shopdetailsvalue} numberOfLines={1}>{storedata.location?storedata.location:"- no location -"}</Text>
                     </View>
                 </View>
                 <View style={styles.detailitem}>
                     <Text style={styles.shopdetailstitle}>Address</Text>
                     <View style={styles.shopdetailsbox}>
-                        <Text style={styles.shopdetailsvalue} numberOfLines={2}>{storedata.address}</Text>
+                        <Text style={styles.shopdetailsvalue} numberOfLines={2}>{storedata.address?storedata.address:'- no address -'}</Text>
                     </View>
                 </View>
                 <View style={styles.detailitem}>
                     <Text style={styles.shopdetailstitle}>Delivery or Servicable Locations</Text>
                     <View style={styles.shopdetailsbox}>
-                        <Text style={styles.shopdetailsvalue} numberOfLines={2}>{storedata.deliverylocation}</Text>
+                        <Text style={styles.shopdetailsvalue} numberOfLines={2}>{storedata.deliverylocation?storedata.deliverylocation:'- no delivery or servicable locations -'}</Text>
                     </View>
                 </View>
                 <View style={styles.detailitem}>
                     <Text style={styles.shopdetailstitle}>Product or Services</Text>
                     <View style={styles.shopdetailsbox}>
-                    <View style={styles.deliverylocationContainer}>
-                        {storedata.category.map((item, index) => (
-                            <View key={index} style={styles.locations}>
-                                <Text>{item}</Text>
-                            </View>
-                        ))
-                        }
-                    </View>
+                        <View style={styles.deliverylocationContainer}>
+                            {storedata.category.map((item, index) => (
+                                <View key={index} style={styles.locations}>
+                                    <Text>{item}</Text>
+                                </View>
+                            ))
+                            }
+                            {storedata.category==0 && <View><Text>- no product or service available -</Text></View>}
+                        </View>
                     </View>
                 </View>
-              
+
                 <View style={styles.detailitem}>
                     <Text style={styles.shopdetailstitle}>Mobile number</Text>
                     <View style={styles.shopdetailsbox}>
@@ -166,29 +167,31 @@ const StoreProfile = () => {
                     </View>
                 </View>
             </View>
-            
+
             <View style={styles.shopImages}>
                 <Text style={styles.heading}>Photos</Text>
                 <ScrollView style={styles.imagecontainer} horizontal={true}>
-                {storedata.photos.map((item, index) => (
-        <View key={index}>
-          <TouchableOpacity
-            style={styles.jobImage}
-            onPress={() => handleImagePress(index)}
-          >
-            <Image
-              source={{ uri: item }}
-              style={{ height: 100, width: 100, backgroundColor: 'red', marginRight: 10, borderRadius: 5 }}
-            />
-          </TouchableOpacity>
-        </View>
-      ))}
-      {activeImageIndex !== null && (
-        <ImagePopup
-          imageUrl={storedata.photos[activeImageIndex]}
-          onClose={handleClosePopup}
-        />
-      )}
+                    {storedata.photos.map((item, index) => (
+                        <View key={index}>
+                            <TouchableOpacity
+                                style={styles.jobImage}
+                                onPress={() => handleImagePress(index)}
+                            >
+                                <Image
+                                    source={{ uri: item }}
+                                    style={{ height: 100, width: 100, backgroundColor: 'red', marginRight: 10, borderRadius: 5 }}
+                                />
+                            </TouchableOpacity>
+                        </View>
+                    ))
+                    }
+                    {storedata.photos.length==0 ? <View style={styles.addimagecard}><Text style={{textAlign:'center',fontSize:10,color:'grey'}}>No Image found</Text></View> : <></>}
+                    {activeImageIndex !== null && (
+                        <ImagePopup
+                            imageUrl={storedata.photos[activeImageIndex]}
+                            onClose={handleClosePopup}
+                        />
+                    )}
                 </ScrollView>
             </View>
         </ScrollView>
@@ -269,19 +272,19 @@ const styles = StyleSheet.create({
         paddingHorizontal: 18,
     },
     ctcsection: {
-      width: '33%',
-      height: '80%',
-      alignItems: 'center',
-      justifyContent: 'space-between',
+        width: '33%',
+        height: '80%',
+        alignItems: 'center',
+        justifyContent: 'space-between',
     },
     ctcicon: {
-      flex: 1,
-      alignItems: 'center',
-      justifyContent: 'center',
-      height: 50,
-      width: 70,
-      marginBottom: 3,
-      borderRadius: 40,
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+        height: 50,
+        width: 70,
+        marginBottom: 3,
+        borderRadius: 40,
     },
     storestatus: {
         borderColor: '#00BF63',
@@ -334,7 +337,7 @@ const styles = StyleSheet.create({
         shadowColor: "grey",
     },
     shopImages: {
-        height: (height * 25) / 100,
+        height: (height * 30) / 100,
         paddingHorizontal: 30,
         paddingVertical: 20,
     },
@@ -360,7 +363,7 @@ const styles = StyleSheet.create({
     },
     locations: {
         backgroundColor: '#e0e0e0',
-        padding: 10,
+        padding: 8,
         borderRadius: 5,
         marginRight: 10,
         marginBottom: 10,

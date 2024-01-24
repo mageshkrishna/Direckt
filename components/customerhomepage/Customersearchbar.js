@@ -39,20 +39,24 @@ const Shopcard = ({data ,index}) => {
             style={{ height: "100%", width: "80%", borderRadius: 5 }}
             onPress={() => setShowPopup(true)}
           >
-            <Image
+            {data.profilepic?<Image
               source={{
                 uri: data.profilepic,
               }}
               style={{ height: "100%", width: "100%", borderRadius: 5 }}
-            />
+            />:<Image
+            source={require('../../assets/shop.png')}
+            style={{ height: "100%", width: "100%", borderRadius: 5 }}
+          />
+            }
           </TouchableOpacity>
         </View>
 
         {showPopup && (
-          <ImagePopup
+          data.profilepic?<ImagePopup
             imageUrl={data.profilepic}
             onClose={() => setShowPopup(false)}
-          />
+          />:<></>
         )}
 
         <View style={styles.resultcardtopdetails}>
@@ -103,7 +107,7 @@ const Shopcard = ({data ,index}) => {
           style={{ color: "grey", fontSize: 13, marginVertical: 5 }}
           numberOfLines={2}
         >
-          {data.businessabout}
+          {data.businessabout?data.businessabout:"There is no description available for this shop"}
         </Text>
         <ScrollView
           style={{ flexDirection: "row", marginVertical: 6 }}
@@ -159,7 +163,7 @@ const Shopcard = ({data ,index}) => {
             backgroundColor: "#5271FF",
           }}
           onPress={() => {
-            Linking.openURL(data.gmaplink);
+            data.gmaplink?Linking.openURL(data.gmaplink):Alert.alert("Google map is not linked")
           }}
         >
           <Text style={{ color: "white" }}>Direction </Text>
