@@ -1,9 +1,10 @@
-import { StyleSheet, Text, View, ScrollView, ImageBackground, TouchableOpacity, Dimensions, Image, Linking, ActivityIndicator, Alert } from 'react-native'
+import { StyleSheet, Text, View, ScrollView, ImageBackground, TouchableOpacity, Dimensions, Image, Linking, ActivityIndicator, Alert, ToastAndroid } from 'react-native'
 import { FontAwesome5, AntDesign } from '@expo/vector-icons';
-import { MaterialIcons } from '@expo/vector-icons';
+import { MaterialIcons, Ionicons } from '@expo/vector-icons';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { React, useDeferredValue, useEffect, useState } from 'react'
 import axios from 'axios';
+import { useNavigation } from "@react-navigation/native";
 import { useRoute } from '@react-navigation/native';
 import ImagePopup from '../ShopownerHomepage/Imagepopup';
 const height = Dimensions.get("window").height
@@ -16,6 +17,7 @@ const StoreProfile = () => {
     const [storedata, setstoredata] = useState();
     const [showPopup, setShowPopup] = useState(false);
     const [activeImageIndex, setActiveImageIndex] = useState(null);
+    const navigation = useNavigation();
 
     const handleImagePress = (index) => {
         setActiveImageIndex(index);
@@ -24,6 +26,11 @@ const StoreProfile = () => {
     const handleClosePopup = () => {
         setActiveImageIndex(null);
     };
+
+    const showToast = () => {
+        ToastAndroid.show('Google map is not linked', ToastAndroid.SHORT);
+    };
+
     useEffect(() => {
         console.log("started")
         try {
@@ -58,6 +65,13 @@ const StoreProfile = () => {
                     require('../../assets/icon.png')
                 }
                 style={styles.headercontainer}>
+                <TouchableOpacity
+                    onPress={() => {
+                        navigation.goBack();
+                    }}
+                >
+                    <Ionicons name="arrow-back" size={30} color="#8A57E4" />
+                </TouchableOpacity>
                 <View style={styles.profilecontainer}>
                     <TouchableOpacity
                         onPress={() => setShowPopup(true)}
@@ -86,7 +100,7 @@ const StoreProfile = () => {
                     <Text style={styles.bodyshopname} numberOfLines={2}>{storedata.businessname}</Text>
                 </View>
                 <View>
-                    <Text style={styles.bodyshopdescription}>{storedata.businessabout?storedata.businessabout:"There is no description available for this shop"}</Text>
+                    <Text style={styles.bodyshopdescription}>{storedata.businessabout ? storedata.businessabout : "There is no description available for this shop"}</Text>
                 </View>
 
                 <View style={{ justifyContent: 'center', alignItems: 'center' }}>
@@ -117,7 +131,7 @@ const StoreProfile = () => {
                     <View style={styles.ctcsection}>
                         <TouchableOpacity
                             onPress={() => {
-                                storedata.gmaplink?Linking.openURL(storedata.gmaplink):Alert.alert("Google map is not linked")
+                                storedata.gmaplink ? Linking.openURL(storedata.gmaplink) : showToast()
                             }}
                             style={[styles.ctcicon, styles.ctcdirection]}>
                             <FontAwesome5 name="directions" size={42} color="#5271FF" />
@@ -130,19 +144,19 @@ const StoreProfile = () => {
                 <View style={styles.detailitem}>
                     <Text style={styles.shopdetailstitle}>Location</Text>
                     <View style={styles.shopdetailsbox}>
-                        <Text style={styles.shopdetailsvalue} numberOfLines={1}>{storedata.location?storedata.location:"- no location -"}</Text>
+                        <Text style={styles.shopdetailsvalue} numberOfLines={1}>{storedata.location ? storedata.location : "- no location -"}</Text>
                     </View>
                 </View>
                 <View style={styles.detailitem}>
                     <Text style={styles.shopdetailstitle}>Address</Text>
                     <View style={styles.shopdetailsbox}>
-                        <Text style={styles.shopdetailsvalue} numberOfLines={2}>{storedata.address?storedata.address:'- no address -'}</Text>
+                        <Text style={styles.shopdetailsvalue} numberOfLines={2}>{storedata.address ? storedata.address : '- no address -'}</Text>
                     </View>
                 </View>
                 <View style={styles.detailitem}>
                     <Text style={styles.shopdetailstitle}>Delivery or Servicable Locations</Text>
                     <View style={styles.shopdetailsbox}>
-                        <Text style={styles.shopdetailsvalue} numberOfLines={2}>{storedata.deliverylocation?storedata.deliverylocation:'- no delivery or servicable locations -'}</Text>
+                        <Text style={styles.shopdetailsvalue} numberOfLines={2}>{storedata.deliverylocation ? storedata.deliverylocation : '- no delivery or servicable locations -'}</Text>
                     </View>
                 </View>
                 <View style={styles.detailitem}>
@@ -155,7 +169,7 @@ const StoreProfile = () => {
                                 </View>
                             ))
                             }
-                            {storedata.category==0 && <View><Text>- no product or service available -</Text></View>}
+                            {storedata.category == 0 && <View><Text>- no product or service available -</Text></View>}
                         </View>
                     </View>
                 </View>
@@ -185,7 +199,7 @@ const StoreProfile = () => {
                         </View>
                     ))
                     }
-                    {storedata.photos.length==0 ? <View style={styles.addimagecard}><Text style={{textAlign:'center',fontSize:10,color:'grey'}}>No Image found</Text></View> : <></>}
+                    {storedata.photos.length == 0 ? <View style={styles.addimagecard}><Text style={{ textAlign: 'center', fontSize: 10, color: 'grey' }}>No Image found</Text></View> : <></>}
                     {activeImageIndex !== null && (
                         <ImagePopup
                             imageUrl={storedata.photos[activeImageIndex]}
@@ -208,13 +222,13 @@ const styles = StyleSheet.create({
     headercontainer: {
         flex: 1,
         justifyContent: "flex-end",
-        alignItems: 'center',
         height: (height * 30) / 100,
         padding: 20,
     },
     profilecontainer: {
         flex: 1,
         justifyContent: 'flex-end',
+        alignItems:'center',
         height: (height * 30) / 100,
     },
     headerprofileImage: {

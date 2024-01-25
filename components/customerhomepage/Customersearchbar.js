@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   Linking,
   useColorScheme,
+  ToastAndroid,
 } from "react-native";
 import React, { useState } from "react";
 import { FontAwesome5, AntDesign } from "@expo/vector-icons";
@@ -31,6 +32,10 @@ const Shopcard = ({data ,index}) => {
   const colorScheme  = useColorScheme();
   const [showPopup, setShowPopup] = useState(false);
   const navigation = useNavigation();
+  const showToast = () => {
+    ToastAndroid.show('Google map is not linked', ToastAndroid.SHORT);
+};
+
   return (
     <View style={styles.resultcard} key={index}>
       <View style={styles.resultcardtop}>
@@ -163,7 +168,7 @@ const Shopcard = ({data ,index}) => {
             backgroundColor: "#5271FF",
           }}
           onPress={() => {
-            data.gmaplink?Linking.openURL(data.gmaplink):Alert.alert("Google map is not linked")
+            data.gmaplink?Linking.openURL(data.gmaplink):showToast()
           }}
         >
           <Text style={{ color: "white" }}>Direction </Text>

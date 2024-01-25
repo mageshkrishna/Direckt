@@ -21,7 +21,7 @@ import {
   MaterialIcons,
   AntDesign,
   Ionicons,
-  
+
 } from "@expo/vector-icons";
 import React from "react";
 import axios, { Axios } from "axios";
@@ -42,12 +42,12 @@ const InsideAccorditon = ({ data }) => {
   const [showPopup, setShowPopup] = useState(false);
   const navigation = useNavigation()
 
-  
-           
-         
 
-    
-  
+
+
+
+
+
   return (
     <View
       style={{
@@ -64,7 +64,7 @@ const InsideAccorditon = ({ data }) => {
     >
       <View style={{ width: "30%", height: "100%" }}>
         <TouchableOpacity style={{ height: 100, width: "100%" }}
-        onPress={() => setShowPopup(true)}
+          onPress={() => setShowPopup(true)}
         >
           <Image
             source={{ uri: data.shopowner_id.profilepic }}
@@ -77,14 +77,14 @@ const InsideAccorditon = ({ data }) => {
           ></Image>
         </TouchableOpacity>
         {showPopup && (
-        <ImagePopup
-          imageUrl={data.shopowner_id.profilepic}
-          onClose={() => setShowPopup(false)}
-        />
-      )}
-        <TouchableOpacity     onPress={()=>{
-                                      navigation.navigate('storeprofile', { _id: data.shopowner_id._id })
-                                    }}>
+          <ImagePopup
+            imageUrl={data.shopowner_id.profilepic}
+            onClose={() => setShowPopup(false)}
+          />
+        )}
+        <TouchableOpacity onPress={() => {
+          navigation.navigate('storeprofile', { _id: data.shopowner_id._id })
+        }}>
           <View
             style={{ justifyContent: "space-evenly", alignItems: "center" }}
           >
@@ -149,13 +149,13 @@ const InsideAccorditon = ({ data }) => {
             }}
           >
             <TouchableOpacity
-              onPress={() => { Linking.openURL(`tel:${data.shopowner_id.phonenumber}`)}}
+              onPress={() => { Linking.openURL(`tel:${data.shopowner_id.phonenumber}`) }}
               style={styles.storecall}
             >
               <MaterialIcons name="phone-in-talk" size={33} color="#5271FF" />
             </TouchableOpacity>
             <TouchableOpacity
-             onPress={() => { Linking.openURL(data.shopowner_id.gmaplink)}}
+              onPress={() => { Linking.openURL(data.shopowner_id.gmaplink) }}
               style={styles.storedirection}
             >
               <Entypo name="location" size={30} color="#5271FF" />
@@ -181,13 +181,13 @@ const AccordionItem = ({ data }) => {
           "Content-Type": "application/json",
         },
       });
-          
+
       if (response.status === 200) {
-       
+
         Alert.alert("Success", "Job deleted successfully");
-        
+
       } else {
-       
+
         Alert.alert("Error", "Failed to delete job");
       }
     } catch (error) {
@@ -221,12 +221,12 @@ const AccordionItem = ({ data }) => {
                 backgroundColor: "white",
               }}
             />
-                       {showPopup && (
-        <ImagePopup
-          imageUrl={data.image_url}
-          onClose={() => setShowPopup(false)}
-        />
-      )}
+            {showPopup && (
+              <ImagePopup
+                imageUrl={data.image_url}
+                onClose={() => setShowPopup(false)}
+              />
+            )}
             <View style={{ flexDirection: "row" }}>
               <Text style={styles.threadcategory} numberOfLines={1}>
                 {" "}
@@ -291,7 +291,7 @@ const AccordionItem = ({ data }) => {
                       Alert.alert(
                         "No responses come back after some minutes",
                         "",
-                        [{ text: "OK", onPress: () => {} }],
+                        [{ text: "OK", onPress: () => { } }],
                         { cancelable: true }
                       );
                     }}
@@ -321,22 +321,23 @@ const AccordionItem = ({ data }) => {
 };
 
 const Threadsavailable = () => {
+  const navigation = useNavigation()
   const colorScheme = useColorScheme();
   const [data, setdata] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
-  const[email,setemail] = useState();
-  const[indicator,setindicator]  = useState(false)
+  const [email, setemail] = useState();
+  const [indicator, setindicator] = useState(false)
   const v = false;
   useEffect(() => {
-   setindicator(true)
+    setindicator(true)
     const fetchData = async () => {
       try {
         const data = await AsyncStorage.getItem("customerdata");
 
         if (data) {
           const parsedData = JSON.parse(data);
-       setemail(parsedData.email)
-       console.log("email+"+email)
+          setemail(parsedData.email)
+          console.log("email+" + email)
         }
       } catch (err) {
         console.log(err);
@@ -344,11 +345,11 @@ const Threadsavailable = () => {
     }
 
     fetchData();
-  
+
   }, []);
 
   useEffect(() => {
-    if(refreshing ||!email){
+    if (refreshing || !email) {
       return
     }
     const fetchData = async () => {
@@ -360,7 +361,7 @@ const Threadsavailable = () => {
         console.log(response.data);
         setdata(response.data.result);
         setindicator(false)
-      
+
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -368,13 +369,13 @@ const Threadsavailable = () => {
 
     fetchData();
     console.log("Current color scheme:", colorScheme);
-  }, [email,refreshing]); 
+  }, [email, refreshing]);
 
   const onRefresh = React.useCallback(async () => {
     setRefreshing(true); // Set refreshing to true before fetching data
-  
-    setTimeout( () => {
-     
+
+    setTimeout(() => {
+
       setRefreshing(false); // Set refreshing back to false after data is fetched
     }, 2000);
   }, []);
@@ -382,41 +383,49 @@ const Threadsavailable = () => {
   if (indicator) {
     return (
       <View style={{
-        flex:1,flexDirection:'column',justifyContent:'center',alignItems:'center'}}>
-          <ActivityIndicator size={80} color={COLORS.primary}/>
-          <Text>Loading...</Text>
+        flex: 1, flexDirection: 'column', justifyContent: 'center', alignItems: 'center'
+      }}>
+        <ActivityIndicator size={80} color={COLORS.primary} />
+        <Text>Loading...</Text>
       </View>
     );
   }
-  if(data.length==0){
-    return(
+  if (data.length == 0) {
+    return (
       <View style={{
-        flex:1,flexDirection:'column',justifyContent:'center',alignItems:'center'}}>
-          
-          <Text>Create your job</Text>
+        flex: 1, flexDirection: 'column', justifyContent: 'center', alignItems: 'center'
+      }}>
+
+        <TouchableOpacity 
+        onPress={()=>navigation.navigate("Createthread")}
+        style={{padding:10,paddingHorizontal:20,backgroundColor:COLORS.primary,borderRadius:5,flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}
+        >
+          <MaterialIcons name="add" size={14} color="white" /> 
+          <Text style={{color:'white',}}> {" "}Create your job</Text>
+        </TouchableOpacity>
       </View>
     )
   }
   return (
-  <View style={{flex:1,flexDirection:'column',justifyContent:'space-between'}}>
-    <ScrollView style={styles.threadcontainer}
-    refreshControl={
-      <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-    }>
-      <Text style={{textAlign:"center",marginTop:10}}>You can only create 5 job at same time.</Text>
-      <View>
-        {data.map((item, index) => (
-          <AccordionItem key={index} data={item} />
-        ))}
-      </View>
-      <Text style={{textAlign:"center"}}>Delete the jobs you don't need.</Text>
-    </ScrollView>
-    <TouchableOpacity onPress={()=>{onRefresh()}} style={{height:50,width:'100%',flexDirection:'row',alignItems:'center',justifyContent:'center'}}>
-     <Ionicons name="refresh" size={24} color="black" />
-      <Text style ={{fontSize:16}}>Refresh</Text>
-    </TouchableOpacity>
+    <View style={{ flex: 1, flexDirection: 'column', justifyContent: 'space-between' }}>
+      <ScrollView style={styles.threadcontainer}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }>
+        <Text style={{ textAlign: "center", marginTop: 10 }}>You can only create 5 job at same time.</Text>
+        <View>
+          {data.map((item, index) => (
+            <AccordionItem key={index} data={item} />
+          ))}
+        </View>
+        <Text style={{ textAlign: "center" }}>Delete the jobs you don't need.</Text>
+      </ScrollView>
+      <TouchableOpacity onPress={() => { onRefresh() }} style={{ height: 50, width: '100%', flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
+        <Ionicons name="refresh" size={24} color="black" />
+        <Text style={{ fontSize: 16 }}>Refresh</Text>
+      </TouchableOpacity>
     </View>
-  
+
   );
 };
 
@@ -436,7 +445,7 @@ const styles = StyleSheet.create({
     height: (height * 85) / 100,
     paddingHorizontal: 10,
     backgroundColor: "#E0E5FF",
-    
+
   },
   thread: {
     flex: 1,
