@@ -393,15 +393,20 @@ const Threadsavailable = () => {
   if (data.length == 0) {
     return (
       <View style={{
-        flex: 1, flexDirection: 'column', justifyContent: 'center', alignItems: 'center'
+        flex: 1, flexDirection: 'column', justifyContent: 'center', alignItems: 'center',backgroundColor:'white'
       }}>
-
+        <Image
+            source={
+              require('../../assets/Location-review-pana.png')
+            }
+            style={{height:'50%',width:'80%'}}
+          />
         <TouchableOpacity 
         onPress={()=>navigation.navigate("Createthread")}
         style={{padding:10,paddingHorizontal:20,backgroundColor:COLORS.primary,borderRadius:5,flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}
         >
           <MaterialIcons name="add" size={14} color="white" /> 
-          <Text style={{color:'white',}}> {" "}Create your job</Text>
+          <Text style={{color:'white',}}>{" "}Create Job</Text>
         </TouchableOpacity>
       </View>
     )

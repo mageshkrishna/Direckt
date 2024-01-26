@@ -84,7 +84,7 @@ const Profile = () => {
         <SafeAreaView style={{ flex: 1 }}>
             <ScrollView style={styles.container}>
                 <View style={styles.bodycontainer}>
-                    <View style={{ width: '100%', height: 80, paddingRight: 10, alignItems: 'flex-end', justifyContent: 'center' }}>
+                    <View style={{ width: '100%', height: 60, paddingRight: 10, alignItems: 'flex-end', justifyContent: 'center', }}>
                         <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center' }}  onPress={handleLogout} >
                             <Text style={styles.logout}>Log out </Text>
                             <MaterialIcons name="logout" size={24} color="red" />

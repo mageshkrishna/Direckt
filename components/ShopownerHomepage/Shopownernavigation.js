@@ -8,6 +8,7 @@ import {
     BackHandler,
     Dimensions,
     StyleSheet,
+    Image
   } from "react-native";
   import React, { useEffect } from "react";
   import {
@@ -91,8 +92,13 @@ const Shopownernav = () => {
     return (
       <View style={{ flex: 1 }}>
        
-           <View style={{width:'100%',height:'10%',alignItems:'center',justifyContent:'center',backgroundColor: COLORS.primary,}} >
-            
+           <View style={{width:'100%',height:'10%',alignItems:'flex-start',justifyContent:'center',backgroundColor: COLORS.primary,}} >
+              <Image
+                source={
+                  require('../../assets/headerlogo.png')
+                }
+                style={{height:100,width:100,marginHorizontal:20}}
+              />
             </View>
    
         <View style={{ flex: 1 }}>

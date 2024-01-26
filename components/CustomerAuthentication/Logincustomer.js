@@ -74,7 +74,8 @@ const Logincustomer = () => {
       if (status) {
         console.log(status);
         console.log(JSON.stringify(data));
-        setModalVisible(!modalVisible);
+        // setModalVisible(!modalVisible);
+        showToast("Login Successfull !")
 
         const storedData = await AsyncStorage.setItem(
           "customerdata",
@@ -85,11 +86,9 @@ const Logincustomer = () => {
         // // Parse the stored data (since AsyncStorage stores strings)
         // const parsedData = JSON.parse(storeddata);
         // console.log(parsedData);
-        // setTimeout(()=>{
-        //   setModalVisible(!modalVisible);
-        // },2000)
-        
+       
         navigation.navigate("Customerhome");
+        
       } else {
         console.log(status);
         Alert.alert("Error", "Invalid login data");

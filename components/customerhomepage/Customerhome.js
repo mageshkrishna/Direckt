@@ -8,6 +8,7 @@ import {
   Dimensions,
   StyleSheet,
   TouchableOpacity,
+  Image
 } from "react-native";
 import React, { useEffect } from "react";
 import {
@@ -34,9 +35,9 @@ const Customerhome = () => {
   const route = useRoute();
 
   const handleFocus = () => {
-    
+
     navigation.navigate("Customersearchbar");
-   
+
   };
   const inputRef = React.createRef();
   useFocusEffect(
@@ -102,13 +103,11 @@ const Customerhome = () => {
           backgroundColor: COLORS.primary,
         }}
       >
-        
-        
-          <TouchableOpacity style={styles.searchbar} onPress={handleFocus}>
-         <Text style={styles.searchinput}>search shop nearby</Text>
+        <TouchableOpacity style={styles.searchbar} onPress={handleFocus}>
+          <Text style={styles.searchinput}>search shop nearby</Text>
           <Feather name="search" size={30} color="black" />
-          </TouchableOpacity>
-        
+        </TouchableOpacity>
+
       </View>
 
       <View style={{ flex: 1 }}>
@@ -174,7 +173,7 @@ const styles = StyleSheet.create({
     width: "90%",
     flexDirection: "row",
     alignItems: "center",
-    paddingHorizontal:20,
+    paddingHorizontal: 20,
     justifyContent: 'space-between',
     height: 50,
     backgroundColor: "white",
@@ -187,7 +186,7 @@ const styles = StyleSheet.create({
     shadowColor: "black",
   },
   searchinput: {
-    color:COLORS.gray
+    color: COLORS.gray
   },
 });
 export default Customerhome;

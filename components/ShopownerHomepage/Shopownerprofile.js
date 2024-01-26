@@ -1,5 +1,5 @@
-import { StyleSheet, Text, View, ScrollView, ImageBackground, TouchableOpacity, Dimensions, Image, Linking, Alert, Pressable } from 'react-native'
-import { FontAwesome5, AntDesign, MaterialCommunityIcons,MaterialIcons, Feather, Entypo } from '@expo/vector-icons';
+import { StyleSheet, Text, View, ScrollView, ImageBackground, TouchableOpacity, Dimensions, Image, Linking, Alert, Pressable, ToastAndroid } from 'react-native'
+import { FontAwesome5, AntDesign, MaterialCommunityIcons, MaterialIcons, Feather, Entypo } from '@expo/vector-icons';
 import { React, useEffect, useState } from 'react'
 import { useIsFocused, useNavigation } from '@react-navigation/native';
 import axios from "axios";
@@ -7,7 +7,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 const height = Dimensions.get("window").height
 const width = Dimensions.get("window").width
 
-const Shopownerprofile  = () => {
+const Shopownerprofile = () => {
   const navigation = useNavigation();
   const [businessname, setbusinessname] = useState();
   const [businessabout, setbusinessabout] = useState("Vallioor");
@@ -23,145 +23,147 @@ const Shopownerprofile  = () => {
   const [deliverylocation, setdeliverylocation] = useState();
   const [location, setlocation] = useState("");
   const [category, setcategory] = useState([]);
-  const [availabilitystatus,setavailabilitystatus]=useState(Boolean);
-  const[deliverystatus,setdeliverystatus]= useState(Boolean)
-    const [shopownerId,setshopownerId] = useState(null);
-    const isFocused = useIsFocused();
-    const updatedeliveryStatusInAsyncStorage = async (deliverystatus) => {
-      try {
-        // Retrieve the existing data from AsyncStorage
-        const existingData = await AsyncStorage.getItem('shopownerdata');
-    
-        // Parse the existing data or use an initial object if it doesn't exist
-        const parsedData = existingData ? JSON.parse(existingData) : {};
-    
-        // Update the availability status in the parsed data
-        parsedData.deliverystatus = deliverystatus;
-    
-        // Save the updated data back to AsyncStorage
-        await AsyncStorage.setItem('shopownerdata', JSON.stringify(parsedData));
-        
+  const [availabilitystatus, setavailabilitystatus] = useState(Boolean);
+  const [deliverystatus, setdeliverystatus] = useState(Boolean)
+  const [shopownerId, setshopownerId] = useState(null);
+  const isFocused = useIsFocused();
+  const updatedeliveryStatusInAsyncStorage = async (deliverystatus) => {
+    try {
+      // Retrieve the existing data from AsyncStorage
+      const existingData = await AsyncStorage.getItem('shopownerdata');
 
-      } catch (error) {
-        console.error(error);
-      }
-    };
-     
+      // Parse the existing data or use an initial object if it doesn't exist
+      const parsedData = existingData ? JSON.parse(existingData) : {};
+
+      // Update the availability status in the parsed data
+      parsedData.deliverystatus = deliverystatus;
+
+      // Save the updated data back to AsyncStorage
+      await AsyncStorage.setItem('shopownerdata', JSON.stringify(parsedData));
+
+
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   const removeData = async () => {
-      try {
-     
-        await AsyncStorage.removeItem("shopownerdata");
-        navigation.navigate("Home");
-        console.log("Data removed successfully");
-      } catch (error) {
-        console.error("Error removing data:", error);
-      }
-    };
-    const delivery = async () => {
-      // Show a confirmation alert
-      Alert.alert(
-        'Confirmation',
-        'Do you want to change the delivery status?',
-        [
-          {
-            text: 'No',
-            onPress: () => console.log('No Pressed'), // Do nothing if 'No' is pressed
-            style: 'cancel'
-          },
-          {
-            text: 'Yes',
-            onPress: async () => {
-              // Toggle availability status
-            console.log("delivery"+deliverystatus)
-           
-    
-             
-              const formdata = {
-                shopownerId: shopownerId,
-                deliverystatus: !deliverystatus
-              };
-     
-              console.log(formdata);
-    
-              try {
-                // Assuming the API request is uncommented
-                const response = await axios.put("https://direckt-copy1.onrender.com/shopowner/deliverystatus", formdata);
-                if(response){
+    try {
+
+      await AsyncStorage.removeItem("shopownerdata");
+      navigation.navigate("Home");
+      console.log("Data removed successfully");
+    } catch (error) {
+      console.error("Error removing data:", error);
+    }
+  };
+  const delivery = async () => {
+    // Show a confirmation alert
+    Alert.alert(
+      'Confirmation',
+      'Do you want to change the delivery status?',
+      [
+        {
+          text: 'No',
+          onPress: () => console.log('No Pressed'), // Do nothing if 'No' is pressed
+          style: 'cancel'
+        },
+        {
+          text: 'Yes',
+          onPress: async () => {
+            // Toggle availability status
+            console.log("delivery" + deliverystatus)
+
+
+
+            const formdata = {
+              shopownerId: shopownerId,
+              deliverystatus: !deliverystatus
+            };
+
+            console.log(formdata);
+
+            try {
+              // Assuming the API request is uncommented
+              const response = await axios.put("https://direckt-copy1.onrender.com/shopowner/deliverystatus", formdata);
+              if (response) {
                 updatedeliveryStatusInAsyncStorage(!deliverystatus)
                 setdeliverystatus(!deliverystatus)
-                }
-                console.log(response.data);
-              } catch (err) {
-                console.error(err);
               }
+              console.log(response.data);
+            } catch (err) {
+              console.error(err);
             }
           }
-        ],
-        { cancelable: false }
-      );
-    };
-    const updateavailabilityStatusInAsyncStorage = async (availabilitystatus) => {
-      try {
-        // Retrieve the existing data from AsyncStorage
-        const existingData = await AsyncStorage.getItem('shopownerdata');
-    
-        // Parse the existing data or use an initial object if it doesn't exist
-        const parsedData = existingData ? JSON.parse(existingData) : {};
-    
-        // Update the availability status in the parsed data
-        parsedData.availabilitystatus = availabilitystatus;
-    
-        // Save the updated data back to AsyncStorage
-        await AsyncStorage.setItem('shopownerdata', JSON.stringify(parsedData));
-        
+        }
+      ],
+      { cancelable: false }
+    );
+  };
+  const updateavailabilityStatusInAsyncStorage = async (availabilitystatus) => {
+    try {
+      // Retrieve the existing data from AsyncStorage
+      const existingData = await AsyncStorage.getItem('shopownerdata');
 
-      } catch (error) {
-        console.error(error);
-      }
-    };
-    const availability = async () => {
-      // Show a confirmation alert
-      Alert.alert(
-        'Confirmation',
-        'Do you want to change the availability status?',
-        [
-          {
-            text: 'No',
-            onPress: () => console.log('No Pressed'), // Do nothing if 'No' is pressed
-            style: 'cancel'
-          },
-          {
-            text: 'Yes',
-            onPress: async () => {
-              // Toggle availability status
-            console.log("availabilitystatus"+availabilitystatus)
-           
-    
-             
-              const formdata = {
-                shopownerId: shopownerId,
-                 availabilitystatus : !availabilitystatus
-              };
-     
-              console.log(formdata);
-    
-              try {
-                // Assuming the API request is uncommented
-                const response = await axios.put("https://direckt-copy1.onrender.com/shopowner/availabilitystatus", formdata);
-             
-                updateavailabilityStatusInAsyncStorage(!availabilitystatus)
-                setavailabilitystatus(!availabilitystatus)
-                console.log(response.data);
-              } catch (err) {
-                console.error(err);
-              }
+      // Parse the existing data or use an initial object if it doesn't exist
+      const parsedData = existingData ? JSON.parse(existingData) : {};
+
+      // Update the availability status in the parsed data
+      parsedData.availabilitystatus = availabilitystatus;
+
+      // Save the updated data back to AsyncStorage
+      await AsyncStorage.setItem('shopownerdata', JSON.stringify(parsedData));
+
+
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  const availability = async () => {
+    // Show a confirmation alert
+    Alert.alert(
+      'Confirmation',
+      'Do you want to change the availability status?',
+      [
+        {
+          text: 'No',
+          onPress: () => console.log('No Pressed'), // Do nothing if 'No' is pressed
+          style: 'cancel'
+        },
+        {
+          text: 'Yes',
+          onPress: async () => {
+            // Toggle availability status
+            console.log("availabilitystatus" + availabilitystatus)
+
+
+
+            const formdata = {
+              shopownerId: shopownerId,
+              availabilitystatus: !availabilitystatus
+            };
+
+            console.log(formdata);
+
+            try {
+              // Assuming the API request is uncommented
+              const response = await axios.put("https://direckt-copy1.onrender.com/shopowner/availabilitystatus", formdata);
+
+              updateavailabilityStatusInAsyncStorage(!availabilitystatus)
+              setavailabilitystatus(!availabilitystatus)
+              console.log(response.data);
+            } catch (err) {
+              console.error(err);
             }
           }
-        ],
-        { cancelable: false }
-      );
-    };
-  
+        }
+      ],
+      { cancelable: false }
+    );
+  };
+  const showToast = () => {
+    ToastAndroid.show('Google map is not linked', ToastAndroid.SHORT);
+  };
 
 
 
@@ -217,11 +219,16 @@ const Shopownerprofile  = () => {
         }
         style={styles.headercontainer}>
         <View style={styles.profilecontainer}>
-          {profilepic&&
-          <Image style={styles.headerprofileImage}
-            source={{ uri: profilepic }}
+          {profilepic ? <Image
+            source={{
+              uri: profilepic,
+            }}
+            style={styles.headerprofileImage}
+          /> : <Image
+            source={require('../../assets/shop.png')}
+            style={styles.headerprofileImage}
           />
-}
+          }
         </View>
       </ImageBackground>
       <View style={styles.bodycontainer}>
@@ -229,10 +236,10 @@ const Shopownerprofile  = () => {
           <Text style={styles.bodyshopname}>{businessname}</Text>
         </View>
         <View>
-          <Text style={styles.bodyshopdescription}>{businessabout}</Text>
+          <Text style={styles.bodyshopdescription}>{businessabout ? businessabout : "There is no description available for this shop"}</Text>
         </View>
         <View>
-          <TouchableOpacity style={styles.editprofile} onPress={()=>{navigation.navigate('EditOwnerProfile')}}>
+          <TouchableOpacity style={styles.editprofile} onPress={() => { navigation.navigate('EditOwnerProfile') }}>
             <Feather name="edit" size={20} color="black" />
             <Text> Edit Profile</Text>
           </TouchableOpacity>
@@ -251,7 +258,7 @@ const Shopownerprofile  = () => {
           </View>
           <View style={styles.ctcsection}>
             <Pressable
-              onPress={() => {delivery() }}
+              onPress={() => { delivery() }}
               style={deliverystatus ? [styles.ctcdeliverystatus, styles.ctcicon] : [styles.ctcdeliverystatusoff, styles.ctcicon]}
             >
               <MaterialIcons name="delivery-dining" size={42} color="white" />
@@ -270,7 +277,7 @@ const Shopownerprofile  = () => {
                       onPress: () => console.log('Cancel Pressed'),
                       style: 'cancel',
                     },
-                    { text: 'open', onPress: () => Linking.openURL(gmaplink) },
+                    { text: 'open', onPress: () => gmaplink ? Linking.openURL(gmaplink) : showToast() },
                   ],
                   { cancelable: false }
                 )
@@ -287,13 +294,13 @@ const Shopownerprofile  = () => {
         <View style={styles.detailitem}>
           <Text style={styles.shopdetailstitle}>Location</Text>
           <View style={styles.shopdetailsbox}>
-            <Text style={styles.shopdetailsvalue} numberOfLines={1}>{location}</Text>
+            <Text style={styles.shopdetailsvalue} numberOfLines={1}>{location ? location : "- location not added -"}</Text>
           </View>
         </View>
         <View style={styles.detailitem}>
           <Text style={styles.shopdetailstitle}>Address</Text>
           <View style={styles.shopdetailsbox}>
-            <Text style={styles.shopdetailsvalue} numberOfLines={2}>{address}</Text>
+            <Text style={styles.shopdetailsvalue} numberOfLines={2}>{address ? address : '- address not added -'}</Text>
           </View>
         </View>
         <View style={styles.detailitem}>
@@ -304,6 +311,13 @@ const Shopownerprofile  = () => {
                 <Text>{item}</Text>
               </View>
             ))}
+            {category == 0 && <View style={styles.locations}><Text>no category added</Text></View>}
+          </View>
+        </View>
+        <View style={styles.detailitem}>
+          <Text style={styles.shopdetailstitle}>Delivery or Servicable locations</Text>
+          <View style={styles.shopdetailsbox}>
+            <Text style={styles.shopdetailsvalue}>{deliverylocation ? deliverylocation : '- locations not added -'}</Text>
           </View>
         </View>
         <View style={styles.detailitem}>
@@ -312,29 +326,23 @@ const Shopownerprofile  = () => {
             <Text style={styles.shopdetailsvalue}>{phonenumber}</Text>
           </View>
         </View>
-        {/* <View style={styles.detailitem}>
-          <Text style={styles.shopdetailstitle}>Google Map link</Text>
-          <View style={styles.shopdetailsbox}>
-            <Text style={styles.shopdetailsvalue} numberOfLines={1}>{gmaplink}</Text>
-          </View>
-        </View>
-        <View></View> */}
       </View>
       <View style={styles.shopImages}>
         <Text style={styles.heading}>Photos</Text>
         <ScrollView style={styles.imagecontainer} horizontal={true}>
           {
-            photos.map((item , index) => {
+            photos.map((item, index) => {
               return (
                 <View key={index}>
-                <Image
-                style={styles.card}
-                 source={{ uri: item }}
-               />
-               </View>
+                  <Image
+                    style={styles.card}
+                    source={{ uri: item }}
+                  />
+                </View>
               )
             })
           }
+          {photos.length == 0 ? <View style={styles.addimagecard}><Text style={{ textAlign: 'center', fontSize: 10, color: 'grey' }}>No Image Added</Text></View> : <></>}
           {/* {shopPhotos.length<5?<View style={styles.addimagecard}><MaterialIcons name="add-photo-alternate" size={24} color="grey" /></View>:<></>} */}
           {/* {shopPhotos.length < 5 ? <View style={styles.addimagecard}><Text>No Image</Text></View> : <></>} */}
         </ScrollView>
@@ -388,7 +396,7 @@ const Shopownerprofile  = () => {
           <View>
             <TouchableOpacity
               style={styles.aboutdetailslast}
-              onPress={()=>{
+              onPress={() => {
                 Alert.alert(
                   'Confirmation',
                   'Are you sure you want to Logout?',
@@ -398,16 +406,16 @@ const Shopownerprofile  = () => {
                       onPress: () => console.log('Cancel Pressed'),
                       style: 'cancel',
                     },
-                    { text: 'open', onPress:()=>removeData() },
+                    { text: 'Logout', onPress: () => removeData() },
                   ],
                   { cancelable: false }
                 )
-            }}
+              }}
             >
               <MaterialIcons name="logout" size={27} color="red" />
-             
-              <Text style={[{color:'red'},styles.tc]}>Log out</Text>
-            
+
+              <Text style={[{ color: 'red' }, styles.tc]}>Log out</Text>
+
             </TouchableOpacity>
           </View>
         </View>
@@ -416,7 +424,7 @@ const Shopownerprofile  = () => {
   )
 }
 
-export default Shopownerprofile 
+export default Shopownerprofile
 
 const styles = StyleSheet.create({
   container: {
@@ -425,19 +433,19 @@ const styles = StyleSheet.create({
   headercontainer: {
     flex: 1,
     justifyContent: "flex-end",
-    alignItems: 'center',
-    height: (height * 35) / 100,
+    height: (height * 26) / 100,
     padding: 20,
   },
   profilecontainer: {
     flex: 1,
     justifyContent: 'flex-end',
+    alignItems: 'center',
     height: (height * 30) / 100,
   },
   headerprofileImage: {
-    height: (height * 15) / 100,
-    width: (width * 32) / 100,
-    borderRadius: (width * 20) / 100,
+    height: 120,
+    width: 120,
+    borderRadius: 70,
     borderWidth: 2,
     borderColor: 'white',
   },
@@ -489,6 +497,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     height: (height * 20) / 100,
+    width:'100%',
     backgroundColor: 'white',
     borderRadius: 30,
     elevation: 3,
@@ -504,8 +513,8 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    height: (height * 18) / 100,
-    width: (width * 18) / 100,
+    height: 50,
+    width: 65,
     marginBottom: 3,
     borderRadius: 40,
   },
@@ -541,7 +550,7 @@ const styles = StyleSheet.create({
     width: 100,
     borderRadius: 10,
     margin: 4,
-   
+
     shadowOffset: {
       width: 1,
       height: 1
@@ -566,7 +575,7 @@ const styles = StyleSheet.create({
     shadowColor: "grey",
   },
   shopImages: {
-    height: (height * 25) / 100,
+    flex: 1,
     paddingHorizontal: 30,
     paddingVertical: 20,
   },
@@ -612,7 +621,7 @@ const styles = StyleSheet.create({
     fontSize: 15,
   },
   bodyfooter: {
-    flex:1,
+    flex: 1,
     padding: 20,
   },
   footertitle: {
@@ -658,27 +667,27 @@ const styles = StyleSheet.create({
 // import { TouchableOpacity } from 'react-native-gesture-handler';
 
 // const Shopownerprofile = () => {
-  
+
 //   return (
 //     <View>
-     
+
 //     </View>
 //   )
 // }
 
 // export default Shopownerprofile
- // const navigation = useNavigation();
-  // const removeData = async () => {
-  //     try {
-     
-  //       await AsyncStorage.removeItem("shopownerdata");
-  //       navigation.navigate("Home");
-  //       console.log("Data removed successfully");
-  //     } catch (error) {
-  //       console.error("Error removing data:", error);
-  //     }
-  //   };
-  {/* <Text>Shopownerprofile</Text>
+// const navigation = useNavigation();
+// const removeData = async () => {
+//     try {
+
+//       await AsyncStorage.removeItem("shopownerdata");
+//       navigation.navigate("Home");
+//       console.log("Data removed successfully");
+//     } catch (error) {
+//       console.error("Error removing data:", error);
+//     }
+//   };
+{/* <Text>Shopownerprofile</Text>
       <TouchableOpacity onPress={()=>{
            navigation.navigate('EditOwnerProfile');
       }}><Text>Editprofile</Text></TouchableOpacity>

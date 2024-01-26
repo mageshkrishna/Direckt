@@ -8,6 +8,7 @@ import {
   ScrollView,
   StyleSheet,
   ActivityIndicator,
+  Image
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
@@ -98,7 +99,15 @@ const Shopownerhomepage = () => {
           </View>
         ))
       ) : (
-        <Text>No jobs available.refresh the app</Text>
+        <View style={{flex:1,alignItems:'center',justifyContent:'center',height:550,width:'100%'}}>
+          <Image
+            source={
+              require('../../assets/Loading-rafiki.png')
+            }
+            style={{height:'50%',width:'80%'}}
+          />
+          <Text>No jobs available.refresh the app</Text>
+        </View>
       )}
     </ScrollView>
   );
