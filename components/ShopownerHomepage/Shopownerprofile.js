@@ -215,7 +215,10 @@ const Shopownerprofile = () => {
     <ScrollView style={styles.container}>
       <ImageBackground
         source={
-          require('../../assets/icon.png')
+          // require('../../assets/icon.png')
+          {
+            uri: 'https://a.cdn-hotels.com/gdcs/production181/d1528/3a35ad9e-1a07-4161-a28b-7c069d02efdf.jpg?impolicy=fcrop&w=800&h=533&q=medium',
+          }
         }
         style={styles.headercontainer}>
         <View style={styles.profilecontainer}>
@@ -225,7 +228,10 @@ const Shopownerprofile = () => {
             }}
             style={styles.headerprofileImage}
           /> : <Image
-            source={require('../../assets/shop.png')}
+            source={
+              // require('../../assets/shop.png')
+              {uri:'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS3u_DGIWouUwuaqQE88-nun_n2h-Pb2yRQXQ&usqp=CAU',}
+          }
             style={styles.headerprofileImage}
           />
           }
@@ -429,12 +435,13 @@ export default Shopownerprofile
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: "white",
   },
   headercontainer: {
     flex: 1,
     justifyContent: "flex-end",
     height: (height * 26) / 100,
-    padding: 20,
+    padding: 10,
   },
   profilecontainer: {
     flex: 1,
@@ -459,10 +466,10 @@ const styles = StyleSheet.create({
     shadowColor: "black",
     borderTopLeftRadius: 15,
     borderTopRightRadius: 15,
-    // backgroundColor: "white",
+    backgroundColor: "white",
     height: (height * 25) / 100,
     paddingHorizontal: 25,
-    marginTop: -10,
+    marginTop: -5,
   },
   bodyshopname: {
     textAlign: 'center',
@@ -490,6 +497,8 @@ const styles = StyleSheet.create({
     flex: 1,
     height: (height * 16) / 100,
     paddingHorizontal: '4%',
+    backgroundColor: "white",
+    marginVertical:3,
   },
   ctccard: {
     flex: 1,
@@ -578,6 +587,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 30,
     paddingVertical: 20,
+    backgroundColor: "white",
   },
   heading: {
     padding: 10,
@@ -587,6 +597,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 30,
     paddingVertical: 10,
+    backgroundColor: "white",
   },
   detailitem: {
     paddingVertical: 5,
@@ -623,6 +634,7 @@ const styles = StyleSheet.create({
   bodyfooter: {
     flex: 1,
     padding: 20,
+    backgroundColor: "white",
   },
   footertitle: {
     fontSize: 18,

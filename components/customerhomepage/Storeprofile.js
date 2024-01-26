@@ -62,7 +62,10 @@ const StoreProfile = () => {
         >
             <ImageBackground
                 source={
-                    require('../../assets/icon.png')
+                    // require('../../assets/icon.png')
+                    {
+                        uri: 'https://a.cdn-hotels.com/gdcs/production181/d1528/3a35ad9e-1a07-4161-a28b-7c069d02efdf.jpg?impolicy=fcrop&w=800&h=533&q=medium',
+                      }
                 }
                 style={styles.headercontainer}>
                 <TouchableOpacity
@@ -82,7 +85,7 @@ const StoreProfile = () => {
                             }}
                             style={styles.headerprofileImage}
                         /> : <Image
-                            source={require('../../assets/shop.png')}
+                            source={{uri:'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS3u_DGIWouUwuaqQE88-nun_n2h-Pb2yRQXQ&usqp=CAU',}}
                             style={styles.headerprofileImage}
                         />
                         }
