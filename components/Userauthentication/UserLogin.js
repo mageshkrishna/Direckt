@@ -98,7 +98,7 @@ const UserLogin = () => {
         Alert.alert("Error", "Invalid login data");
       }
     } catch (error) {
-      console.error(error);
+      // console.error(error);
       showToast("Invalid username or password!");
     } finally {
       setLoading(false);

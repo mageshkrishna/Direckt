@@ -34,15 +34,15 @@ import Checkbox from "expo-checkbox";
 UIManager.setLayoutAnimationEnabledExperimental &&
   UIManager.setLayoutAnimationEnabledExperimental(true);
 
-const JobCard = ({ item, ownerdetail,token}) => {
+const JobCard = ({ item, ownerdetail, token }) => {
   const job_id = item._id;
   const [deliverystatus, setdeliverystatus] = useState(false);
   const [replymessage, setreplymessage] = useState(null);
   const [uploading, setuploading] = useState(false);
- 
+
   const createreply = async () => {
     setuploading(true);
-    if ( !replymessage) {
+    if (!replymessage) {
       Alert.alert("Please fill both fields");
       setuploading(false);
       return;
@@ -94,10 +94,19 @@ const JobCard = ({ item, ownerdetail,token}) => {
             style={styles.jobImage}
             onPress={() => setShowPopup(true)}
           >
-            <Image
-              source={{ uri: item.image_url }}
+
+            {item.image_url ? <Image
+              source={{
+                uri: item.image_url,
+              }}
+
+              style={{ height: "100%", width: "90%", backgroundColor: "red" }}
+            /> : <Image
+              source={{ uri: 'https://img.freepik.com/premium-vector/default-image-icon-vector-missing-picture-page-website-design-mobile-app-no-photo-available_87543-11093.jpg', }}
+
               style={{ height: "100%", width: "90%", backgroundColor: "red" }}
             />
+            }
             <View style={{ flexDirection: "row", alignItems: "center" }}>
               <MaterialIcons name="category" size={17} color="black" />
               <Text style={styles.jobcategory} numberOfLines={1}>
@@ -119,7 +128,7 @@ const JobCard = ({ item, ownerdetail,token}) => {
                 alignItems: "center",
               }}
             >
-              <Text style={styles.location}>{}</Text>
+              <Text style={styles.location}>{ }</Text>
               <View style={styles.viewdetails}>
                 <Text>View details</Text>
               </View>
@@ -155,8 +164,8 @@ const JobCard = ({ item, ownerdetail,token}) => {
             <View
               style={{
                 width: "100%",
-               
-                
+
+
                 gap: 30,
               }}
             >
@@ -174,7 +183,7 @@ const JobCard = ({ item, ownerdetail,token}) => {
                 />
               </View>
               <View
-                style={{ flexDirection: "row", alignContent: "center" ,justifyContent:'flex-start',gap:(width*20)/100}}
+                style={{ flexDirection: "row", alignContent: "center", justifyContent: 'flex-start', gap: (width * 20) / 100 }}
               >
                 <View
                   style={{
@@ -182,7 +191,7 @@ const JobCard = ({ item, ownerdetail,token}) => {
                     alignItems: "center",
                     justifyContent: "flex-start",
                     columnGap: 10,
-                   
+
                   }}
                 >
                   <Text style={{ color: "grey" }}>Delivery option</Text>
@@ -315,13 +324,13 @@ const styles = StyleSheet.create({
   acceptorder: {
     flexDirection: "row",
     backgroundColor: "#4daa57",
-    alignItems:'center',
-    justifyContent:'center',
+    alignItems: 'center',
+    justifyContent: 'center',
     borderRadius: 20,
-    paddingHorizontal:10,
-    paddingVertical:6,
+    paddingHorizontal: 10,
+    paddingVertical: 6,
     width: "30%",
-    gap:10
+    gap: 10
   },
 });
 
