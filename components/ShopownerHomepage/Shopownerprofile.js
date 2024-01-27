@@ -6,7 +6,7 @@ import axios from "axios";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 const height = Dimensions.get("window").height
 const width = Dimensions.get("window").width
-
+import * as SecureStore from "expo-secure-store";
 const Shopownerprofile = () => {
   const navigation = useNavigation();
   const [businessname, setbusinessname] = useState();
@@ -26,6 +26,7 @@ const Shopownerprofile = () => {
   const [availabilitystatus, setavailabilitystatus] = useState(Boolean);
   const [deliverystatus, setdeliverystatus] = useState(Boolean)
   const [shopownerId, setshopownerId] = useState(null);
+  const[token,settoken] = useState(null)
   const isFocused = useIsFocused();
   const updatedeliveryStatusInAsyncStorage = async (deliverystatus) => {
     try {
@@ -49,7 +50,8 @@ const Shopownerprofile = () => {
 
   const removeData = async () => {
     try {
-
+      await SecureStore.deleteItemAsync('shopownertoken');
+      console.log('Token removed successfully');
       await AsyncStorage.removeItem("shopownerdata");
       navigation.navigate("Home");
       console.log("Data removed successfully");
@@ -85,7 +87,14 @@ const Shopownerprofile = () => {
 
             try {
               // Assuming the API request is uncommented
-              const response = await axios.put("https://direckt-copy1.onrender.com/shopowner/deliverystatus", formdata);
+              const response = await axios.put("https://direckt-copy1.onrender.com/shopowner/deliverystatus", formdata,
+              {
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                  'Content-Type': 'application/json',
+                },
+              }
+            );
               if (response) {
                 updatedeliveryStatusInAsyncStorage(!deliverystatus)
                 setdeliverystatus(!deliverystatus)
@@ -147,8 +156,14 @@ const Shopownerprofile = () => {
 
             try {
               // Assuming the API request is uncommented
-              const response = await axios.put("https://direckt-copy1.onrender.com/shopowner/availabilitystatus", formdata);
-
+              const response = await axios.put("https://direckt-copy1.onrender.com/shopowner/availabilitystatus", formdata,
+              {
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                  'Content-Type': 'application/json',
+                },
+              }
+            );
               updateavailabilityStatusInAsyncStorage(!availabilitystatus)
               setavailabilitystatus(!availabilitystatus)
               console.log(response.data);
@@ -170,15 +185,21 @@ const Shopownerprofile = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        SecureStore.getItemAsync("shopownertoken")
+        .then((value) => {
+          console.log("Retrieved value available:", value);
+          settoken(value);
+        })
+        .catch((error) => console.error("Error retrieving value:", error));
         const data = await AsyncStorage.getItem("shopownerdata");
-
+  
         if (data) {
           const parsedData = JSON.parse(data);
           setshopownerId(parsedData._id)
           console.log("parsedData " + parsedData.businessabout);
 
           setbusinessname(parsedData.businessname);
-
+          console.log("phonenumber: " + businessname);
           setphonenumber(parsedData.phonenumber.toString());
           console.log("phonenumber: " + phonenumber);
           setbusinessabout(parsedData.businessabout);

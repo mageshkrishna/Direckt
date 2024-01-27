@@ -17,6 +17,7 @@ import { useNavigation } from "@react-navigation/native";
 import { FontAwesome, Feather } from '@expo/vector-icons';
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as SecureStore from "expo-secure-store";
 const Width = Dimensions.get("window").width;
 const Height = Dimensions.get("window").height;
 
@@ -44,20 +45,21 @@ const UserLogin = () => {
       showToast('Please enter your email!');
       return;
     }
-    
+  
     if (!validateEmail(email)) {
       showToast('Please enter a valid email address');
       return;
     }
+  
     if (!password) {
       showToast('Please enter your password!');
       return;
     }
-
+  
     setLoading(true);
-
+  
     const formDataLogin = { email, password };
-
+  
     try {
       const response = await axios.post(
         "https://direckt-copy1.onrender.com/auth/login",
@@ -68,32 +70,41 @@ const UserLogin = () => {
           },
         }
       );
-  
-      const { status, data } = response.data;
-  
+     console.log (response.data)
+      const { status, data, token } = response.data;
+         console .log (token)
       if (status) {
         console.log(status);
-        // Alert.alert("Success", "Successfully signed in");
-        // setModalVisible(!modalVisible);
-        showToast("Login Successfull !")
+        console.log(JSON.stringify(data));
   
-        const storedData = await AsyncStorage.setItem(
-          "shopownerdata",
-          JSON.stringify(data)
-        );
+        // Store user data in AsyncStorage
+        try {
+          await AsyncStorage.setItem('shopownerdata', JSON.stringify(data));
+          console.log("Data stored successfully:", data);
+        } catch (error) {
+          console.error("Error storing data:", error);
+        }
+        // Store the token securely using react-native-keychain
+        SecureStore.setItemAsync('shopownertoken',token)
+        .then(() => console.log('Value stored securely'))
+        .catch(error => console.error('Error storing value:', error));
+        showToast("Login Successful!");
   
+        // Navigate to the next screen or perform other actions
         navigation.navigate("Shopownernav");
+  
       } else {
         console.log(status);
         Alert.alert("Error", "Invalid login data");
       }
-    }catch (error) {
-      // console.error(error);
-      showToast("Invalid username or password!")
+    } catch (error) {
+      console.error(error);
+      showToast("Invalid username or password!");
     } finally {
       setLoading(false);
     }
   };
+ 
   const showToast = (e) => {
     ToastAndroid.show(e, ToastAndroid.SHORT);
 };

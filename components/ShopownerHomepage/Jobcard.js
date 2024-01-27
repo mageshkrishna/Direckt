@@ -16,6 +16,7 @@ import {
   ActivityIndicator,
   ViewComponent,
 } from "react-native";
+import * as SecureStore from "expo-secure-store";
 import { useState, useEffect } from "react";
 import {
   MaterialIcons,
@@ -33,15 +34,15 @@ import Checkbox from "expo-checkbox";
 UIManager.setLayoutAnimationEnabledExperimental &&
   UIManager.setLayoutAnimationEnabledExperimental(true);
 
-const JobCard = ({ item, ownerdetail }) => {
+const JobCard = ({ item, ownerdetail,token}) => {
   const job_id = item._id;
   const [deliverystatus, setdeliverystatus] = useState(false);
   const [replymessage, setreplymessage] = useState(null);
   const [uploading, setuploading] = useState(false);
-
+ 
   const createreply = async () => {
     setuploading(true);
-    if (!deliverystatus || !replymessage) {
+    if ( !replymessage) {
       Alert.alert("Please fill both fields");
       setuploading(false);
       return;
@@ -61,6 +62,13 @@ const JobCard = ({ item, ownerdetail }) => {
       const response = await axios.post(
         "https://direckt-copy1.onrender.com/shopowner/createjobreply",
         formdata
+        ,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        }
       );
       console.log(response.status);
       setuploading(false);

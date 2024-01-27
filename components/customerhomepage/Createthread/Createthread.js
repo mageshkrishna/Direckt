@@ -14,7 +14,7 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-
+import * as SecureStore from "expo-secure-store";
 import { SelectList } from "react-native-dropdown-select-list";
 import { TouchableOpacity } from "react-native-gesture-handler";
 
@@ -36,6 +36,7 @@ const Createthread = () => {
   const [onFirebaseImage, setonFirebaseImage] = useState(null);
   const [image, setimage] = useState(null);
   const [indicator, setindicator] = useState(false);
+  const [token, settoken] = useState(null);
   const handleSubmit = async (firebaseImageUrl) => {
 
     if(!jobtitle){
@@ -70,6 +71,13 @@ const Createthread = () => {
       const response = await axios.post(
         "https://direckt-copy1.onrender.com/Customerdata/createjob",
         data
+        ,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        }
       );
 
       console.log("Response:", response.data);
@@ -134,6 +142,12 @@ const Createthread = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        SecureStore.getItemAsync("customertoken")
+        .then((value) => {
+          console.log("Retrieved value:", value);
+          settoken(value);
+        })
+        .catch((error) => console.error("Error retrieving value:", error));
         const data = await AsyncStorage.getItem("customerdata");
         const parsedData = JSON.parse(data);
         setemail(parsedData.email);

@@ -17,6 +17,9 @@ import { useNavigation } from "@react-navigation/native";
 import { FontAwesome, Feather } from '@expo/vector-icons';
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as SecureStore from 'expo-secure-store';
+
+
 const Width = Dimensions.get("window").width;
 const Height = Dimensions.get("window").height;
 
@@ -39,67 +42,73 @@ const Logincustomer = () => {
     setIsPasswordVisible((e) => !e);
   };
 
-  const handleLogin = async () => {
-    if (!email) {
-      showToast('Please enter your email!');
-      return;
-    }
-    
-    if (!validateEmail(email)) {
-      showToast('Please enter a valid email address');
-      return;
-    }
-    if (!password) {
-      showToast('Please enter your password!');
-      return;
-    }
 
-    setLoading(true);
 
-    const formDataLogin = { email, password };
+const handleLogin = async () => {
+  if (!email) {
+    showToast('Please enter your email!');
+    return;
+  }
 
-    try {
-      const response = await axios.post(
-        "https://direckt-copy1.onrender.com/auth/logincus",
-        formDataLogin,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+  if (!validateEmail(email)) {
+    showToast('Please enter a valid email address');
+    return;
+  }
 
-      const { status, data } = response.data;
+  if (!password) {
+    showToast('Please enter your password!');
+    return;
+  }
 
-      if (status) {
-        console.log(status);
-        console.log(JSON.stringify(data));
-        // setModalVisible(!modalVisible);
-        showToast("Login Successfull !")
+  setLoading(true);
 
-        const storedData = await AsyncStorage.setItem(
-          "customerdata",
-          JSON.stringify(data)
-        );
-        // const storeddata = await AsyncStorage.getItem("customerdata");
+  const formDataLogin = { email, password };
 
-        // // Parse the stored data (since AsyncStorage stores strings)
-        // const parsedData = JSON.parse(storeddata);
-        // console.log(parsedData);
-       
-        navigation.navigate("Customerhome");
-        
-      } else {
-        console.log(status);
-        Alert.alert("Error", "Invalid login data");
+  try {
+    const response = await axios.post(
+      "https://direckt-copy1.onrender.com/auth/logincus",
+      formDataLogin,
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
       }
-    } catch (error) {
-      // console.error(error);
-      showToast("Invalid username or password!")
-    } finally {
-      setLoading(false);
+    );
+   console.log (response.data)
+    const { status, data, token } = response.data;
+       console .log (token)
+    if (status) {
+      console.log(status);
+      console.log(JSON.stringify(data));
+
+      // Store user data in AsyncStorage
+      try {
+        await AsyncStorage.setItem('customerdata', JSON.stringify(data));
+        console.log("Data stored successfully:", data);
+      } catch (error) {
+        console.error("Error storing data:", error);
+      }
+      // Store the token securely using react-native-keychain
+      SecureStore.setItemAsync('customertoken',token)
+      .then(() => console.log('Value stored securely'))
+      .catch(error => console.error('Error storing value:', error));
+      showToast("Login Successful!");
+
+      // Navigate to the next screen or perform other actions
+      navigation.navigate("Customerhome");
+
+    } else {
+      console.log(status);
+      Alert.alert("Error", "Invalid login data");
     }
-  };
+  } catch (error) {
+    console.error(error);
+    showToast("Invalid username or password!");
+  } finally {
+    setLoading(false);
+  }
+};
+
   const showToast = (e) => {
     ToastAndroid.show(e, ToastAndroid.SHORT);
 };

@@ -11,6 +11,7 @@ import {
   Alert,
   ActivityIndicator,
 } from "react-native";
+import * as SecureStore from "expo-secure-store";
 import { Ionicons } from "@expo/vector-icons";
 import {
   SelectList,
@@ -45,6 +46,8 @@ const EditOwnerProfile = () => {
   const[category2,setcategory2]=useState([]);
   const [shopownerId, setshopownerId] = useState(null);
   const [shopownerdata, setshopownerdata] = useState(null);
+
+  const[token,settoken] = useState(null);
   const editprofile = true;
   const addphoto = true;
 
@@ -98,6 +101,12 @@ const EditOwnerProfile = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        SecureStore.getItemAsync("shopownertoken")
+        .then((value) => {
+          console.log("Retrieved value available:", value);
+          settoken(value);
+        })
+        .catch((error) => console.error("Error retrieving value:", error));
         const data = await AsyncStorage.getItem("shopownerdata");
 
         if (data) {
@@ -106,7 +115,7 @@ const EditOwnerProfile = () => {
           console.log("parsedData " + parsedData.businessabout);
 
           setbusinessname(parsedData.businessname);
-
+          setshopownerId(parsedData._id)
           setphonenumber(parsedData.phonenumber.toString());
           console.log("phonenumber: " + phonenumber);
           setbusinessabout(parsedData.businessabout);
@@ -117,6 +126,7 @@ const EditOwnerProfile = () => {
           setgmaplink(parsedData.gmaplink);
           setaddress(parsedData.address);
           setdeliverylocation(parsedData.deliverylocation);
+          setshopownerId(parsedData._id)
         }
       } catch (err) {
         console.log(err);
@@ -127,10 +137,11 @@ const EditOwnerProfile = () => {
   }, []);
 
   const updateshopowner = async () => {
-    console.log(category2)
+    console.log(shopownerId)
+    console.log(token)
      setuploading(true)
     const formdata = {
-      shopownerId: "6592f8fa24522066101b3950",
+      shopownerId: shopownerId,
       updateFields: {
         businessname: businessname,
         phonenumber: phonenumber,
@@ -144,11 +155,18 @@ const EditOwnerProfile = () => {
         deliverylocation: deliverylocation,
       },
     };
-    console.log("formdata" + formdata);
+    console.log("formdata" + formdata.updateFields);
     try {
       const updateuser = await axios.put(
         `https://direckt-copy1.onrender.com/shopowner/editshopowner`,
         formdata
+        ,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        }
       );
       if (updateuser.data && updateuser.data._id) {
         console.log(updateuser.data);
@@ -165,9 +183,11 @@ const EditOwnerProfile = () => {
         JSON.stringify(updateuser.data)
       );
       setuploading(false)
+    
       navigation.navigate('Shopownerprofile');
     } catch (e) {
       setuploading(false)
+      
       console.log(e);
     }
   };

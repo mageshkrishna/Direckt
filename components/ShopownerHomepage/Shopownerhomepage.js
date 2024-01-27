@@ -14,14 +14,14 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import JobCard from "./Jobcard";
 import { useIsFocused } from "@react-navigation/native";
-
+import * as SecureStore from "expo-secure-store";
 const Shopownerhomepage = () => {
   const [job_id, setjob_id] = useState(null);
   const [shopowner_id, setshopowner_id] = useState(null);
   const [deliverystatus, setdeliverystatus] = useState(false);
   const [replymessage, setreplymessage] = useState(null);
   const [refreshing, setRefreshing] = useState(false);
-
+  const[token,settoken] = useState(null)
   const [job, setjob] = useState([]);
   const [shopownerdata, setshopownerdata] = useState(null);
   const[ownerdetail,setownerdetail] = useState(null);
@@ -34,9 +34,16 @@ const Shopownerhomepage = () => {
     else{
     const fetchData = async () => {
       try {
+        SecureStore.getItemAsync("shopownertoken")
+        .then((value) => {
+          console.log("Retrieved value available:", value);
+          settoken(value);
+        })
+        .catch((error) => console.error("Error retrieving value:", error));
         const data = await AsyncStorage.getItem("shopownerdata");
-
+      
         if (data) {
+          console.log(data)
           const parsedData = JSON.parse(data);
           setshopownerdata(parsedData);
           setownerdetail(parsedData._id)
@@ -61,7 +68,7 @@ const Shopownerhomepage = () => {
   
 
   const getjob = async () => {
-    if (!shopownerdata || !shopownerdata.location || !shopownerdata.category) {
+    if (!shopownerdata || !shopownerdata.location || !shopownerdata.category ||!token) {
       return;
     }
 
@@ -72,6 +79,13 @@ const Shopownerhomepage = () => {
     try {
       const response1 = await axios.get(
         `https://direckt-copy1.onrender.com/shopowner/getjobs?location=${location}&category=${category}`
+        ,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        }
       );
       console.log(response1.data);
       setjob(response1.data);
@@ -83,7 +97,7 @@ const Shopownerhomepage = () => {
 
   useEffect(() => {
     getjob();
-  }, [shopownerdata]);
+  }, [shopownerdata,token,refreshing]);
    
   return (
     <ScrollView
@@ -95,7 +109,7 @@ const Shopownerhomepage = () => {
       {job.length > 0 && ownerdetail ? (
         job.map((item, index) => (
           <View key={index}>
-            <JobCard item={item} ownerdetail={ownerdetail} />
+            <JobCard item={item} ownerdetail={ownerdetail} token={token} />
           </View>
         ))
       ) : (

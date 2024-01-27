@@ -7,6 +7,7 @@ import axios from 'axios';
 import { useNavigation } from "@react-navigation/native";
 import { useRoute } from '@react-navigation/native';
 import ImagePopup from '../ShopownerHomepage/Imagepopup';
+import * as SecureStore from "expo-secure-store";
 const height = Dimensions.get("window").height
 const width = Dimensions.get("window").width
 
@@ -17,7 +18,17 @@ const StoreProfile = () => {
     const [storedata, setstoredata] = useState();
     const [showPopup, setShowPopup] = useState(false);
     const [activeImageIndex, setActiveImageIndex] = useState(null);
+    const [token, settoken] = useState(null);
     const navigation = useNavigation();
+
+    useEffect(()=>{
+        SecureStore.getItemAsync("customertoken")
+        .then((value) => {
+          console.log("Retrieved value:", value);
+          settoken(value);
+        })
+        .catch((error) => console.error("Error retrieving value:", error));
+    },[])
 
     const handleImagePress = (index) => {
         setActiveImageIndex(index);
@@ -32,14 +43,25 @@ const StoreProfile = () => {
     };
 
     useEffect(() => {
+        if(!token||!_id){
+            return ;
+        }
         console.log("started")
         try {
-            axios.get(`https://direckt-copy1.onrender.com/shopowner/getshopownerprofile?_id=${_id}`)
+            axios.get(`https://direckt-copy1.onrender.com/shopowner/getshopownerprofile?_id=${_id}`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+                'Content-Type': 'application/json',
+              },
+            }
+          )
+            
                 .then(response => {
 
                     console.log(response.data);
                     setstoredata(response.data)
-                    console.log(storedata.category);
+                    
                 })
                 .catch(err => {
                     console.log(err);
@@ -47,7 +69,7 @@ const StoreProfile = () => {
         } catch (err) {
             console.log(err);
         }
-    }, [_id]);
+    }, [_id,token]);
     if (!storedata && _id) {
         return (
             <View style={{ height: "100%", width: '100%', justifyContent: "center", alignItems: 'center' }}>

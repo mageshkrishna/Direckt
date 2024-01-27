@@ -6,6 +6,7 @@ import { React, useEffect, useState } from 'react'
 import { Dimensions } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
+import * as SecureStore from "expo-secure-store";
 const height = Dimensions.get("window").height
 const width = Dimensions.get("window").width
 
@@ -51,7 +52,8 @@ const Profile = () => {
     }, []);
     const removeData = async () => {
         try {
-            // Remove data
+            await SecureStore.deleteItemAsync('customertoken');
+    console.log('Token removed successfully');
             await AsyncStorage.removeItem("customerdata");
             navigation.navigate("Home");
             console.log("Data removed successfully");

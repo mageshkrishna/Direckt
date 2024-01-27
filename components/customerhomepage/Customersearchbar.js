@@ -10,7 +10,7 @@ import {
   useColorScheme,
   ToastAndroid,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FontAwesome5, AntDesign } from "@expo/vector-icons";
 import { MaterialIcons } from "@expo/vector-icons";
 import { ScrollView } from "react-native";
@@ -24,7 +24,7 @@ import axios from "axios";
 import { LinearProgress } from "@rneui/base";
 import { COLORS } from "../../constants/Theme";
 import ImagePopup from "../ShopownerHomepage/Imagepopup";
-
+import * as SecureStore from "expo-secure-store";
 const height = Dimensions.get("window").height;
 const width = Dimensions.get("window").width;
 
@@ -188,11 +188,21 @@ const CustomerSearchBar = () => {
   const [progress, setProgress] = useState(0);
   const [linearProgress, setlinearProgress] = useState(false);
   const[resultmessage , setresultmessage] = useState("Find shop and service")
+  const [token, settoken] = useState(null);
   const categories = [
     { key: "1", value: "grocery" },
     { key: "2", value: "electronic" },
     { key: "3", value: "Computers" },
   ];
+
+  useEffect(()=>{
+    SecureStore.getItemAsync("customertoken")
+    .then((value) => {
+      console.log(" Seacrbar Retrieved value:", value);
+      settoken(value);
+    })
+    .catch((error) => console.error("Error retrieving value:", error));
+},[])
 
   const fetchData = async () => {
     console.log("searching....");
@@ -221,8 +231,13 @@ const CustomerSearchBar = () => {
         "https://direckt-copy1.onrender.com/shopowner/getshops",
         {
           params: formdata,
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
         }
       );
+      
       if(response.data.length === 0){
         setresultmessage('No Shops or service found')
       }
@@ -233,6 +248,7 @@ const CustomerSearchBar = () => {
         setlinearProgress(false);
       }, 2000);
     } catch (error) {
+      setlinearProgress(false);
       console.error(error);
     }
   };
