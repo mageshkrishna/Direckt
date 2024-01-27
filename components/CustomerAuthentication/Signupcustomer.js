@@ -29,7 +29,7 @@ const Signupcustomer = () => {
   const togglePasswordVisibility = () => {
     setIsPasswordVisible((e) => !e);
   };
-  
+
   const validateEmail = (email) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
@@ -55,8 +55,8 @@ const Signupcustomer = () => {
     if (!validatePassword(password)) {
       showToast('Password must be at least 6 characters long and contain both letters and numbers');
       return;
-    } 
-    
+    }
+
     try {
       setLoading(true); // Set loading to true when the request starts
 
@@ -89,7 +89,7 @@ const Signupcustomer = () => {
   };
   const showToast = (e) => {
     ToastAndroid.show(e, ToastAndroid.SHORT);
-};
+  };
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <Modal
@@ -98,17 +98,17 @@ const Signupcustomer = () => {
         visible={modalVisible}
         onRequestClose={() => {
           setModalVisible(!modalVisible);
-        }}> 
+        }}>
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
-          <Feather name="check-circle" size={62} color="green" />
+            <Feather name="check-circle" size={62} color="green" />
             <Text style={styles.modalText}>Account created Successfully</Text>
             <Pressable
               style={[styles.button, styles.buttonClose]}
-              onPress={() =>{ 
+              onPress={() => {
                 setModalVisible(!modalVisible);
                 navigation.navigate("Logincustomer");
-                }}>
+              }}>
               <Text style={styles.textStyle}>Login</Text>
             </Pressable>
           </View>
@@ -126,7 +126,7 @@ const Signupcustomer = () => {
           <TextInput style={styles.box2input} placeholder="Password" value={password} secureTextEntry={!isPasswordVisible}
             onChangeText={(text) => setpassword(text)} />
           <TouchableOpacity onPress={togglePasswordVisibility} >
-            <Text style={{color:"grey"}} >{isPasswordVisible ?<FontAwesome name="eye-slash" size={13} color="grey" />:<FontAwesome name="eye" size={13} color="grey" />} {isPasswordVisible ? 'Hide Password' : 'Show Password'}</Text>
+            <Text style={{ color: "grey" }} >{isPasswordVisible ? <FontAwesome name="eye-slash" size={13} color="grey" /> : <FontAwesome name="eye" size={13} color="grey" />} {isPasswordVisible ? 'Hide Password' : 'Show Password'}</Text>
           </TouchableOpacity>
         </View>
         <View style={styles.box3}>
@@ -144,7 +144,7 @@ const Signupcustomer = () => {
               </Text>
             </View>
           </TouchableOpacity>
-          <View style={{ flexDirection: "row", gap: 10 , alignItems:'center'}}>
+          <View style={{ flexDirection: "row", gap: 10, alignItems: 'center' }}>
             <Text style={{ fontSize: 16 }}>Already have an account? </Text>
             <TouchableOpacity
               style={{ padding: 2 }}
@@ -212,7 +212,7 @@ const styles = StyleSheet.create({
     margin: 20,
     backgroundColor: 'white',
     borderRadius: 15,
-    justifyContent:'space-evenly',
+    justifyContent: 'space-evenly',
     padding: 40,
     alignItems: 'center',
     shadowColor: '#000',
@@ -227,7 +227,7 @@ const styles = StyleSheet.create({
   button: {
     borderRadius: 5,
     padding: 10,
-    paddingHorizontal:20,
+    paddingHorizontal: 20,
     elevation: 2,
   },
   buttonClose: {
@@ -239,7 +239,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   modalText: {
-    paddingVertical:15,
+    paddingVertical: 15,
     textAlign: 'center',
   },
 });
