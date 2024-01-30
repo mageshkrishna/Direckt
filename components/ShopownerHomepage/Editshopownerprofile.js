@@ -10,6 +10,7 @@ import {
   BackHandler,
   Alert,
   ActivityIndicator,
+  ToastAndroid
 } from "react-native";
 import * as SecureStore from "expo-secure-store";
 import { Ionicons } from "@expo/vector-icons";
@@ -66,6 +67,9 @@ const EditOwnerProfile = () => {
         setButtonDisabled(false);
       }, 1000); // Adjust the delay as needed
     }
+  };
+  const showToast = (e) => {
+    ToastAndroid.show(e, ToastAndroid.SHORT);
   };
   useEffect(() => {
     const backAction = () => {
@@ -183,7 +187,7 @@ const EditOwnerProfile = () => {
         JSON.stringify(updateuser.data)
       );
       setuploading(false)
-    
+      showToast('Profile Updated Successfully!');
       navigation.navigate('Shopownerprofile');
     } catch (e) {
       setuploading(false)

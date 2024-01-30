@@ -15,6 +15,8 @@ import {
   TextInput,
   ActivityIndicator,
   ViewComponent,
+  ToastAndroid,
+  Modal,
 } from "react-native";
 import * as SecureStore from "expo-secure-store";
 import { useState, useEffect } from "react";
@@ -23,8 +25,10 @@ import {
   AntDesign,
   Ionicons,
   FontAwesome5,
+  Feather
 } from "@expo/vector-icons";
 import "react-native";
+import { COLORS } from "../../constants/Theme";
 import React from "react";
 import ImagePopup from "./Imagepopup";
 import axios from "axios";
@@ -34,21 +38,25 @@ import Checkbox from "expo-checkbox";
 UIManager.setLayoutAnimationEnabledExperimental &&
   UIManager.setLayoutAnimationEnabledExperimental(true);
 
-const JobCard = ({ item, ownerdetail,token}) => {
+
+const JobCard = ({ item, ownerdetail, token }) => {
   const job_id = item._id;
+  const [modalVisible, setModalVisible] = useState(false);
   const [deliverystatus, setdeliverystatus] = useState(false);
   const [replymessage, setreplymessage] = useState(null);
   const [uploading, setuploading] = useState(false);
- 
+  const showToast = (e) => {
+    ToastAndroid.show(e, ToastAndroid.SHORT);
+  };
   const createreply = async () => {
     setuploading(true);
-    if ( !replymessage) {
-      Alert.alert("Please fill both fields");
+    if (!replymessage) {
+      showToast("Please fill both fields");
       setuploading(false);
       return;
     }
     if (!job_id || !ownerdetail) {
-      Alert.alert("Something went wrong. Refresh the app");
+      showToast("Something went wrong. Refresh the app");
       setuploading(false);
       return;
     }
@@ -72,10 +80,11 @@ const JobCard = ({ item, ownerdetail,token}) => {
       );
       console.log(response.status);
       setuploading(false);
-      Alert.alert("Created job reply successfully");
+      setModalVisible(!modalVisible);
     } catch (e) {
       setuploading(false);
       console.log(e);
+      showToast('You have already replied to this job!');
     }
   };
 
@@ -89,15 +98,45 @@ const JobCard = ({ item, ownerdetail,token}) => {
   return (
     <View>
       <View>
+        <Modal
+          animationType="fade"
+          transparent={true}
+          visible={modalVisible}
+          onRequestClose={() => {
+            setModalVisible(!modalVisible);
+          }}>
+          <View style={styles.centeredView}>
+            <View style={styles.modalView}>
+              <Feather name="check-circle" size={62} color="green" />
+              <Text style={styles.modalText}>Job Reply Sent !</Text>
+              <Pressable
+                style={[styles.button, styles.buttonClose]}
+                onPress={() => {
+                  setModalVisible(!modalVisible);
+                }}>
+                <Text style={styles.textStyle}>Okay</Text>
+              </Pressable>
+            </View>
+          </View>
+        </Modal>
         <View style={styles.job}>
           <TouchableOpacity
             style={styles.jobImage}
             onPress={() => setShowPopup(true)}
           >
-            <Image
-              source={{ uri: item.image_url }}
+
+            {item.image_url ? <Image
+              source={{
+                uri: item.image_url,
+              }}
+
+              style={{ height: "100%", width: "90%", backgroundColor: "red" }}
+            /> : <Image
+              source={{ uri: 'https://img.freepik.com/premium-vector/default-image-icon-vector-missing-picture-page-website-design-mobile-app-no-photo-available_87543-11093.jpg', }}
+
               style={{ height: "100%", width: "90%", backgroundColor: "red" }}
             />
+            }
             <View style={{ flexDirection: "row", alignItems: "center" }}>
               <MaterialIcons name="category" size={17} color="black" />
               <Text style={styles.jobcategory} numberOfLines={1}>
@@ -119,7 +158,7 @@ const JobCard = ({ item, ownerdetail,token}) => {
                 alignItems: "center",
               }}
             >
-              <Text style={styles.location}>{}</Text>
+              <Text style={styles.location}>{ }</Text>
               <View style={styles.viewdetails}>
                 <Text>View details</Text>
               </View>
@@ -155,8 +194,8 @@ const JobCard = ({ item, ownerdetail,token}) => {
             <View
               style={{
                 width: "100%",
-               
-                
+
+
                 gap: 30,
               }}
             >
@@ -174,7 +213,7 @@ const JobCard = ({ item, ownerdetail,token}) => {
                 />
               </View>
               <View
-                style={{ flexDirection: "row", alignContent: "center" ,justifyContent:'flex-start',gap:(width*20)/100}}
+                style={{ flexDirection: "row", alignContent: "center", justifyContent: 'flex-start', gap: (width * 20) / 100 }}
               >
                 <View
                   style={{
@@ -182,7 +221,7 @@ const JobCard = ({ item, ownerdetail,token}) => {
                     alignItems: "center",
                     justifyContent: "flex-start",
                     columnGap: 10,
-                   
+
                   }}
                 >
                   <Text style={{ color: "grey" }}>Delivery option</Text>
@@ -315,13 +354,53 @@ const styles = StyleSheet.create({
   acceptorder: {
     flexDirection: "row",
     backgroundColor: "#4daa57",
-    alignItems:'center',
-    justifyContent:'center',
+    alignItems: 'center',
+    justifyContent: 'center',
     borderRadius: 20,
-    paddingHorizontal:10,
-    paddingVertical:6,
+    paddingHorizontal: 10,
+    paddingVertical: 6,
     width: "30%",
-    gap:10
+    gap: 10
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: 'white',
+    borderRadius: 15,
+    justifyContent: 'space-evenly',
+    padding: 40,
+    paddingHorizontal:60,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  button: {
+    borderRadius: 5,
+    padding: 10,
+    elevation: 2,
+  },
+  buttonClose: {
+    backgroundColor: COLORS.primary,
+  },
+  textStyle: {
+    color: 'white',
+    fontWeight: 'medium',
+    textAlign: 'center',
+  },
+  modalText: {
+    paddingVertical: 15,
+    textAlign: 'center',
+    fontSize:17,
   },
 });
 

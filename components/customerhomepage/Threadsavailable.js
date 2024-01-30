@@ -15,13 +15,15 @@ import {
   useColorScheme,
   RefreshControl,
   ActivityIndicator,
+  ToastAndroid,
+  Modal,
 } from "react-native";
 import * as SecureStore from "expo-secure-store";
 import { useState, useEffect } from "react";
 import { MaterialIcons, AntDesign, Ionicons } from "@expo/vector-icons";
 import React from "react";
 import axios, { Axios } from "axios";
-import { Entypo } from "@expo/vector-icons";
+import { Entypo, Feather } from "@expo/vector-icons";
 const height = Dimensions.get("window").height;
 const width = Dimensions.get("window").width;
 import { COLORS } from "../../constants/Theme";
@@ -35,7 +37,9 @@ const InsideAccorditon = ({ data }) => {
   console.log(" InsideAccorditon " + data.shopowner_id.phonenumber);
   const [showPopup, setShowPopup] = useState(false);
   const navigation = useNavigation();
-
+  const showToast = () => {
+    ToastAndroid.show('Google map is not linked', ToastAndroid.SHORT);
+  };
   return (
     <View
       style={{
@@ -50,20 +54,29 @@ const InsideAccorditon = ({ data }) => {
         elevation: 2.5,
       }}
     >
-      <View style={{ width: "30%", height: "100%" }}>
+      <View style={{ width: "30%", height: "100%",}}>
         <TouchableOpacity
           style={{ height: 100, width: "100%" }}
           onPress={() => setShowPopup(true)}
         >
-          <Image
-            source={{ uri: data.shopowner_id.profilepic }}
+          {data.shopowner_id.profilepic ? <Image
+            source={{
+              uri: data.shopowner_id.profilepic,
+            }}
             style={{
               height: 95,
               width: "100%",
-
               borderRadius: 4,
             }}
-          ></Image>
+          /> : <Image
+            source={{ uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS3u_DGIWouUwuaqQE88-nun_n2h-Pb2yRQXQ&usqp=CAU', }}
+            style={{
+              height: 95,
+              width: "100%",
+              borderRadius: 4,
+            }}
+          />
+          }
         </TouchableOpacity>
         {showPopup && (
           <ImagePopup
@@ -75,6 +88,7 @@ const InsideAccorditon = ({ data }) => {
           onPress={() => {
             navigation.navigate("storeprofile", { _id: data.shopowner_id._id });
           }}
+          style={{height:50,justifyContent:'space-evenly',}}
         >
           <View
             style={{ justifyContent: "space-evenly", alignItems: "center" }}
@@ -149,7 +163,7 @@ const InsideAccorditon = ({ data }) => {
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => {
-                Linking.openURL(data.shopowner_id.gmaplink);
+                data.shopowner_id.gmaplink ? Linking.openURL(data.shopowner_id.gmaplink) : showToast()
               }}
               style={styles.storedirection}
             >
@@ -161,11 +175,12 @@ const InsideAccorditon = ({ data }) => {
     </View>
   );
 };
-const AccordionItem = ({ data,token }) => {
+const AccordionItem = ({ data, token }) => {
   const [expanded, setExpanded] = useState(false);
   const [jobreply, setjobreply] = useState([]);
   const [jobIdToDelete, setjobIdToDelete] = useState(data._id);
   const [showPopup, setShowPopup] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
   const handleDeleteJob = async () => {
     console.log(jobIdToDelete);
     try {
@@ -182,9 +197,9 @@ const AccordionItem = ({ data,token }) => {
       );
 
       if (response.status === 200) {
-        Alert.alert("Success", "Job deleted successfully");
+        setModalVisible(!modalVisible);
       } else {
-        Alert.alert("Error", "Failed to delete job");
+        ToastAndroid.show('Job Deletion Failed', ToastAndroid.SHORT);
       }
     } catch (error) {
       console.error("Error:", error);
@@ -204,19 +219,58 @@ const AccordionItem = ({ data,token }) => {
   return (
     <View>
       <Pressable onPress={toggleExpand}>
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => {
+          setModalVisible(!modalVisible);
+        }}> 
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+          <Feather name="check-circle" size={62} color="green" />
+            <Text style={styles.modalText}>Job Deleted Successfully</Text>
+            <Pressable
+              style={[styles.button, styles.buttonClose]}
+              onPress={() =>{ 
+                setModalVisible(!modalVisible);
+                }}>
+              <Text style={styles.textStyle}>Okay</Text>
+            </Pressable>
+          </View>
+        </View>
+      </Modal>
         <View style={styles.thread}>
           <TouchableOpacity
             style={styles.threadImage}
             onPress={() => setShowPopup(true)}
           >
-            <Image
+            {/* <Image
               source={{ uri: data.image_url }}
               style={{
                 height: "100%",
                 width: "100%",
                 backgroundColor: "white",
               }}
+            /> */}
+            {data.image_url ? <Image
+              source={{
+                uri: data.image_url,
+              }}
+              style={{
+                height: "100%",
+                width: "100%",
+                backgroundColor: "white",
+              }}
+            /> : <Image
+              source={{ uri: 'https://img.freepik.com/premium-vector/default-image-icon-vector-missing-picture-page-website-design-mobile-app-no-photo-available_87543-11093.jpg', }}
+              style={{
+                height: "100%",
+                width: "100%",
+                backgroundColor: "white",
+              }}
             />
+            }
             {showPopup && (
               <ImagePopup
                 imageUrl={data.image_url}
@@ -284,12 +338,7 @@ const AccordionItem = ({ data,token }) => {
                 ) : (
                   <TouchableOpacity
                     onPress={() => {
-                      Alert.alert(
-                        "No responses come back after some minutes",
-                        "",
-                        [{ text: "OK", onPress: () => {} }],
-                        { cancelable: true }
-                      );
+                        ToastAndroid.show('No responses come back after some minutes', ToastAndroid.SHORT);
                     }}
                   >
                     <Text>no response</Text>
@@ -352,7 +401,7 @@ const Threadsavailable = () => {
   }, []);
 
   useEffect(() => {
-    if (refreshing || !email|| !token) {
+    if (refreshing || !email || !token) {
       return;
     }
     const fetchData = async () => {
@@ -378,7 +427,7 @@ const Threadsavailable = () => {
 
     fetchData();
     console.log("Current color scheme:", colorScheme);
-  }, [email, refreshing,token]);
+  }, [email, refreshing, token]);
 
   const onRefresh = React.useCallback(async () => {
     setRefreshing(true); // Set refreshing to true before fetching data
@@ -406,46 +455,46 @@ const Threadsavailable = () => {
   if (data.length == 0) {
     return (
       <ScrollView
-      style={{
-        flex: 1,
-        flexDirection: "column",
-     
-      }}
-      refreshControl={
-        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-      }>
-      <View
         style={{
           flex: 1,
           flexDirection: "column",
-          justifyContent: "center",
-          alignItems: "center",
-      
-          height:height
+
         }}
-      
-      >
-        
-        <Image
-          source={require("../../assets/Location-review-pana.png")}
-          style={{ height: "50%", width: "80%" }}
-        />
-        <TouchableOpacity
-          onPress={() => navigation.navigate("Createthread")}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }>
+        <View
           style={{
-            padding: 10,
-            paddingHorizontal: 20,
-            backgroundColor: COLORS.primary,
-            borderRadius: 5,
-            flexDirection: "row",
+            flex: 1,
+            flexDirection: "column",
             justifyContent: "center",
             alignItems: "center",
+            height: 560
           }}
+
         >
-          <MaterialIcons name="add" size={14} color="white" />
-          <Text style={{ color: "white" }}> Create Job</Text>
-        </TouchableOpacity>
-      </View>
+
+          <Image
+            source={require("../../assets/Location-review-pana.png")}
+            style={{ height: "50%", width: "80%" }}
+          />
+          <TouchableOpacity
+            onPress={() => navigation.navigate("Createthread")}
+            style={{
+              padding: 10,
+              paddingHorizontal: 20,
+              backgroundColor: COLORS.primary,
+              borderRadius: 5,
+              flexDirection: "row",
+              justifyContent: "center",
+              alignItems: "center",
+              marginVertical: 20
+            }}
+          >
+            <MaterialIcons name="add" size={14} color="white" />
+            <Text style={{ color: "white" }}> Create Job</Text>
+          </TouchableOpacity>
+        </View>
       </ScrollView>
     );
   }
@@ -468,7 +517,7 @@ const Threadsavailable = () => {
         </Text>
         <View>
           {data.map((item, index) => (
-            <AccordionItem key={index} data={item} token={token}/>
+            <AccordionItem key={index} data={item} token={token} />
           ))}
         </View>
         <Text style={{ textAlign: "center" }}>
@@ -572,6 +621,45 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 10,
     marginHorizontal: 5,
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: 'white',
+    borderRadius: 15,
+    justifyContent:'space-evenly',
+    padding: 40,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  button: {
+    borderRadius: 5,
+    padding: 10,
+    paddingHorizontal:20,
+    elevation: 2,
+  },
+  buttonClose: {
+    backgroundColor: COLORS.primary,
+  },
+  textStyle: {
+    color: 'white',
+    fontWeight: 'medium',
+    textAlign: 'center',
+  },
+  modalText: {
+    paddingVertical:15,
+    textAlign: 'center',
   },
 });
 // import {

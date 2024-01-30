@@ -11,13 +11,17 @@ import {
   Alert,
   Image,
   ActivityIndicator,
+  ToastAndroid,
+  Modal,
+  Pressable,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import * as SecureStore from "expo-secure-store";
 import { SelectList } from "react-native-dropdown-select-list";
 import { TouchableOpacity } from "react-native-gesture-handler";
-
+import { FontAwesome, Feather } from '@expo/vector-icons';
+import { useNavigation } from "@react-navigation/native";
 import Imagepick from "./Imagepick";
 import { COLORS } from "../../../constants/Theme";
 import axios from "axios";
@@ -37,28 +41,38 @@ const Createthread = () => {
   const [image, setimage] = useState(null);
   const [indicator, setindicator] = useState(false);
   const [token, settoken] = useState(null);
+  const navigation = useNavigation();
+  const [modalVisible, setModalVisible] = useState(false);
+  const showToast = (e) => {
+    ToastAndroid.show(e, ToastAndroid.SHORT);
+  };
   const handleSubmit = async (firebaseImageUrl) => {
 
-    if(!jobtitle){
-       return Alert.alert('Enter Job Title');
+    if (!jobtitle) {
+      showToast("Enter Job Title")
+      return;
     }
-    if(!jobdescription){
-       return Alert.alert('Enter jobdescription');
+    if (!jobdescription) {
+      showToast("Enter Job Description")
+      return;
     }
-    if(!location){
-    return Alert.alert('Enter Location');
+    if (!location) {
+      showToast("Select Location")
+      return;
     }
-    if(!category){
-       return Alert.alert('Enter Job Title');
+    if (!category) {
+      showToast("Select Category")
+      return;
     }
-  if(!email){
-    return Alert.alert('Something Went Wrong refresh the app')
-  }
+    if (!email) {
+      showToast('Something Went Wrong! refresh the app')
+      return;
+    }
 
     try {
       setindicator(true)
       console.log("Data:", firebaseImageUrl);
-      
+
       const data = {
         location: location,
         email: email,
@@ -67,7 +81,7 @@ const Createthread = () => {
         category: category,
         image_url: firebaseImageUrl,
       };
-      
+
       const response = await axios.post(
         "https://direckt-copy1.onrender.com/Customerdata/createjob",
         data
@@ -86,11 +100,11 @@ const Createthread = () => {
       setjobdescription("");
       setSelectedImage(null);
       setindicator(false)
-    
-        Alert.alert("Job Created Successfully");
-       
-        
-      
+
+      setModalVisible(!modalVisible);
+
+
+
     } catch (error) {
       setindicator(false)
       if (error.response.status === 400) {
@@ -99,29 +113,36 @@ const Createthread = () => {
           "User can only create 5 jobs at a time. Delete the old job to create a new one."
         );
       }
-      
-      else{
-      Alert.alert("Error");
+
+      else {
+        Alert.alert("Error");
       }
-     
+
     }
   };
   const handlesubmitimage = async () => {
-    if(!jobtitle){
-      return Alert.alert('Enter Job Title');
-   }
-   if(!jobdescription){
-      return Alert.alert('Enter jobdescription');
-   }
-   if(!location){
-   return Alert.alert('Enter Location');
-   }
-   if(!category){
-      return Alert.alert('Enter Job Title');
-   }
- if(!email){
-   return Alert.alert('Something Went Wrong refresh the app')
- }
+
+    if (!jobtitle) {
+      showToast("Enter Job Title")
+      return;
+    }
+    if (!jobdescription) {
+      showToast("Enter Job Description")
+      return;
+    }
+    if (!location) {
+      showToast("Select Location")
+      return;
+    }
+    if (!category) {
+      showToast("Select Category")
+      return;
+    }
+    if (!email) {
+      showToast('Something Went Wrong! refresh the app')
+      return;
+    }
+
     try {
       setindicator(true)
       if (selectedImage) {
@@ -143,11 +164,11 @@ const Createthread = () => {
     const fetchData = async () => {
       try {
         SecureStore.getItemAsync("customertoken")
-        .then((value) => {
-          console.log("Retrieved value:", value);
-          settoken(value);
-        })
-        .catch((error) => console.error("Error retrieving value:", error));
+          .then((value) => {
+            console.log("Retrieved value:", value);
+            settoken(value);
+          })
+          .catch((error) => console.error("Error retrieving value:", error));
         const data = await AsyncStorage.getItem("customerdata");
         const parsedData = JSON.parse(data);
         setemail(parsedData.email);
@@ -177,6 +198,28 @@ const Createthread = () => {
       contentContainerStyle={styles.scrollContainer}
     >
       <SafeAreaView style={styles.box}>
+        <Modal
+          animationType="fade"
+          transparent={true}
+          visible={modalVisible}
+          onRequestClose={() => {
+            setModalVisible(!modalVisible);
+          }}>
+          <View style={styles.centeredView}>
+            <View style={styles.modalView}>
+              <Feather name="check-circle" size={62} color="green" />
+              <Text style={styles.modalText}>Job created Successfully</Text>
+              <Pressable
+                style={[styles.button, styles.buttonClose]}
+                onPress={() => {
+                  setModalVisible(!modalVisible);
+                  navigation.navigate("Threadsavailable");
+                }}>
+                <Text style={styles.textStyle}>Okay</Text>
+              </Pressable>
+            </View>
+          </View>
+        </Modal>
         <View style={styles.box1}>
           <Text style={styles.box1text}>Job Title</Text>
           <TextInput
@@ -234,40 +277,40 @@ const Createthread = () => {
                 />
               ) : null}
             </View>
-    {indicator ? (<View>
-      <ActivityIndicator color={COLORS.primary} size={40}/>
-    </View>):<>
-            {!selectedImage ? (
-              <TouchableOpacity
-                underlayColor="white"
-                onPress={() => {
-                  handleSubmit();
-                }}
-              >
-                <View style={styles.box3opacity}>
-                  <Text
-                    style={{ color: "white", fontSize: 18, fontWeight: "bold" }}
-                  >
-                    Post Job
-                  </Text>
-                </View>
-              </TouchableOpacity>
-            ) : (
-              <TouchableOpacity
-                underlayColor="white"
-                onPress={() => {
-                  handlesubmitimage();
-                }}
-              >
-                <View style={styles.box3opacity}>
-                  <Text
-                    style={{ color: "white", fontSize: 18, fontWeight: "bold" }}
-                  >
-                   Post Job
-                  </Text>
-                </View>
-              </TouchableOpacity>
-            )}</>}
+            {indicator ? (<View>
+              <ActivityIndicator color={COLORS.primary} size={40} />
+            </View>) : <>
+              {!selectedImage ? (
+                <TouchableOpacity
+                  underlayColor="white"
+                  onPress={() => {
+                    handleSubmit();
+                  }}
+                >
+                  <View style={styles.box3opacity}>
+                    <Text
+                      style={{ color: "white", fontSize: 18, fontWeight: "bold" }}
+                    >
+                      Post Job
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+              ) : (
+                <TouchableOpacity
+                  underlayColor="white"
+                  onPress={() => {
+                    handlesubmitimage();
+                  }}
+                >
+                  <View style={styles.box3opacity}>
+                    <Text
+                      style={{ color: "white", fontSize: 18, fontWeight: "bold" }}
+                    >
+                      Post Job
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+              )}</>}
           </View>
         </View>
       </SafeAreaView>
@@ -348,6 +391,45 @@ const styles = StyleSheet.create({
     paddingVertical: 17,
     borderRadius: 5,
     alignItems: "center",
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: 'white',
+    borderRadius: 15,
+    justifyContent:'space-evenly',
+    padding: 40,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  button: {
+    borderRadius: 5,
+    padding: 10,
+    paddingHorizontal:20,
+    elevation: 2,
+  },
+  buttonClose: {
+    backgroundColor: COLORS.primary,
+  },
+  textStyle: {
+    color: 'white',
+    fontWeight: 'medium',
+    textAlign: 'center',
+  },
+  modalText: {
+    paddingVertical:15,
+    textAlign: 'center',
   },
 });
 
