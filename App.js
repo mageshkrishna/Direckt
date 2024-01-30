@@ -6,7 +6,7 @@ import Logincustomer from "./components/CustomerAuthentication/Logincustomer";
 import Signupcustomer from "./components/CustomerAuthentication/Signupcustomer";
 import UserLogin from "./components/Userauthentication/UserLogin";
 import Userregister from "./components/Userauthentication/Userregister";
-import Finalverification from "./components/Userauthentication/Finalverification";
+
 import Customerhome from "./components/customerhomepage/Customerhome";
 import Direcktsvg from "./components/Home/Homesvg";
 import { StatusBar } from "react-native";
@@ -16,6 +16,12 @@ import Shopownerhomepage from "./components/ShopownerHomepage/Shopownerhomepage"
 import Shopownernav from "./components/ShopownerHomepage/Shopownernavigation";
 import EditOwnerProfile from "./components/ShopownerHomepage/Editshopownerprofile";
 import StoreProfile from "./components/customerhomepage/Storeprofile";
+import CustomerForgetpassword from "./components/CustomerAuthentication/CustomerForgetpassword";
+import Customerpassword from "./components/CustomerAuthentication/Customerpassword";
+import Shopownerpassword from "./components/Userauthentication/Shopownerchangepassword";
+import ShopownerForgetpassword from "./components/Userauthentication/Shopownerforgetpassword";
+
+
 
 const Stack = createStackNavigator();
 
@@ -50,8 +56,8 @@ const App = () => {
           options={{ headerTransparent: true, title: "" }}
         />
          <Stack.Screen
-          name="Optverification"
-          component={Finalverification}
+          name="CustomerForgetpassword"
+          component={CustomerForgetpassword}
           options={{ headerTransparent: true, title: "" }}
         />
          <Stack.Screen
@@ -87,6 +93,21 @@ const App = () => {
          <Stack.Screen
           name="storeprofile"
           component={StoreProfile}
+          options={{ headerShown:false }}
+        />
+          <Stack.Screen
+          name="Customerpassword"
+          component={Customerpassword}
+          options={{ headerShown:false }}
+        />
+         <Stack.Screen
+          name="Shopownerchangepassword"
+          component={Shopownerpassword}
+          options={{ headerShown:false }}
+        />
+         <Stack.Screen
+          name="Shopownerforgotpassword"
+          component={ShopownerForgetpassword}
           options={{ headerShown:false }}
         />
       </Stack.Navigator>

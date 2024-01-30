@@ -174,6 +174,16 @@ const UserLogin = () => {
               </Text>
             </TouchableOpacity>
           </View>
+          <TouchableOpacity
+              style={{ padding: 4 }}
+              onPress={(e) => {
+                navigation.navigate("Shopownerforgotpassword");
+              }}
+            >
+              <Text style={{ color: COLORS.primary, fontSize: 16 }}>
+               Forget password
+              </Text>
+            </TouchableOpacity>
         </View>
       </View>
     </SafeAreaView>

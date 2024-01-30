@@ -177,7 +177,19 @@ const handleLogin = async () => {
                 sign up
               </Text>
             </TouchableOpacity>
+           
+            
           </View>
+          <TouchableOpacity
+              style={{ padding: 4 }}
+              onPress={(e) => {
+                navigation.navigate("CustomerForgetpassword");
+              }}
+            >
+              <Text style={{ color: COLORS.primary, fontSize: 16 }}>
+               Forgot password
+              </Text>
+            </TouchableOpacity>
         </View>
       </View>
     </SafeAreaView>
