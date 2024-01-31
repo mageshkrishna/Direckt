@@ -47,7 +47,7 @@ const EditOwnerProfile = () => {
   const[category2,setcategory2]=useState([]);
   const [shopownerId, setshopownerId] = useState(null);
   const [shopownerdata, setshopownerdata] = useState(null);
-
+const[email,setemail] = useState('');
   const[token,settoken] = useState(null);
   const editprofile = true;
   const addphoto = true;
@@ -112,12 +112,12 @@ const EditOwnerProfile = () => {
         })
         .catch((error) => console.error("Error retrieving value:", error));
         const data = await AsyncStorage.getItem("shopownerdata");
-
+        console.log("parsedData " + data);
         if (data) {
           const parsedData = JSON.parse(data);
 
-          console.log("parsedData " + parsedData.businessabout);
-
+          console.log("parsedData " + parsedData);
+     setemail(parsedData.email);
           setbusinessname(parsedData.businessname);
           setshopownerId(parsedData._id)
           setphonenumber(parsedData.phonenumber.toString());
@@ -158,8 +158,9 @@ const EditOwnerProfile = () => {
         address: address,
         deliverylocation: deliverylocation,
       },
+      email:email
     };
-    console.log("formdata" + formdata.updateFields);
+    console.log("formdata" + formdata.email);
     try {
       const updateuser = await axios.put(
         `https://direckt-copy1.onrender.com/shopowner/editshopowner`,

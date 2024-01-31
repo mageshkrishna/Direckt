@@ -17,9 +17,10 @@ import {
   const ShopownerForgetpassword = () => {
     const navigation = useNavigation();
     const [email, setemail] = useState();
+    const [isSendBtnVisible,setisSendBtnVisible]=useState(true);
     const [otp, setotp] = useState(null);
     const sendemail = async () => {
-      console.log("tarted");
+      console.log("started");
       if (!email) {
         showToast("Fill the email feild");
         return;
@@ -31,6 +32,7 @@ import {
           { email: email }
         );
         showToast("otp send succesfully to the email");
+        setisSendBtnVisible(!isSendBtnVisible);
       } catch (error) {
         showToast("Otp failed or Invalid user");
         console.log(error);
@@ -70,9 +72,9 @@ import {
     };
     return (
       <SafeAreaView style={{ flex: 1 }}>
-        <View style={{ flex: 1 }}>
+        <View style={{ flex: 1}}>
           <View style={styles.box0}>
-            <Text style={{ fontSize: 30, fontWeight: "600" }}>Enter Email</Text>
+            <Text style={{ fontSize: 30, fontWeight: "600",}}>Enter Email</Text>
             <TextInput
               style={styles.box2input}
               placeholder="xyz@gmail.com"
@@ -81,7 +83,7 @@ import {
                 setemail(val);
               }}
             />
-            <TouchableOpacity
+            {isSendBtnVisible ?<TouchableOpacity
               underlayColor="white"
               onPress={() => {
                 sendemail();
@@ -94,12 +96,12 @@ import {
                   Send OTP
                 </Text>
               </View>
-            </TouchableOpacity>
+            </TouchableOpacity>: <Text style={{color:'grey'}}>Otp Sent succesfully! check your mail box</Text>}
           </View>
   
           <View style={styles.box1}>
             <Text style={styles.box1text}>
-              Enter{"\n"}Verification{"\n"}OTP Code
+              Enter{" "}Verification{"\n"}OTP Code
             </Text>
           </View>
           <View style={styles.box2}>
@@ -151,19 +153,16 @@ import {
     },
     box1: {
       flex: 1,
-  
       paddingLeft: (Width * 13) / 100,
       justifyContent: "flex-end",
     },
     box2: {
       flex: 1,
-  
       alignItems: "center",
       justifyContent: "center",
     },
     box3: {
       flex: 2,
-  
       gap: 30,
       alignItems: "center",
     },

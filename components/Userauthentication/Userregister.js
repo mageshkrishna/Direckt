@@ -10,7 +10,7 @@ import {
   Modal,
   Pressable
 } from "react-native";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { SafeAreaView, StyleSheet } from "react-native";
 import { COLORS } from "../../constants/Theme";
 import { useNavigation } from "@react-navigation/native";
@@ -19,16 +19,23 @@ import { FontAwesome, Feather } from '@expo/vector-icons';
 import axios from "axios";
 const Width = Dimensions.get("window").width;
 const Height = Dimensions.get("window").height;
-const Userregister = () => {
+const Userregister = ({route}) => {
   const navigation = useNavigation();
-  const [businessname, setbuinessname] = useState(null);
+  const [businessname, setbuinessname] = useState('');
   const [phonenumber, setphonenumber] = useState(null);
-  const [email, setemail] = useState(null);
-  const [password, setpassword] = useState(null)
+  const [email, setemail] = useState('');
+  const [password, setpassword] = useState('')
   const [loading, setLoading] = useState(false);
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
 
+
+  useEffect(() => {
+    if (route.params) {
+      setemail(route.params.email || '');
+      setpassword(route.params.password || '');
+    }
+  }, [route.params]);
 
   const validateEmail = (email) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -194,7 +201,7 @@ const Userregister = () => {
             <TouchableOpacity
               style={{ paddingTop: 0 }}
               onPress={(e) => {
-                navigation.navigate("Userlogin");
+                navigation.navigate("Userlogin",{email,password});
               }}
             >
               <Text style={{ color: COLORS.primary, fontSize: 16 }}>Log in</Text>

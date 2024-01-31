@@ -9,7 +9,7 @@ import {
   Modal,
   Pressable
 } from "react-native";
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import { SafeAreaView, StyleSheet, Alert } from "react-native";
 import { COLORS } from "../../constants/Theme";
 import { useNavigation } from "@react-navigation/native";
@@ -17,7 +17,7 @@ import { FontAwesome, Feather } from '@expo/vector-icons';
 import axios from 'axios';
 const Width = Dimensions.get("window").width;
 const Height = Dimensions.get("window").height;
-const Signupcustomer = () => {
+const Signupcustomer = ({route}) => {
   const [modalVisible, setModalVisible] = useState(false);
   const navigation = useNavigation();
   const [name, setname] = useState('');
@@ -25,6 +25,14 @@ const Signupcustomer = () => {
   const [password, setpassword] = useState("");
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [loading, setLoading] = useState(false);
+
+
+  useEffect(() => {
+    if (route.params) {
+      setemail(route.params.email || '');
+      setpassword(route.params.password || '');
+    }
+  }, [route.params]);
 
   const togglePasswordVisibility = () => {
     setIsPasswordVisible((e) => !e);
@@ -149,7 +157,7 @@ const Signupcustomer = () => {
             <TouchableOpacity
               style={{ padding: 2 }}
               onPress={(e) => {
-                navigation.navigate("Logincustomer");
+                navigation.navigate("Logincustomer",{email,password});
               }}
             >
               <Text style={{ color: COLORS.primary, fontSize: 16 }}>Log in</Text>

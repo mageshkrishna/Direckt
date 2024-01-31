@@ -10,7 +10,7 @@ import {
   Modal,
   Pressable
 } from "react-native";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { SafeAreaView, StyleSheet } from "react-native";
 import { COLORS } from "../../constants/Theme";
 import { useNavigation } from "@react-navigation/native";
@@ -24,7 +24,7 @@ const Width = Dimensions.get("window").width;
 const Height = Dimensions.get("window").height;
 
 
-const Logincustomer = () => {
+const Logincustomer = ({route}) => {
   const navigation = useNavigation();
   const [modalVisible, setModalVisible] = useState(false);
   const [email, setemail] = useState("");
@@ -32,6 +32,12 @@ const Logincustomer = () => {
   const [loading, setLoading] = useState(false);
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
+  useEffect(() => {
+    if (route.params) {
+      setemail(route.params.email || '');
+      setpassword(route.params.password || '');
+    }
+  }, [route.params]);
 
   const validateEmail = (email) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -170,7 +176,7 @@ const handleLogin = async () => {
             <TouchableOpacity
               style={{ padding: 4 }}
               onPress={(e) => {
-                navigation.navigate("Signupcustomer");
+                navigation.navigate("Signupcustomer",{email,password});
               }}
             >
               <Text style={{ color: COLORS.primary, fontSize: 16 }}>

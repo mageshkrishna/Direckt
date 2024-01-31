@@ -175,7 +175,7 @@ const InsideAccorditon = ({ data }) => {
     </View>
   );
 };
-const AccordionItem = ({ data, token }) => {
+const AccordionItem = ({ data, token, onRefresh }) => {
   const [expanded, setExpanded] = useState(false);
   const [jobreply, setjobreply] = useState([]);
   const [jobIdToDelete, setjobIdToDelete] = useState(data._id);
@@ -234,6 +234,7 @@ const AccordionItem = ({ data, token }) => {
               style={[styles.button, styles.buttonClose]}
               onPress={() =>{ 
                 setModalVisible(!modalVisible);
+                onRefresh();
                 }}>
               <Text style={styles.textStyle}>Okay</Text>
             </Pressable>
@@ -365,7 +366,7 @@ const AccordionItem = ({ data, token }) => {
   );
 };
 
-const Threadsavailable = () => {
+const Threadsavailable = ({route}) => {
   const navigation = useNavigation();
   const colorScheme = useColorScheme();
   const [data, setdata] = useState([]);
@@ -375,6 +376,12 @@ const Threadsavailable = () => {
   const [token, settoken] = useState(null);
 
   const v = false;
+
+  useEffect(() => {
+    if (route.params) {
+      onRefresh();
+    }
+  }, [route.params]);
 
   useEffect(() => {
     setindicator(true);
@@ -517,7 +524,7 @@ const Threadsavailable = () => {
         </Text>
         <View>
           {data.map((item, index) => (
-            <AccordionItem key={index} data={item} token={token} />
+            <AccordionItem key={index} data={item} token={token} onRefresh={onRefresh} />
           ))}
         </View>
         <Text style={{ textAlign: "center" }}>

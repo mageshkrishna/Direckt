@@ -190,7 +190,7 @@ const Createthread = () => {
     { key: "7", value: "Drinks" },
   ];
   const chooselocation = [{ key: "1", value: "Vallioor" }];
-
+  const string="success";
   return (
     <KeyboardAwareScrollView
       extraScrollHeight={Platform.OS === "ios" ? 50 : 0}
@@ -213,7 +213,7 @@ const Createthread = () => {
                 style={[styles.button, styles.buttonClose]}
                 onPress={() => {
                   setModalVisible(!modalVisible);
-                  navigation.navigate("Threadsavailable");
+                  navigation.navigate("homeCustomer",{string});
                 }}>
                 <Text style={styles.textStyle}>Okay</Text>
               </Pressable>
