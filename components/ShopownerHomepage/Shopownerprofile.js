@@ -9,6 +9,7 @@ const width = Dimensions.get("window").width
 import * as SecureStore from "expo-secure-store";
 const Shopownerprofile = () => {
   const navigation = useNavigation();
+  const [email,setemail]= useState('');
   const [businessname, setbusinessname] = useState();
   const [businessabout, setbusinessabout] = useState("Vallioor");
   const [phonenumber, setphonenumber] = useState("");
@@ -80,7 +81,8 @@ const Shopownerprofile = () => {
 
             const formdata = {
               shopownerId: shopownerId,
-              deliverystatus: !deliverystatus
+              deliverystatus: !deliverystatus,
+              email:email,
             };
 
             console.log(formdata);
@@ -149,7 +151,8 @@ const Shopownerprofile = () => {
 
             const formdata = {
               shopownerId: shopownerId,
-              availabilitystatus: !availabilitystatus
+              availabilitystatus: !availabilitystatus,
+              email:email,
             };
 
             console.log(formdata);
@@ -202,6 +205,7 @@ const Shopownerprofile = () => {
           console.log("phonenumber: " + businessname);
           setphonenumber(parsedData.phonenumber.toString());
           console.log("phonenumber: " + phonenumber);
+          setemail(parsedData.email);
           setbusinessabout(parsedData.businessabout);
           setprofilepic(parsedData.profilepic);
           setphotos(parsedData.photos);

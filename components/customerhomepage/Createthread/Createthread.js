@@ -68,11 +68,11 @@ const Createthread = () => {
       showToast('Something Went Wrong! refresh the app')
       return;
     }
+    
 
     try {
       setindicator(true)
       console.log("Data:", firebaseImageUrl);
-
       const data = {
         location: location,
         email: email,
@@ -100,9 +100,9 @@ const Createthread = () => {
       setjobdescription("");
       setSelectedImage(null);
       setindicator(false)
-
       setModalVisible(!modalVisible);
 
+      
 
 
     } catch (error) {
@@ -190,7 +190,7 @@ const Createthread = () => {
     { key: "7", value: "Drinks" },
   ];
   const chooselocation = [{ key: "1", value: "Vallioor" }];
-  const string="success";
+  const string = 'success';
   return (
     <KeyboardAwareScrollView
       extraScrollHeight={Platform.OS === "ios" ? 50 : 0}
@@ -213,7 +213,7 @@ const Createthread = () => {
                 style={[styles.button, styles.buttonClose]}
                 onPress={() => {
                   setModalVisible(!modalVisible);
-                  navigation.navigate("homeCustomer",{string});
+                  navigation.navigate("homeCustomer", { string });
                 }}>
                 <Text style={styles.textStyle}>Okay</Text>
               </Pressable>
@@ -401,7 +401,7 @@ const styles = StyleSheet.create({
     margin: 20,
     backgroundColor: 'white',
     borderRadius: 15,
-    justifyContent:'space-evenly',
+    justifyContent: 'space-evenly',
     padding: 40,
     alignItems: 'center',
     shadowColor: '#000',
@@ -416,7 +416,7 @@ const styles = StyleSheet.create({
   button: {
     borderRadius: 5,
     padding: 10,
-    paddingHorizontal:20,
+    paddingHorizontal: 20,
     elevation: 2,
   },
   buttonClose: {
@@ -428,7 +428,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   modalText: {
-    paddingVertical:15,
+    paddingVertical: 15,
     textAlign: 'center',
   },
 });

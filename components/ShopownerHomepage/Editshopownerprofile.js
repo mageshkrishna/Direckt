@@ -44,16 +44,16 @@ const EditOwnerProfile = () => {
   const [deliverylocation, setdeliverylocation] = useState();
   const [location, setlocation] = useState("");
   const [category, setcategory] = useState([]);
-  const[category2,setcategory2]=useState([]);
+  const [category2, setcategory2] = useState([]);
   const [shopownerId, setshopownerId] = useState(null);
   const [shopownerdata, setshopownerdata] = useState(null);
-const[email,setemail] = useState('');
-  const[token,settoken] = useState(null);
+  const [email, setemail] = useState('');
+  const [token, settoken] = useState(null);
   const editprofile = true;
   const addphoto = true;
 
   const [isButtonDisabled, setButtonDisabled] = useState(false);
-    const[uploading,setuploading] = useState(false)
+  const [uploading, setuploading] = useState(false)
   const handleButtonPress = () => {
     if (!isButtonDisabled) {
       // Disable the button to prevent multiple rapid clicks
@@ -85,7 +85,7 @@ const[email,setemail] = useState('');
           {
             text: 'Yes',
             onPress: () => {
-             navigation.navigate('Shopownerprofile')
+              navigation.navigate('Shopownerprofile')
             },
           },
         ],
@@ -106,18 +106,18 @@ const[email,setemail] = useState('');
     const fetchData = async () => {
       try {
         SecureStore.getItemAsync("shopownertoken")
-        .then((value) => {
-          console.log("Retrieved value available:", value);
-          settoken(value);
-        })
-        .catch((error) => console.error("Error retrieving value:", error));
+          .then((value) => {
+            console.log("Retrieved value available:", value);
+            settoken(value);
+          })
+          .catch((error) => console.error("Error retrieving value:", error));
         const data = await AsyncStorage.getItem("shopownerdata");
         console.log("parsedData " + data);
         if (data) {
           const parsedData = JSON.parse(data);
 
           console.log("parsedData " + parsedData);
-     setemail(parsedData.email);
+          setemail(parsedData.email);
           setbusinessname(parsedData.businessname);
           setshopownerId(parsedData._id)
           setphonenumber(parsedData.phonenumber.toString());
@@ -143,7 +143,7 @@ const[email,setemail] = useState('');
   const updateshopowner = async () => {
     console.log(shopownerId)
     console.log(token)
-     setuploading(true)
+    setuploading(true)
     const formdata = {
       shopownerId: shopownerId,
       updateFields: {
@@ -158,7 +158,7 @@ const[email,setemail] = useState('');
         address: address,
         deliverylocation: deliverylocation,
       },
-      email:email
+      email: email
     };
     console.log("formdata" + formdata.email);
     try {
@@ -192,21 +192,38 @@ const[email,setemail] = useState('');
       navigation.navigate('Shopownerprofile');
     } catch (e) {
       setuploading(false)
-      
+
       console.log(e);
     }
   };
 
-  const shopPhotos = ["Photo", "only", "upto", "5", "No more"];
 
-  const locations = [{key : '1', value: "Vallioor" }];
+  const locations = [{ key: '1', value: "Vallioor" }];
 
   const categories = [
     { key: "1", value: "electronic" },
     { key: "2", value: "plumbing" },
     { key: "3", value: "Computers" },
   ];
-   
+
+  const deleteimage =(itemToRemove)=>{
+    Alert.alert(
+      'Confirmation',
+      'Are you sure you want to delete this image?',
+      [
+        {
+          text: 'Cancel',
+          onPress: () => console.log('Cancel Pressed'),
+          style: 'cancel',
+        },
+        { text: 'delete', onPress: () => {
+          const updated = photos.filter(item => item !== itemToRemove);
+          setphotos(updated);
+        } },
+      ],
+      { cancelable: false }
+    )
+  }
 
 
 
@@ -216,16 +233,16 @@ const[email,setemail] = useState('');
       <View style={styles.pagenavigation}>
         <View style={{ flexDirection: "row", alignItems: "center" }}>
           <TouchableOpacity onPress={handleButtonPress} disabled={isButtonDisabled} >
-          <Ionicons name="arrow-back-sharp" size={24} color="black" />
+            <Ionicons name="arrow-back-sharp" size={24} color="black" />
           </TouchableOpacity>
           <Text style={styles.pagenavigationtitle}>Edit Profile</Text>
         </View>
         <View>
-          {uploading?<ActivityIndicator size='medium' color='purple'/>:
-          <TouchableOpacity onPress={updateshopowner}>
-            <Text style={styles.editpagesave}>Save</Text>
-          </TouchableOpacity>
-}
+          {uploading ? <ActivityIndicator size='medium' color='purple' /> :
+            <TouchableOpacity onPress={updateshopowner}>
+              <Text style={styles.editpagesave}>Save</Text>
+            </TouchableOpacity>
+          }
         </View>
       </View>
       <Imagepicker
@@ -253,12 +270,12 @@ const[email,setemail] = useState('');
         <View style={styles.editfield}>
           <Text style={styles.editstorenamelabel}>Location</Text>
           <SelectList
-  setSelected={(val) => setlocation(val)}
-  data={locations}
-  save="value"
-  style={styles.storelocationselect}
-  defaultOption={{ key:'2', value:'Vallioor' }}  
-/>
+            setSelected={(val) => setlocation(val)}
+            data={locations}
+            save="value"
+            style={styles.storelocationselect}
+            defaultOption={{ key: '2', value: 'Vallioor' }}
+          />
 
 
         </View>
@@ -278,8 +295,8 @@ const[email,setemail] = useState('');
             setSelected={(val) => setcategory(val)}
             data={categories}
             save="value"
-            
-            
+
+
           />
         </View>
         <View style={styles.editfield}>
@@ -287,7 +304,7 @@ const[email,setemail] = useState('');
             Delivery locations or Servicable location{" "}
           </Text>
           <TextInput
-          
+
             style={styles.editstorenameinput}
             onChangeText={(e) => setdeliverylocation(e)}
             value={deliverylocation}
@@ -318,9 +335,14 @@ const[email,setemail] = useState('');
             return (
               <View key={index} >
                 <Image
-             style={styles.card}
-              source={{ uri: item }}
-            />
+                  style={styles.card}
+                  source={{ uri: item }}
+                />
+                <TouchableOpacity
+                  onPress={()=>deleteimage(item)}
+                >
+                <Text style={{textAlign:'center',color:'red'}}>Delete</Text>
+                </TouchableOpacity>
               </View>
             );
           })}
@@ -381,7 +403,7 @@ const styles = StyleSheet.create({
     padding: 10,
     fontSize: 15,
     borderBottomWidth: 0.9,
-    borderColor:COLORS.gray
+    borderColor: COLORS.gray
   },
   editfield: {
     paddingVertical: 10,
@@ -394,7 +416,7 @@ const styles = StyleSheet.create({
     width: 100,
     borderRadius: 10,
     margin: 4,
-   
+
     shadowOffset: {
       width: 1,
       height: 1,
@@ -419,7 +441,7 @@ const styles = StyleSheet.create({
     shadowColor: "grey",
   },
   shopImages: {
-    height: (height * 25) / 100,
+    height: (height * 26) / 100,
     paddingHorizontal: 30,
     paddingVertical: 20,
   },

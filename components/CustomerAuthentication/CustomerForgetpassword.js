@@ -5,8 +5,9 @@ import {
   TextInput,
   TouchableOpacity,
   ToastAndroid,
+  ActivityIndicator,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useState,useEffect} from "react";
 import { SafeAreaView, StyleSheet } from "react-native";
 import { COLORS } from "../../constants/Theme";
 import { useNavigation } from "@react-navigation/native";
@@ -17,21 +18,57 @@ const Height = Dimensions.get("window").height;
 const CustomerForgetpassword = () => {
   const navigation = useNavigation();
   const [email, setemail] = useState();
+  const [indicator, setindicator] = useState(false);
+  const [otpindicator, setotpindicator] = useState(false);
+  const [isSendBtnVisible, setisSendBtnVisible] = useState(true);
   const [otp, setotp] = useState(null);
+  const [seconds, setSeconds] = useState(60);
+  const [running, setRunning] = useState(false);
+
+  const startCountdown = () => {
+    setSeconds(60);
+    setRunning(true);
+  };
+  const stopCountdown = () => {
+    setRunning(false);
+  };
+  useEffect(() => {
+    let interval;
+    if (running) {
+      interval = setInterval(updateCountdown, 1000);
+    }
+
+    return () => clearInterval(interval);
+  }, [running]);
+  const updateCountdown = () => {
+    setSeconds(prevSeconds => {
+      if (prevSeconds === 0) {
+        stopCountdown();
+        return 0;
+      }
+      return prevSeconds - 1;
+    });
+  };
+
   const sendemail = async () => {
-    console.log("tarted");
+    console.log("Started");
     if (!email) {
       showToast("Fill the email feild");
       return;
     }
 
     try {
+      setindicator(!indicator);
       const response = await axios.post(
         "https://direckt-copy1.onrender.com/auth/customerforgetpassword",
         { email: email }
       );
       showToast("otp send succesfully to the email");
+      setindicator(!indicator);
+      setisSendBtnVisible(!isSendBtnVisible);
+      startCountdown();
     } catch (error) {
+      setindicator(indicator);
       showToast("Otp failed or Invalid user");
       console.log(error);
     }
@@ -49,19 +86,22 @@ const CustomerForgetpassword = () => {
       return;
     }
     try {
+      setotpindicator(!otpindicator);
       const response = await axios.post(
         "https://direckt-copy1.onrender.com/auth/customerverifyotp",
-        { otp: otp,email:email }
+        { otp: otp, email: email }
       );
       showToast("otp verified succesfully");
-      console.log(response.data)
-      console.log(response.data.token)
-      if(response.status===200){
-               return navigation.navigate("Customerpassword",{email:email,token:response.data.token});
-              
+      setotpindicator(!otpindicator);
+      console.log(response.data);
+      console.log(response.data.token);
+      if (response.status === 200) {
+        return navigation.navigate("Customerpassword", { email: email, token: response.data.token });
       }
-     
+
     } catch (error) {
+      setotpindicator(otpindicator);
+      showToast("Invalid OTP");
       console.log(error);
     }
   };
@@ -81,25 +121,28 @@ const CustomerForgetpassword = () => {
               setemail(val);
             }}
           />
-          <TouchableOpacity
+          {isSendBtnVisible ? <TouchableOpacity
             underlayColor="white"
             onPress={() => {
               sendemail();
             }}
           >
             <View style={styles.box1opacity}>
+              {indicator && <ActivityIndicator color={"white"} size={20} />}
               <Text
                 style={{ color: "white", fontSize: 14, fontWeight: "bold" }}
               >
                 Send OTP
               </Text>
             </View>
-          </TouchableOpacity>
+          </TouchableOpacity> : <View>
+          <Text style={{ color: 'grey' }}>Otp Sent succesfully! check your mail box</Text>
+          </View>}
         </View>
 
         <View style={styles.box1}>
           <Text style={styles.box1text}>
-            Enter{"\n"}Verification{"\n"}OTP Code
+            Enter{" "}Verification{"\n"}OTP Code
           </Text>
         </View>
         <View style={styles.box2}>
@@ -108,12 +151,14 @@ const CustomerForgetpassword = () => {
             placeholder="4 Digit otp code"
             maxLength={4}
             keyboardType="number-pad"
-            onChangeText={(val)=>{setotp(val)}}
+            onChangeText={(val) => { setotp(val) }}
           />
+          {running && <Text style={{ color: 'grey' }}>Otp will be Invalid in {`${Math.floor(seconds / 60)}:${seconds % 60 < 10 ? '0' : ''}${seconds % 60}`}</Text>}
         </View>
         <View style={styles.box3}>
-          <TouchableOpacity underlayColor="white" onPress={()=>{sendotp()}}>
+          <TouchableOpacity underlayColor="white" onPress={() => { sendotp() }}>
             <View style={styles.box3opacity}>
+            {otpindicator && <ActivityIndicator color={"white"} size={20} />}
               <Text
                 style={{ color: "white", fontSize: 18, fontWeight: "bold" }}
               >
@@ -151,19 +196,16 @@ const styles = StyleSheet.create({
   },
   box1: {
     flex: 1,
-
     paddingLeft: (Width * 13) / 100,
     justifyContent: "flex-end",
   },
   box2: {
     flex: 1,
-
     alignItems: "center",
     justifyContent: "center",
   },
   box3: {
     flex: 2,
-
     gap: 30,
     alignItems: "center",
   },
@@ -183,17 +225,21 @@ const styles = StyleSheet.create({
   },
   box3opacity: {
     width: (Width * 75) / 100,
+    flexDirection:'row',
+    justifyContent:'center',
     backgroundColor: COLORS.primary,
     paddingVertical: 17,
     borderRadius: 5,
     alignItems: "center",
   },
   box1opacity: {
-    width: (Width * 25) / 100,
+    width: (Width * 30) / 100,
     backgroundColor: COLORS.primary,
     paddingVertical: 17,
     borderRadius: 5,
     alignItems: "center",
+    justifyContent:'center',
+    flexDirection:'row',
   },
   box3signin: {
     color: "white",

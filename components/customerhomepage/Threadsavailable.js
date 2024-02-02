@@ -278,7 +278,7 @@ const AccordionItem = ({ data, token, onRefresh }) => {
                 onClose={() => setShowPopup(false)}
               />
             )}
-            <View style={{ flexDirection: "row" }}>
+            <View style={{ flexDirection: "row",}}>
               <Text style={styles.threadcategory} numberOfLines={1}>
                 {" "}
                 {data.category}
@@ -286,6 +286,36 @@ const AccordionItem = ({ data, token, onRefresh }) => {
             </View>
           </TouchableOpacity>
           <Pressable style={styles.threaddetails} onPress={toggleExpand}>
+          <TouchableOpacity
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  justifyContent:'flex-end',
+                  height:15
+                }}
+                onPress={() =>
+                  Alert.alert(
+                    "Confirm Deactivation",
+                    "You can Deactivate the Job only once. Do you want to deactivate?",
+                    [
+                      {
+                        text: "Cancel",
+                        style: "cancel",
+                      },
+                      {
+                        text: "delete",
+                        onPress: () => {
+                          // handleDeleteJob();
+                          Alert.alert("Job Deactivated!");
+                        },
+                      },
+                    ],
+                    { cancelable: true }
+                  )
+                }
+              >
+                <Text style={styles.deactivate}>Deactivate</Text>
+              </TouchableOpacity>
             <Text style={styles.threadtitle} numberOfLines={2}>
               {data.jobtitle}
             </Text>
@@ -605,12 +635,12 @@ const styles = StyleSheet.create({
     width: "40%",
   },
   threadtitle: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: "medium",
     color: COLORS.primary,
   },
   threaddes: {
-    fontSize: 13,
+    fontSize: 12,
     color: "grey",
   },
   threadowner: {
@@ -621,6 +651,13 @@ const styles = StyleSheet.create({
     backgroundColor: "#f4f5fb",
     borderRadius: 5,
     marginHorizontal: 5,
+  },
+  deactivate: {
+    padding: 2,
+    backgroundColor: "#f4f5fb",
+    borderRadius: 5,
+    marginHorizontal: 5,
+    fontSize:12,
   },
   responsecontainer: {
     backgroundColor: "white",

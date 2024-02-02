@@ -74,11 +74,12 @@ const Shopownerhomepage = () => {
 
     const location = shopownerdata.location;
     const category = shopownerdata.category;
+    const email = shopownerdata.email;
 
     console.log("getjob : " + location, category);
     try {
       const response1 = await axios.get(
-        `https://direckt-copy1.onrender.com/shopowner/getjobs?location=${location}&category=${category}`
+        `https://direckt-copy1.onrender.com/shopowner/getjobs?location=${location}&category=${category}&email=${email}`
         ,
         {
           headers: {
