@@ -20,13 +20,16 @@ import CustomerForgetpassword from "./components/CustomerAuthentication/Customer
 import Customerpassword from "./components/CustomerAuthentication/Customerpassword";
 import Shopownerpassword from "./components/Userauthentication/Shopownerchangepassword";
 import ShopownerForgetpassword from "./components/Userauthentication/Shopownerforgetpassword";
+import rootReducer  from "./redux/rootReducer"
 
-
+import { Provider } from "react-redux";
+import { configureStore } from "@reduxjs/toolkit";
 
 const Stack = createStackNavigator();
-
+const store = configureStore({reducer:rootReducer});
 const App = () => {
   return (
+    <Provider store={store}>
     <NavigationContainer>
       <StatusBar hidden={false} backgroundColor={COLORS.primary}/>
       <Stack.Navigator initialRouteName="Direcktsvg">
@@ -112,6 +115,7 @@ const App = () => {
         />
       </Stack.Navigator>
     </NavigationContainer>
+    </Provider>
   );
 };
 

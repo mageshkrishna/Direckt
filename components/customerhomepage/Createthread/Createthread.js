@@ -236,7 +236,7 @@ const Createthread = () => {
             textAlignVertical="top"
             onChangeText={(text) => setjobdescription(text)}
             value={jobdescription}
-            maxLength={75}
+            maxLength={300}
           />
           <Text style={styles.box1text}>Choose Category</Text>
           <SelectList

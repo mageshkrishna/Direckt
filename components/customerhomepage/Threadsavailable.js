@@ -17,6 +17,7 @@ import {
   ActivityIndicator,
   ToastAndroid,
   Modal,
+  BackHandler,
 } from "react-native";
 import * as SecureStore from "expo-secure-store";
 import { useState, useEffect } from "react";
@@ -28,7 +29,7 @@ const height = Dimensions.get("window").height;
 const width = Dimensions.get("window").width;
 import { COLORS } from "../../constants/Theme";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useNavigation } from "@react-navigation/native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import ImagePopup from "../ShopownerHomepage/Imagepopup";
 
 UIManager.setLayoutAnimationEnabledExperimental &&
@@ -181,10 +182,30 @@ const AccordionItem = ({ data, token, onRefresh }) => {
   const [jobIdToDelete, setjobIdToDelete] = useState(data._id);
   const [showPopup, setShowPopup] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
+  const[deleteindicator,setdeleteindicator]= useState(false)
+  const[deactivateindicator,setdeactivateindicator]= useState(false)
+  const deactivatejob =async()=>{
+    try{
+      setdeactivateindicator(true)
+     const response  =  await axios.post('https://direckt-copy1.onrender.com/Customerdata/changeactivestate',{_id:jobIdToDelete},{
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+     })
+     console.log(response.data)
+     setdeactivateindicator(false)
+     ToastAndroid.show('Job Deactivated', ToastAndroid.SHORT);
+    }
+    catch{
+      setdeactivateindicator(false)
+      ToastAndroid.show('Job Deactivated', ToastAndroid.SHORT);
+    }
+}
   const handleDeleteJob = async () => {
     console.log(jobIdToDelete);
     try {
-      // Make a DELETE request using Axios
+      setdeleteindicator(true)
       const response = await axios.delete(
         "https://direckt-copy1.onrender.com/Customerdata/deletejob",
         {
@@ -198,10 +219,10 @@ const AccordionItem = ({ data, token, onRefresh }) => {
 
       if (response.status === 200) {
         setModalVisible(!modalVisible);
-      } else {
-        ToastAndroid.show('Job Deletion Failed', ToastAndroid.SHORT);
-      }
+      } 
+      setdeleteindicator(false)
     } catch (error) {
+      setdeleteindicator(false)
       console.error("Error:", error);
       Alert.alert("Error", "Something went wrong");
     }
@@ -286,36 +307,50 @@ const AccordionItem = ({ data, token, onRefresh }) => {
             </View>
           </TouchableOpacity>
           <Pressable style={styles.threaddetails} onPress={toggleExpand}>
-          <TouchableOpacity
-                style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                  justifyContent:'flex-end',
-                  height:15
-                }}
-                onPress={() =>
-                  Alert.alert(
-                    "Confirm Deactivation",
-                    "You can Deactivate the Job only once. Do you want to deactivate?",
-                    [
-                      {
-                        text: "Cancel",
-                        style: "cancel",
-                      },
-                      {
-                        text: "delete",
-                        onPress: () => {
-                          // handleDeleteJob();
-                          Alert.alert("Job Deactivated!");
-                        },
-                      },
-                    ],
-                    { cancelable: true }
-                  )
-                }
-              >
-                <Text style={styles.deactivate}>Deactivate</Text>
-              </TouchableOpacity>
+          {data.status ? (
+  <TouchableOpacity
+    style={{
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "flex-end",
+    }}
+    onPress={() =>
+      Alert.alert(
+        "Confirm Deactivation",
+        "You can Deactivate the Job only once. Do you want to deactivate?",
+        [
+          {
+            text: "Cancel",
+            style: "cancel",
+          },
+          {
+            text: "Deactivate", // Corrected from "deactivated" to "Deactivate"
+            onPress: async() => {
+              await deactivatejob();
+              onRefresh()
+            },
+          },
+        ],
+        { cancelable: true }
+      )
+    }
+  >
+     {deactivateindicator && <ActivityIndicator size={18} color="purple"/>}
+    <Text style={styles.deactivate}>Deactivate</Text>
+  </TouchableOpacity>
+) : (
+  <View
+    style={{
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "flex-end",
+    }}
+  >
+    <Text style={styles.deactivated}>Not active</Text>
+  </View>
+)}
+
+         
             <Text style={styles.threadtitle} numberOfLines={2}>
               {data.jobtitle}
             </Text>
@@ -356,7 +391,8 @@ const AccordionItem = ({ data, token, onRefresh }) => {
                   )
                 }
               >
-                <AntDesign name="delete" size={12} color="red" />
+                  {deleteindicator ? <ActivityIndicator size={18} color="purple"/>:  <AntDesign name="delete" size={12} color="red" />}
+                
                 <Text style={styles.threadowner}> Delete</Text>
               </TouchableOpacity>
               <View style={styles.viewdetails}>
@@ -406,13 +442,32 @@ const Threadsavailable = ({route}) => {
   const [token, settoken] = useState(null);
 
   const v = false;
+  useFocusEffect(
+    React.useCallback(() => {
+      const handleBackPress = () => {
+        if (route.name === "homeCustomer") {
+          BackHandler.exitApp();
+          return true; // Prevent going back to the previous page
+        }
+        return false; // Allow the default back action on other screens
+      };
 
+      const backHandler = BackHandler.addEventListener(
+        "hardwareBackPress",
+        handleBackPress
+      );
+
+      return () => {
+        backHandler.remove();
+      };
+    }, [route.name])
+  );
   useEffect(() => {
     if (route.params) {
       onRefresh();
     }
   }, [route.params]);
-
+     
   useEffect(() => {
     setindicator(true);
     const fetchData = async () => {
@@ -658,6 +713,14 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     marginHorizontal: 5,
     fontSize:12,
+  },
+  deactivated: {
+    padding: 3,
+    backgroundColor: "#f4f5fb",
+    borderRadius: 5,
+    marginHorizontal: 5,
+    fontSize:12,
+    color:'red'
   },
   responsecontainer: {
     backgroundColor: "white",

@@ -1,13 +1,18 @@
-import { StyleSheet, Text, View, ScrollView, ImageBackground, TouchableOpacity, Dimensions, Image, Linking, Alert, Pressable, ToastAndroid } from 'react-native'
+import { StyleSheet, Text, View, ScrollView, ImageBackground, TouchableOpacity, Dimensions, Image, Linking, Alert, Pressable, ToastAndroid, ActivityIndicator } from 'react-native'
 import { FontAwesome5, AntDesign, MaterialCommunityIcons, MaterialIcons, Feather, Entypo } from '@expo/vector-icons';
 import { React, useEffect, useState } from 'react'
 import { useIsFocused, useNavigation } from '@react-navigation/native';
 import axios from "axios";
+import { useDispatch } from 'react-redux';
+import { clearShopOwnerToken } from '../../redux/shopOwnerAuthActions';
+
 import AsyncStorage from '@react-native-async-storage/async-storage';
 const height = Dimensions.get("window").height
 const width = Dimensions.get("window").width
 import * as SecureStore from "expo-secure-store";
 const Shopownerprofile = () => {
+  const dispatch = useDispatch();
+
   const navigation = useNavigation();
   const [email,setemail]= useState('');
   const [businessname, setbusinessname] = useState();
@@ -28,6 +33,8 @@ const Shopownerprofile = () => {
   const [deliverystatus, setdeliverystatus] = useState(Boolean)
   const [shopownerId, setshopownerId] = useState(null);
   const[token,settoken] = useState(null)
+  const[shopindicator,setshopindicator] = useState(false)
+  const[deliveryindicator,setdeliveryindicator] = useState(false)
   const isFocused = useIsFocused();
   const updatedeliveryStatusInAsyncStorage = async (deliverystatus) => {
     try {
@@ -51,9 +58,14 @@ const Shopownerprofile = () => {
 
   const removeData = async () => {
     try {
+      dispatch(clearShopOwnerToken());
       await SecureStore.deleteItemAsync('shopownertoken');
       console.log('Token removed successfully');
       await AsyncStorage.removeItem("shopownerdata");
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'Shopownerhomepage' }],
+      });
       navigation.navigate("Home");
       console.log("Data removed successfully");
     } catch (error) {
@@ -74,7 +86,7 @@ const Shopownerprofile = () => {
         {
           text: 'Yes',
           onPress: async () => {
-            // Toggle availability status
+            setdeliveryindicator(true)
             console.log("delivery" + deliverystatus)
 
 
@@ -101,8 +113,10 @@ const Shopownerprofile = () => {
                 updatedeliveryStatusInAsyncStorage(!deliverystatus)
                 setdeliverystatus(!deliverystatus)
               }
+              setdeliveryindicator(false)
               console.log(response.data);
             } catch (err) {
+              setdeliveryindicator(false)
               console.error(err);
             }
           }
@@ -144,7 +158,7 @@ const Shopownerprofile = () => {
         {
           text: 'Yes',
           onPress: async () => {
-            // Toggle availability status
+            setshopindicator(true)
             console.log("availabilitystatus" + availabilitystatus)
 
 
@@ -170,7 +184,9 @@ const Shopownerprofile = () => {
               updateavailabilityStatusInAsyncStorage(!availabilitystatus)
               setavailabilitystatus(!availabilitystatus)
               console.log(response.data);
+              setshopindicator(false)
             } catch (err) {
+              setshopindicator(false)
               console.error(err);
             }
           }
@@ -279,21 +295,25 @@ const Shopownerprofile = () => {
       <View style={styles.ctccontainer}>
         <View style={styles.ctccard}>
           <View style={styles.ctcsection}>
+            {shopindicator?<ActivityIndicator size={40} color="green"/>:
             <Pressable
               style={availabilitystatus ? [styles.storestatus, styles.ctcicon] : [styles.storestatusoff, styles.ctcicon]}
               onPress={() => { availability() }}
             >
               {availabilitystatus ? <MaterialCommunityIcons name="store-check" size={42} color="white" /> : <MaterialCommunityIcons name="store-remove" size={42} color="white" />}
             </Pressable>
+}
             {availabilitystatus ? <Text style={{ fontSize: 10 }}>Store: Open</Text> : <Text style={{ fontSize: 10 }}>Store: Closed</Text>}
           </View>
           <View style={styles.ctcsection}>
+          {deliveryindicator?<ActivityIndicator size={40} color="green"/>:
             <Pressable
               onPress={() => { delivery() }}
               style={deliverystatus ? [styles.ctcdeliverystatus, styles.ctcicon] : [styles.ctcdeliverystatusoff, styles.ctcicon]}
             >
               <MaterialIcons name="delivery-dining" size={42} color="white" />
             </Pressable>
+}
             {deliverystatus ? <Text style={{ fontSize: 10 }}>Delivery: Available</Text> : <Text style={{ fontSize: 10 }}>Delivery: Not Available</Text>}
           </View>
           <View style={styles.ctcsection}>

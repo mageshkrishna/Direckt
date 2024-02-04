@@ -8,105 +8,141 @@ import {
   ScrollView,
   StyleSheet,
   ActivityIndicator,
-  Image
+  Image,
+  BackHandler,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import JobCard from "./Jobcard";
-import { useIsFocused } from "@react-navigation/native";
 import * as SecureStore from "expo-secure-store";
+import { useSelector } from "react-redux";
+import { COLORS } from "../../constants/Theme";
+import { useFocusEffect } from "@react-navigation/native";
+
 const Shopownerhomepage = () => {
-  const [job_id, setjob_id] = useState(null);
-  const [shopowner_id, setshopowner_id] = useState(null);
-  const [deliverystatus, setdeliverystatus] = useState(false);
-  const [replymessage, setreplymessage] = useState(null);
-  const [refreshing, setRefreshing] = useState(false);
-  const[token,settoken] = useState(null)
-  const [job, setjob] = useState([]);
-  const [shopownerdata, setshopownerdata] = useState(null);
-  const[ownerdetail,setownerdetail] = useState(null);
-  
-
-  useEffect(() => {
-    if(refreshing){
-     return ;
-    }
-    else{
-    const fetchData = async () => {
-      try {
-        SecureStore.getItemAsync("shopownertoken")
-        .then((value) => {
-          console.log("Retrieved value available:", value);
-          settoken(value);
-        })
-        .catch((error) => console.error("Error retrieving value:", error));
-        const data = await AsyncStorage.getItem("shopownerdata");
-      
-        if (data) {
-          console.log(data)
-          const parsedData = JSON.parse(data);
-          setshopownerdata(parsedData);
-          setownerdetail(parsedData._id)
+  useFocusEffect(
+    React.useCallback(() => {
+      const handleBackPress = () => {
+        if (route.name === "homeshopowner") {
+          BackHandler.exitApp();
+          return true; // Prevent going back to the previous page
         }
-      } catch (err) {
-        console.log(err);
-      }
-    };
+        return false; // Allow the default back action on other screens
+      };
 
-    fetchData();
-  }
-  }, [refreshing]);
-
-  const onRefresh = React.useCallback(async () => {
-    setRefreshing(true); // Set refreshing to true before fetching data
-  
-    setTimeout( () => {
-     
-      setRefreshing(false); // Set refreshing back to false after data is fetched
-    }, 2000);
-  }, []);
-  
-
-  const getjob = async () => {
-    if (!shopownerdata || !shopownerdata.location || !shopownerdata.category ||!token) {
-      return;
-    }
-
-    const location = shopownerdata.location;
-    const category = shopownerdata.category;
-    const email = shopownerdata.email;
-
-    console.log("getjob : " + location, category);
-    try {
-      const response1 = await axios.get(
-        `https://direckt-copy1.onrender.com/shopowner/getjobs?location=${location}&category=${category}&email=${email}`
-        ,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json',
-          },
-        }
+      const backHandler = BackHandler.addEventListener(
+        "hardwareBackPress",
+        handleBackPress
       );
-      console.log(response1.data);
-      setjob(response1.data);
-    } catch (e) {
-      Alert.alert("Something went wrong. Try again");
-      console.log(e);  
+
+      return () => {
+        backHandler.remove();
+      };
+    }, [route.name])
+  );
+  const shopOwnerToken = useSelector(
+    (state) => state.shopOwnerAuth.shopOwnerToken
+  );
+  console.log("shopOwnerToken" + shopOwnerToken);
+
+  const [refreshing, setRefreshing] = useState(false);
+  const [token, setToken] = useState(null);
+  const [job, setJob] = useState([]);
+  const [shopownerdata, setShopOwnerData] = useState(null);
+  const [ownerdetail, setOwnerDetail] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+  const fetchData = async () => {
+    try {
+      const value = await SecureStore.getItemAsync("shopownertoken");
+      setToken(value);
+
+      const data = await AsyncStorage.getItem("shopownerdata");
+      if (data) {
+        const parsedData = JSON.parse(data);
+        setShopOwnerData(parsedData);
+        setOwnerDetail(parsedData._id);
+      }
+    } catch (err) {
+      setLoading(false);
+      console.log(err);
     }
   };
 
   useEffect(() => {
-    getjob();
-  }, [shopownerdata,token,refreshing]);
-   
+    setLoading(true);
+    console.log("homepage working");
+    fetchData();
+  }, [shopOwnerToken,refreshing]);
+
+  const onRefresh = React.useCallback(async () => {
+    setRefreshing(true);
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 2000);
+  }, []);
+
+  useEffect(() => {
+    const getJob = async () => {
+      if (!shopownerdata || !shopownerdata.location || !shopownerdata.category || !token) {
+        return;
+      }
+
+      const location = shopownerdata.location;
+      const category = shopownerdata.category;
+      const email = shopownerdata.email;
+
+      console.log("getJob : " + location, category);
+      try {
+        const response1 = await axios.get(
+          `https://direckt-copy1.onrender.com/shopowner/getjobs?location=${location}&category=${category}&email=${email}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              'Content-Type': 'application/json',
+            },
+          }
+        );
+        console.log(response1.data);
+        setJob(response1.data);
+        setLoading(false);
+      } catch (e) {
+        setLoading(false);
+        Alert.alert("Something went wrong. Try again");
+        console.log(e);
+      }
+    };
+
+    if (refreshing) {
+      return; // Avoid calling getJob if refreshing
+    }
+
+    getJob();
+  }, [shopownerdata, token]);
+
+  if (loading) {
+    return (
+      <View
+        style={{
+          flex: 1,
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <ActivityIndicator size={80} color={COLORS.primary} />
+        <Text>Loading...</Text>
+      </View>
+    );
+  }
+
   return (
     <ScrollView
       refreshControl={
         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
       }
-    > 
-       {!job &&  <ActivityIndicator size="medium" color="#0000ff" /> }
+    >
+      {!job && <ActivityIndicator size="medium" color="#0000ff" />}
       {job.length > 0 && ownerdetail ? (
         job.map((item, index) => (
           <View key={index}>
@@ -114,14 +150,14 @@ const Shopownerhomepage = () => {
           </View>
         ))
       ) : (
-        <View style={{flex:1,alignItems:'center',justifyContent:'center',height:550,width:'100%'}}>
+        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', height: 550, width: '100%' }}>
           <Image
             source={
               require('../../assets/Loading-rafiki.png')
             }
-            style={{height:'50%',width:'80%'}}
+            style={{ height: '50%', width: '80%' }}
           />
-          <Text>No jobs available.refresh the app</Text>
+          <Text>No jobs available. Refresh the app</Text>
         </View>
       )}
     </ScrollView>
@@ -141,150 +177,3 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
 });
-// import {
-//   View,
-//   Text,
-//   Button,
-//   Alert,
-//   RefreshControl,
-//   ScrollView,
-//   StyleSheet,
-// } from "react-native";
-// import React, { useEffect, useState } from "react";
-// import AsyncStorage from "@react-native-async-storage/async-storage";
-// import { useNavigation } from "@react-navigation/native";
-// import axios from "axios";
-// import JobCard from "./Jobcard";
-
-// const Shopownerhomepage = () => {
-//   const [job_id, setjob_id] = useState(null);
-//   const [shopowner_id, setshopowner_id] = useState(null);
-//   const [deliverystatus, setdeliverystatus] = useState(false);
-//   const [replymessage, setreplymessage] = useState(null);
-//   const [refreshing, setRefreshing] = React.useState(false);
-//   const [job, setjob] = useState([]);
-//   const [shopownerdata, setshopownerdata] = useState([]);
-
-
-//   const createreply = async () => {
-//     if (!deliverystatus || !replymessage) {
-//       Alert.alert("please fill the two feilds");
-//     }
-//     if (!job_id || !shopowner_id) {
-//       Alert.alert("something went wrong refresh the app");
-//     }
-//     const formdata = {
-//       job_id: job_id,
-//       shopowner_id: shopowner_id,
-//       deliverystatus: deliverystatus,
-//       replymessage: replymessage,
-//     };
-//     try {
-//       const response = await axios.post(
-//         "https://direckt-copy1.onrender.com/shopowner/createjobreply",
-//         formdata
-//       );
-//       console.log(response.status);
-//       Alert.alert("created job reply successfully");
-//     } catch (e) {
-//       Alert.alert("Something went wrong try again");
-//     }
-//   };
-//  useEffect(()=>{
-//   const fetchData = async () => {
-//     try {
-//       const data = await AsyncStorage.getItem("shopownerdata");
-
-//       if (data) {
-//         const parsedData = JSON.parse(data);
-//         setshopownerdata(parsedData);
-         
-//         console.log(shopownerdata)
-//       }
-//     } catch (err) {
-//       console.log(err);
-//     }
-//   };
-//   fetchData(refreshing);
-
-//  },[])
-   
- 
-
-
-//   const onRefresh = React.useCallback(() => {
-//     getjob()
-//     setRefreshing(true);
-//     setTimeout(() => {
-//       setRefreshing(false);
-//     },2000);
-   
-//   }, []);
-
-//   const getjob = async () => {
-    
-//     const location = shopownerdata.location;
-//     const category = shopownerdata.category;
-//     if(!location && !category){
-//       return ;
-//     }
-//     console.log("getjob : " + location, category);
-//     try {
-//       const response1 = await axios.get(
-//         `https://direckt-copy1.onrender.com/shopowner/getjobs?location=${location}&category=${category}`
-//       );
-//       console.log(response1.data);
-//       setjob(response1.data);
-//     } catch (e) { 
-//       Alert.alert("Something went wrong try again");
-//       console.log(e);  
-//     }
-//   };
-//   useEffect(() => {
-   
-//       getjob();
-
-
-  
-//   }, [shopownerdata,refreshing]);
-  
-
-//   return (
-//     <ScrollView 
-//     refreshControl={
-//       <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-//     }
-//     >
-  
-//       {job ? (
-//       job.map((item, index) => {
-          
-//         return (
-//           <View key={index}>
-         
-//           <JobCard item={item}/>
-//            </View>
-//         )
-//       }
-       
-//       )
-//     ) : (
-//       <Text>No jobs available</Text>
-//     )}
-//       </ScrollView>
-    
-//   )
-// };
-
-// export default Shopownerhomepage;
-// const styles = StyleSheet.create({
-//   container: {
-//     flex: 1,
-//   },
-//   scrollView: {
-//     flex: 1,
-//     backgroundColor: 'pink',
-//     alignItems: 'center',
-//     justifyContent: 'center',
-//   },
-// });

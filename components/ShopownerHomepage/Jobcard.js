@@ -51,7 +51,7 @@ const JobCard = ({ item, ownerdetail, token }) => {
   const createreply = async () => {
     setuploading(true);
     if (!replymessage) {
-      showToast("Please fill both fields");
+      showToast("Please fill  fields");
       setuploading(false);
       return;
     }
@@ -206,6 +206,8 @@ const JobCard = ({ item, ownerdetail, token }) => {
                 <TextInput
                   style={styles.replyinput}
                   multiline={true}
+                  maxLength={125}
+                  textAlignVertical="top"
                   numberOfLines={5}
                   onChangeText={(val) => {
                     setreplymessage(val);
@@ -296,6 +298,7 @@ const styles = StyleSheet.create({
   jobtitle: {
     fontSize: 18,
     fontWeight: "medium",
+    color:COLORS.primary
   },
   jobdes: {
     fontSize: 13,
@@ -350,6 +353,8 @@ const styles = StyleSheet.create({
     borderRadius: 3,
     borderWidth: 0.9,
     width: "100%",
+    paddingHorizontal:5,
+    paddingVertical:8
   },
   acceptorder: {
     flexDirection: "row",

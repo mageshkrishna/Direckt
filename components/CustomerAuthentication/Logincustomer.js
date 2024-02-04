@@ -18,13 +18,14 @@ import { FontAwesome, Feather } from '@expo/vector-icons';
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as SecureStore from 'expo-secure-store';
-
+import { connect } from "react-redux";
+import { setCustomerToken } from "../../redux/customerAuthActions";
 
 const Width = Dimensions.get("window").width;
 const Height = Dimensions.get("window").height;
 
 
-const Logincustomer = ({route}) => {
+const Logincustomer = ({route,setCustomerToken}) => {
   const navigation = useNavigation();
   const [modalVisible, setModalVisible] = useState(false);
   const [email, setemail] = useState("");
@@ -83,6 +84,7 @@ const handleLogin = async () => {
    console.log (response.data)
     const { status, data, token } = response.data;
        console .log (token)
+       setCustomerToken(token)
     if (status) {
       console.log(status);
       console.log(JSON.stringify(data));
@@ -99,7 +101,7 @@ const handleLogin = async () => {
       .then(() => console.log('Value stored securely'))
       .catch(error => console.error('Error storing value:', error));
       showToast("Login Successful!");
-
+      
       // Navigate to the next screen or perform other actions
       navigation.navigate("Customerhome");
 
@@ -202,7 +204,7 @@ const handleLogin = async () => {
   );
 };
 
-export default Logincustomer;
+export default connect(null, { setCustomerToken })(Logincustomer);
 const styles = StyleSheet.create({
   box1: {
     flex: 3,

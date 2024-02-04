@@ -18,11 +18,13 @@ import { FontAwesome, Feather } from '@expo/vector-icons';
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as SecureStore from "expo-secure-store";
+import { connect } from "react-redux";
+import { setShopOwnerToken } from "../../redux/shopOwnerAuthActions";
 const Width = Dimensions.get("window").width;
 const Height = Dimensions.get("window").height;
 
 
-const UserLogin = ({route}) => {
+const UserLogin = ({route,setShopOwnerToken}) => {
   const navigation = useNavigation();
   const [modalVisible, setModalVisible] = useState(false);
   const [email, setemail] = useState("");
@@ -78,6 +80,7 @@ const UserLogin = ({route}) => {
       );
      console.log (response.data)
       const { status, data, token } = response.data;
+      setShopOwnerToken(token)
          console .log (token)
       if (status) {
         console.log(status);
@@ -93,6 +96,7 @@ const UserLogin = ({route}) => {
         // Store the token securely using react-native-keychain
         SecureStore.setItemAsync('shopownertoken',token)
         .then(() => console.log('Value stored securely'))
+       
         .catch(error => console.error('Error storing value:', error));
         showToast("Login Successful!");
   
@@ -196,7 +200,7 @@ const UserLogin = ({route}) => {
   );
 };
 
-export default UserLogin;
+export default connect(null, { setShopOwnerToken })(UserLogin);
 const styles = StyleSheet.create({
   box1: {
     flex: 3,

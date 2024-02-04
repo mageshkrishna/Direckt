@@ -7,12 +7,17 @@ import { Dimensions } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 import * as SecureStore from "expo-secure-store";
+import { useSelector } from 'react-redux';
 const height = Dimensions.get("window").height
 const width = Dimensions.get("window").width
 
 
 const Profile = () => {
     const navigation = useNavigation()
+    const customertoken = useSelector(
+        (state) => state.customerAuth.customertoken
+      );
+      console.log("customertoken" + customertoken);
     const [customerdata, setCustomerData] = useState(null);
     const data = [
         { id:1,title: 'How to create a thread?', content: "To ensure that only one item expands at a time, you can maintain the index of the currently expanded item " },
@@ -49,7 +54,7 @@ const Profile = () => {
 
         fetchData();
 
-    }, []);
+    }, [customertoken]);
     const removeData = async () => {
         try {
             await SecureStore.deleteItemAsync('customertoken');

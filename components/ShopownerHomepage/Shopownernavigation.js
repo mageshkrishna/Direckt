@@ -37,26 +37,7 @@ const Shopownernav = () => {
     
   
    
-    useFocusEffect(
-      React.useCallback(() => {
-        const handleBackPress = () => {
-          if (route.name === "Shopownernav") {
-            BackHandler.exitApp();
-            return true; // Prevent going back to the previous page
-          }
-          return false; // Allow the default back action on other screens
-        };
-  
-        const backHandler = BackHandler.addEventListener(
-          "hardwareBackPress",
-          handleBackPress
-        );
-  
-        return () => {
-          backHandler.remove();
-        };
-      }, [route.name])
-    );
+   
     const removeData = async () => {
       try {
         // Remove data
