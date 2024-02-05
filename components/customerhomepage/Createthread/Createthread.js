@@ -47,31 +47,29 @@ const Createthread = () => {
     ToastAndroid.show(e, ToastAndroid.SHORT);
   };
   const handleSubmit = async (firebaseImageUrl) => {
-
     if (!jobtitle) {
-      showToast("Enter Job Title")
+      showToast("Enter Job Title");
       return;
     }
     if (!jobdescription) {
-      showToast("Enter Job Description")
+      showToast("Enter Job Description");
       return;
     }
     if (!location) {
-      showToast("Select Location")
+      showToast("Select Location");
       return;
     }
     if (!category) {
-      showToast("Select Category")
+      showToast("Select Category");
       return;
     }
     if (!email) {
-      showToast('Something Went Wrong! refresh the app')
+      showToast('Something Went Wrong! refresh the app');
       return;
     }
-    
-
+  
     try {
-      setindicator(true)
+      setindicator(true);
       console.log("Data:", firebaseImageUrl);
       const data = {
         location: location,
@@ -81,11 +79,10 @@ const Createthread = () => {
         category: category,
         image_url: firebaseImageUrl,
       };
-
+  
       const response = await axios.post(
         "https://direckt-copy1.onrender.com/Customerdata/createjob",
-        data
-        ,
+        data,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -93,33 +90,36 @@ const Createthread = () => {
           },
         }
       );
-
+  
       console.log("Response:", response.data);
-
+  
       setjobtitle("");
       setjobdescription("");
       setSelectedImage(null);
-      setindicator(false)
+      setindicator(false);
       setModalVisible(!modalVisible);
-
-      
-
-
     } catch (error) {
-      setindicator(false)
-      if (error.response.status === 400) {
-        return Alert.alert(
-          "Error",
-          "User can only create 5 jobs at a time. Delete the old job to create a new one."
-        );
+      setindicator(false);
+  
+      if (axios.isAxiosError(error)) {
+        // Axios-related error
+        if (error.response) {
+          // Response received with an error status code
+          console.log(error.response);
+          Alert.alert(`Error: ${error.response.data.error}`);
+        } else {
+          // Network error (no response received)
+          showToast("Network error. Please check your internet connection.");
+        }
+      } else {
+        // Non-Axios error
+        console.log(error);
+        Alert.alert("An error occurred. Please try again.");
       }
-
-      else {
-        Alert.alert("Error");
-      }
-
     }
   };
+  
+  
   const handlesubmitimage = async () => {
 
     if (!jobtitle) {
