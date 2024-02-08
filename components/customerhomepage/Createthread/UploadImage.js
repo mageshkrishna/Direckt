@@ -32,7 +32,7 @@ import { firebase } from "./Config";
       const ref = firebase.storage().ref().child(filename);
       await ref.put(blob);
       const downloadURL = await ref.getDownloadURL();
-      console.log(downloadURL)
+      // console.log(downloadURL)
      return downloadURL;
     
     } catch (error) {

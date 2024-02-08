@@ -35,12 +35,8 @@ const EditOwnerProfile = () => {
   const [phonenumber, setphonenumber] = useState("");
   const [profilepic, setprofilepic] = useState("");
   const [photos, setphotos] = useState([]);
-  const [gmaplink, setgmaplink] = useState(
-    "https://www.google.com/maps/place/Sri+Eshwar+College+of+Engineering,+Coimbatore/@10.827908,77.0579419,17z/data=!3m1!4b1!4m6!3m5!1s0x3ba84ee37569ae7f:0x3c5b1824b6e79192!8m2!3d10.827908!4d77.0605168!16s%2Fg%2F1tdyp6pq?entry=ttu"
-  );
-  const [address, setaddress] = useState(
-    "Store description will be written here for the betterment of the design"
-  );
+  const [gmaplink, setgmaplink] = useState('');
+  const [address, setaddress] = useState('');
   const [deliverylocation, setdeliverylocation] = useState();
   const [location, setlocation] = useState("");
   const [category, setcategory] = useState([]);
@@ -107,21 +103,16 @@ const EditOwnerProfile = () => {
       try {
         SecureStore.getItemAsync("shopownertoken")
           .then((value) => {
-            console.log("Retrieved value available:", value);
             settoken(value);
           })
           .catch((error) => console.error("Error retrieving value:", error));
         const data = await AsyncStorage.getItem("shopownerdata");
-        console.log("parsedData " + data);
         if (data) {
           const parsedData = JSON.parse(data);
-
-          console.log("parsedData " + parsedData);
           setemail(parsedData.email);
           setbusinessname(parsedData.businessname);
           setshopownerId(parsedData._id)
           setphonenumber(parsedData.phonenumber.toString());
-          console.log("phonenumber: " + phonenumber);
           setbusinessabout(parsedData.businessabout);
           setprofilepic(parsedData.profilepic);
           setphotos(parsedData.photos);
@@ -141,8 +132,6 @@ const EditOwnerProfile = () => {
   }, []);
 
   const updateshopowner = async () => {
-    console.log(shopownerId)
-    console.log(token)
     setuploading(true)
     const formdata = {
       shopownerId: shopownerId,
@@ -160,7 +149,6 @@ const EditOwnerProfile = () => {
       },
       email: email
     };
-    console.log("formdata" + formdata.email);
     try {
       const updateuser = await axios.put(
         `https://direckt-copy1.onrender.com/shopowner/editshopowner`,
@@ -190,10 +178,22 @@ const EditOwnerProfile = () => {
       setuploading(false)
       showToast('Profile Updated Successfully!');
       navigation.navigate('Shopownerprofile');
-    } catch (e) {
+    } catch (error) {
       setuploading(false)
-
-      console.log(e);
+      if (axios.isAxiosError(error)) {
+        // Axios-related error
+        if (error.response) {
+          // Response received with an error status code
+          showToast(`Error: ${error.response.data.error}`);
+        } else {
+          // Network error (no response received)
+          showToast("Network error. Please check your internet connection.");
+        }
+      } else {
+        // Non-Axios error
+        console.log(error);
+        showToast("An error occurred. Please try again.");
+      }
     }
   };
 
@@ -351,7 +351,6 @@ const EditOwnerProfile = () => {
           ) : (
             <></>
           )}
-          {/* {shopPho tos.length < 5 ? <View style={styles.addimagecard}><Text>No Image</Text></View> : <></>} */}
         </ScrollView>
       </View>
     </ScrollView>

@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   ToastAndroid,
   ActivityIndicator,
+  Alert,
 } from "react-native";
 import React, { useState,useEffect} from "react";
 import { SafeAreaView, StyleSheet } from "react-native";
@@ -51,31 +52,42 @@ const CustomerForgetpassword = () => {
   };
 
   const sendemail = async () => {
-    console.log("Started");
     if (!email) {
-      showToast("Fill the email feild");
+      showToast("Fill the email field");
       return;
     }
 
     try {
-      setindicator(!indicator);
+      setindicator(true);
       const response = await axios.post(
         "https://direckt-copy1.onrender.com/auth/customerforgetpassword",
         { email: email }
       );
       showToast("otp send succesfully to the email");
-      setindicator(!indicator);
+      setindicator(false);
       setisSendBtnVisible(!isSendBtnVisible);
       startCountdown();
     } catch (error) {
-      setindicator(indicator);
-      showToast("Otp failed or Invalid user");
-      console.log(error);
+      setindicator(false);
+      if (axios.isAxiosError(error)) {
+        // Axios-related error
+        if (error.response) {
+          // Response received with an error status code
+          console.log(error.response);
+          showToast(`Error: ${error.response.data.error}`);
+        } else {
+          // Network error (no response received)
+          showToast("Network error. Please check your internet connection.");
+        }
+      } else {
+        // Non-Axios error
+        console.log(error);
+        Alert.alert("An error occurred. Please try again.");
+      }
     }
   };
 
   const sendotp = async () => {
-    console.log(email)
     console.log("started");
     if (!otp) {
       showToast("Fill the otp feild");
@@ -86,23 +98,21 @@ const CustomerForgetpassword = () => {
       return;
     }
     try {
-      setotpindicator(!otpindicator);
+      setotpindicator(true);
       const response = await axios.post(
         "https://direckt-copy1.onrender.com/auth/customerverifyotp",
         { otp: otp, email: email }
       );
       showToast("otp verified succesfully");
-      setotpindicator(!otpindicator);
-      console.log(response.data);
+      setotpindicator(false);
       console.log(response.data.token);
       if (response.status === 200) {
         return navigation.navigate("Customerpassword", { email: email, token: response.data.token });
       }
 
     } catch (error) {
-      setotpindicator(otpindicator);
+      setotpindicator(false);
       showToast("Invalid OTP");
-      console.log(error);
     }
   };
   const showToast = (e) => {

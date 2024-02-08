@@ -33,11 +33,11 @@ const UserLogin = ({route,setShopOwnerToken}) => {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
   useEffect(() => {
-    if (route.params) {
+    if (route && route.params) {
       setemail(route.params.email || '');
       setpassword(route.params.password || '');
     }
-  }, [route.params]);
+  }, [route]);
 
   const validateEmail = (email) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -89,7 +89,6 @@ const UserLogin = ({route,setShopOwnerToken}) => {
         // Store user data in AsyncStorage
         try {
           await AsyncStorage.setItem('shopownerdata', JSON.stringify(data));
-          console.log("Data stored successfully:", data);
         } catch (error) {
           console.error("Error storing data:", error);
         }
@@ -105,11 +104,23 @@ const UserLogin = ({route,setShopOwnerToken}) => {
   
       } else {
         console.log(status);
-        Alert.alert("Error", "Invalid login data");
+        showToast("Error", "Invalid login data");
       }
     } catch (error) {
-      // console.error(error);
-      showToast("Invalid username or password!");
+      if (axios.isAxiosError(error)) {
+        // Axios-related error
+        if (error.response) {
+          // Response received with an error status code
+          showToast(`Error: ${error.response.data.error}`);
+        } else {
+          // Network error (no response received)
+          showToast("Network error. Please check your internet connection.");
+        }
+      } else {
+        // Non-Axios error
+        console.log(error);
+        showToast("An error occurred. Please try again.");
+      }
     } finally {
       setLoading(false);
     }

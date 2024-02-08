@@ -97,7 +97,6 @@ const Shopownerprofile = () => {
               email:email,
             };
 
-            console.log(formdata);
 
             try {
               // Assuming the API request is uncommented
@@ -114,10 +113,22 @@ const Shopownerprofile = () => {
                 setdeliverystatus(!deliverystatus)
               }
               setdeliveryindicator(false)
-              console.log(response.data);
-            } catch (err) {
+            } catch (error) {
               setdeliveryindicator(false)
-              console.error(err);
+              if (axios.isAxiosError(error)) {
+                // Axios-related error
+                if (error.response) {
+                  // Response received with an error status code
+                  showToast(`Error: ${error.response.data.error}`);
+                } else {
+                  // Network error (no response received)
+                  showToast("Network error. Please check your internet connection.");
+                }
+              } else {
+                // Non-Axios error
+                console.log(error);
+                showToast("An error occurred. Please try again.");
+              }
             }
           }
         }
@@ -169,7 +180,6 @@ const Shopownerprofile = () => {
               email:email,
             };
 
-            console.log(formdata);
 
             try {
               // Assuming the API request is uncommented
@@ -183,11 +193,23 @@ const Shopownerprofile = () => {
             );
               updateavailabilityStatusInAsyncStorage(!availabilitystatus)
               setavailabilitystatus(!availabilitystatus)
-              console.log(response.data);
               setshopindicator(false)
-            } catch (err) {
+            } catch (error) {
               setshopindicator(false)
-              console.error(err);
+              if (axios.isAxiosError(error)) {
+                // Axios-related error
+                if (error.response) {
+                  // Response received with an error status code
+                  showToast(`Error: ${error.response.data.error}`);
+                } else {
+                  // Network error (no response received)
+                  showToast("Network error. Please check your internet connection.");
+                }
+              } else {
+                // Non-Axios error
+                console.log(error);
+                showToast("An error occurred. Please try again.");
+              }
             }
           }
         }
@@ -195,8 +217,8 @@ const Shopownerprofile = () => {
       { cancelable: false }
     );
   };
-  const showToast = () => {
-    ToastAndroid.show('Google map is not linked', ToastAndroid.SHORT);
+  const showToast = (e) => {
+    ToastAndroid.show(e, ToastAndroid.SHORT);
   };
 
 
@@ -206,7 +228,6 @@ const Shopownerprofile = () => {
       try {
         SecureStore.getItemAsync("shopownertoken")
         .then((value) => {
-          console.log("Retrieved value available:", value);
           settoken(value);
         })
         .catch((error) => console.error("Error retrieving value:", error));
@@ -215,12 +236,9 @@ const Shopownerprofile = () => {
         if (data) {
           const parsedData = JSON.parse(data);
           setshopownerId(parsedData._id)
-          console.log("parsedData " + parsedData.businessabout);
 
           setbusinessname(parsedData.businessname);
-          console.log("phonenumber: " + businessname);
           setphonenumber(parsedData.phonenumber.toString());
-          console.log("phonenumber: " + phonenumber);
           setemail(parsedData.email);
           setbusinessabout(parsedData.businessabout);
           setprofilepic(parsedData.profilepic);
@@ -241,22 +259,10 @@ const Shopownerprofile = () => {
 
     fetchData();
   }, [isFocused]);
-
-  const [storestate, setStorestate] = useState(true);
-  const [deliverystate, setDeliverystate] = useState(true);
-  const shopPhotos = [
-    "Photo"
-  ]
-  const selectedItems = [
-    "vallioor",
-    "Petharangapuram",
-    "Tirunelveli"
-  ]
   return (
     <ScrollView style={styles.container}>
       <ImageBackground
         source={
-          // require('../../assets/icon.png')
           {
             uri: 'https://a.cdn-hotels.com/gdcs/production181/d1528/3a35ad9e-1a07-4161-a28b-7c069d02efdf.jpg?impolicy=fcrop&w=800&h=533&q=medium',
           }
@@ -270,7 +276,6 @@ const Shopownerprofile = () => {
             style={styles.headerprofileImage}
           /> : <Image
             source={
-              // require('../../assets/shop.png')
               {uri:'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS3u_DGIWouUwuaqQE88-nun_n2h-Pb2yRQXQ&usqp=CAU',}
           }
             style={styles.headerprofileImage}
@@ -328,7 +333,7 @@ const Shopownerprofile = () => {
                       onPress: () => console.log('Cancel Pressed'),
                       style: 'cancel',
                     },
-                    { text: 'open', onPress: () => gmaplink ? Linking.openURL(gmaplink) : showToast() },
+                    { text: 'open', onPress: () => gmaplink ? Linking.openURL(gmaplink) : showToast('Google map is not linked') },
                   ],
                   { cancelable: false }
                 )
@@ -394,8 +399,6 @@ const Shopownerprofile = () => {
             })
           }
           {photos.length == 0 ? <View style={styles.addimagecard}><Text style={{ textAlign: 'center', fontSize: 10, color: 'grey' }}>No Image Added</Text></View> : <></>}
-          {/* {shopPhotos.length<5?<View style={styles.addimagecard}><MaterialIcons name="add-photo-alternate" size={24} color="grey" /></View>:<></>} */}
-          {/* {shopPhotos.length < 5 ? <View style={styles.addimagecard}><Text>No Image</Text></View> : <></>} */}
         </ScrollView>
       </View>
       <View style={styles.bodyfooter}>
@@ -717,35 +720,3 @@ const styles = StyleSheet.create({
   }
 
 })
-// import { View, Text, Button, Touchable } from 'react-native'
-// import React from 'react'
-// import AsyncStorage from '@react-native-async-storage/async-storage';
-// import { useNavigation } from '@react-navigation/native';
-// import { TouchableOpacity } from 'react-native-gesture-handler';
-
-// const Shopownerprofile = () => {
-
-//   return (
-//     <View>
-
-//     </View>
-//   )
-// }
-
-// export default Shopownerprofile
-// const navigation = useNavigation();
-// const removeData = async () => {
-//     try {
-
-//       await AsyncStorage.removeItem("shopownerdata");
-//       navigation.navigate("Home");
-//       console.log("Data removed successfully");
-//     } catch (error) {
-//       console.error("Error removing data:", error);
-//     }
-//   };
-{/* <Text>Shopownerprofile</Text>
-      <TouchableOpacity onPress={()=>{
-           navigation.navigate('EditOwnerProfile');
-      }}><Text>Editprofile</Text></TouchableOpacity>
-      <Button title='log out' onPress={removeData}/> */}

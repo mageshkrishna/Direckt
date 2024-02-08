@@ -26,14 +26,26 @@ const Customerpassword = ({route}) => {
       )
       if(response.status===200){
         showToast('passwordchanged successfully')
-       
-        console.log('passwordchanged successfully')
       }
 
       return navigation.navigate('Logincustomer')
     }
-    catch{
-      showToast('retry and generate new otp')
+    catch(error){
+      // showToast('retry and generate new otp')
+      if (axios.isAxiosError(error)) {
+        // Axios-related error
+        if (error.response) {
+          // Response received with an error status code
+          showToast(`Error: ${error.response.data.error}`);
+        } else {
+          // Network error (no response received)
+          showToast("Network error. Please check your internet connection.");
+        }
+      } else {
+        // Non-Axios error
+        console.log(error);
+        showToast("An error occurred. Please try again.");
+      }
     }
    }
   }

@@ -17,9 +17,10 @@ import JobCard from "./Jobcard";
 import * as SecureStore from "expo-secure-store";
 import { useSelector } from "react-redux";
 import { COLORS } from "../../constants/Theme";
-import { useFocusEffect } from "@react-navigation/native";
+import { useFocusEffect,useRoute } from "@react-navigation/native";
 
 const Shopownerhomepage = () => {
+  const route = useRoute();
   useFocusEffect(
     React.useCallback(() => {
       const handleBackPress = () => {
@@ -71,7 +72,6 @@ const Shopownerhomepage = () => {
 
   useEffect(() => {
     setLoading(true);
-    console.log("homepage working");
     fetchData();
   }, [shopOwnerToken,refreshing]);
 
@@ -81,7 +81,9 @@ const Shopownerhomepage = () => {
       setRefreshing(false);
     }, 2000);
   }, []);
-
+  const showToast = (e) => {
+    ToastAndroid.show(e, ToastAndroid.SHORT);
+  };
   useEffect(() => {
     const getJob = async () => {
       if (!shopownerdata || !shopownerdata.location || !shopownerdata.category || !token) {
@@ -92,7 +94,6 @@ const Shopownerhomepage = () => {
       const category = shopownerdata.category;
       const email = shopownerdata.email;
 
-      console.log("getJob : " + location, category);
       try {
         const response1 = await axios.get(
           `https://direckt-copy1.onrender.com/shopowner/getjobs?location=${location}&category=${category}&email=${email}`,
@@ -103,13 +104,24 @@ const Shopownerhomepage = () => {
             },
           }
         );
-        console.log(response1.data);
         setJob(response1.data);
         setLoading(false);
-      } catch (e) {
+      } catch (error) {
         setLoading(false);
-        Alert.alert("Something went wrong. Try again");
-        console.log(e);
+        if (axios.isAxiosError(error)) {
+          // Axios-related error
+          if (error.response) {
+            // Response received with an error status code
+            showToast(`Error: ${error.response.data.error}`);
+          } else {
+            // Network error (no response received)
+            showToast("Network error. Please check your internet connection.");
+          }
+        } else {
+          // Non-Axios error
+          console.log(error);
+          showToast("An error occurred. Please try again.");
+        }
       }
     };
 

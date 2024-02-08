@@ -70,7 +70,6 @@ const Createthread = () => {
   
     try {
       setindicator(true);
-      console.log("Data:", firebaseImageUrl);
       const data = {
         location: location,
         email: email,
@@ -106,7 +105,7 @@ const Createthread = () => {
         if (error.response) {
           // Response received with an error status code
           console.log(error.response);
-          Alert.alert(`Error: ${error.response.data.error}`);
+          showToast(`Error: ${error.response.data.error}`);
         } else {
           // Network error (no response received)
           showToast("Network error. Please check your internet connection.");
@@ -114,7 +113,7 @@ const Createthread = () => {
       } else {
         // Non-Axios error
         console.log(error);
-        Alert.alert("An error occurred. Please try again.");
+        showToast("An error occurred. Please try again.");
       }
     }
   };
@@ -172,7 +171,6 @@ const Createthread = () => {
         const data = await AsyncStorage.getItem("customerdata");
         const parsedData = JSON.parse(data);
         setemail(parsedData.email);
-        console.log(email);
       } catch (err) {
         console.log(err);
       }
@@ -324,7 +322,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     width: Width,
-    // Added paddingBottom to create space for keyboard
   },
   box: {
     flex: 1,

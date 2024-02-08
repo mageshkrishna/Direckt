@@ -101,17 +101,28 @@ const handleLogin = async () => {
       .then(() => console.log('Value stored securely'))
       .catch(error => console.error('Error storing value:', error));
       showToast("Login Successful!");
-      
       // Navigate to the next screen or perform other actions
       navigation.navigate("Customerhome");
 
     } else {
       console.log(status);
-      Alert.alert("Error", "Invalid login data");
+      showToast("Error", "Invalid login data");
     }
   } catch (error) {
-    // console.error(error);
-    showToast("Invalid username or password!");
+    if (axios.isAxiosError(error)) {
+      // Axios-related error
+      if (error.response) {
+        // Response received with an error status code
+        showToast(`Error: ${error.response.data.error}`);
+      } else {
+        // Network error (no response received)
+        showToast("Network error. Please check your internet connection.");
+      }
+    } else {
+      // Non-Axios error
+      console.log(error);
+      showToast("An error occurred. Please try again.");
+    }
   } finally {
     setLoading(false);
   }
@@ -208,19 +219,16 @@ export default connect(null, { setCustomerToken })(Logincustomer);
 const styles = StyleSheet.create({
   box1: {
     flex: 3,
-
     paddingLeft: (Width * 13) / 100,
     justifyContent: "flex-end",
   },
   box2: {
     flex: 2,
-
     alignItems: "center",
     justifyContent: "space-evenly",
   },
   box3: {
     flex: 3,
-
     gap: 30,
     alignItems: "center",
   },
