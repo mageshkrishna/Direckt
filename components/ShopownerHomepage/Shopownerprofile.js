@@ -10,6 +10,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 const height = Dimensions.get("window").height
 const width = Dimensions.get("window").width
 import * as SecureStore from "expo-secure-store";
+import { TextInput } from 'react-native-gesture-handler';
+import { COLORS } from '../../constants/Theme';
 const Shopownerprofile = () => {
   const dispatch = useDispatch();
 
@@ -53,6 +55,25 @@ const Shopownerprofile = () => {
 
     } catch (error) {
       console.error(error);
+    }
+  };
+  const [feedbackText, setFeedbackText] = useState('');
+  const [feedbackTextIndicator, setFeedbackTextindicator] = useState(false);
+  const handleFeedbackSubmit = async () => {
+    if(feedbackText.length===0){
+       showToast('feedback is empty')
+    }
+    try {
+      setFeedbackTextindicator(true)
+      const response = await axios.post('https://direckt-copy1.onrender.com/direckt/shopownerfeedback', { feedback: feedbackText });
+      showToast('feedback sent successfully')
+      setFeedbackText('')
+      setFeedbackTextindicator(false)
+      
+    } catch (error) {
+        setFeedbackTextindicator(false)
+        showToast('feedback failed')
+      
     }
   };
 
@@ -195,10 +216,10 @@ const Shopownerprofile = () => {
       { cancelable: false }
     );
   };
-  const showToast = () => {
-    ToastAndroid.show('Google map is not linked', ToastAndroid.SHORT);
-  };
 
+  const showToast = (e) => {
+    ToastAndroid.show(e, ToastAndroid.SHORT);
+  };
 
 
   useEffect(() => {
@@ -242,16 +263,7 @@ const Shopownerprofile = () => {
     fetchData();
   }, [isFocused]);
 
-  const [storestate, setStorestate] = useState(true);
-  const [deliverystate, setDeliverystate] = useState(true);
-  const shopPhotos = [
-    "Photo"
-  ]
-  const selectedItems = [
-    "vallioor",
-    "Petharangapuram",
-    "Tirunelveli"
-  ]
+ 
   return (
     <ScrollView style={styles.container}>
       <ImageBackground
@@ -470,6 +482,28 @@ const Shopownerprofile = () => {
             </TouchableOpacity>
           </View>
         </View>
+        <View
+              style={{ height: 200, width: "100%", flexDirection:'column',alignItems:'flex-start',justifyContent:'center',gap:10,paddingLeft:15,marginTop:20}}
+            >
+              <Text>Your Feedback Matters: Suggestions, Bug Reports Welcome!</Text>
+              <TextInput
+                style={{
+                  flex: 1,
+                  textAlignVertical: "top",
+                  borderWidth: 1,
+                  borderColor: "gray",
+                  padding: 10,
+                  width:'100%',
+                  borderRadius:5
+                }}
+                multiline
+                numberOfLines={4}
+                placeholder="Type your feedback here..."
+                value={feedbackText}
+                onChangeText={setFeedbackText}
+              />
+              <TouchableOpacity style={{backgroundColor:COLORS.primary,paddingHorizontal:12,paddingVertical:8,borderRadius:4}} onPress={handleFeedbackSubmit}><Text style={{fontSize:18}}>Submit</Text>{feedbackTextIndicator&&<ActivityIndicator size={18}/>}</TouchableOpacity>
+            </View>
       </View>
     </ScrollView>
   )

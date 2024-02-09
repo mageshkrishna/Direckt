@@ -189,11 +189,36 @@ const CustomerSearchBar = () => {
   const [linearProgress, setlinearProgress] = useState(false);
   const[resultmessage , setresultmessage] = useState("Find shop and service")
   const [token, settoken] = useState(null);
-  const categories = [
-    { key: "1", value: "grocery" },
-    { key: "2", value: "electronic" },
-    { key: "3", value: "Computers" },
-  ];
+  const [choosedata, setChooseData] = useState([{key:'1', value:'loading...', disabled:true}]);
+  const[jobselection,setjoblocation] = useState(null)
+ 
+  useEffect(() => {
+    fetchDatacategory(); // Fetch choosedata when the component mounts
+  }, []);
+
+  const fetchDatacategory= async () => {
+    try {
+      const response = await axios.get("https://direckt-copy1.onrender.com/direckt/getcategory");
+      const dataFromBackend = response.data;
+      console.log("Data from backend:", dataFromBackend); // Log the data from the backend
+      // Check if the data is an array and has elements
+      if (Array.isArray(dataFromBackend) && dataFromBackend.length > 0) {
+        // Map over the data to convert it into the required format
+        const formattedData = dataFromBackend[0]?.categories.map(category => ({
+          key: category.key,
+          value: category.value
+        })) || [];
+        // Update the state with the formatted data
+        setChooseData(formattedData);
+      } else {
+        console.error("Data from backend is not in the expected format.");
+      }
+    } catch (error) {
+      console.error('Error fetching choosedata:', error);
+    }
+  };
+  
+  
 
   useEffect(()=>{
     SecureStore.getItemAsync("customertoken")
@@ -206,8 +231,8 @@ const CustomerSearchBar = () => {
 
   const fetchData = async () => {
     console.log("searching....");
-    if (!businessname && !category) {
-      Alert.alert("businessname required");
+    if (!businessname || !jobselection) {
+      Alert.alert("businessname and location required");
       return;
     }
     try {
@@ -216,6 +241,7 @@ const CustomerSearchBar = () => {
       setProgress(0.15);
       let formdata = {
         businessname: businessname,
+        location:jobselection
       };
 
       if (category) {
@@ -228,7 +254,7 @@ const CustomerSearchBar = () => {
       }
 
       const response = await axios.get(
-        "https://direckt-copy1.onrender.com/shopowner/getshops",
+        "https://direckt-copy1.onrender.com/shopowner/direckt/getshops",
         {
           params: formdata,
           headers: {
@@ -252,7 +278,35 @@ const CustomerSearchBar = () => {
       console.error(error);
     }
   };
+  const [chooselocation, setchooselocation] = useState([{key:'1', value:'loading...', disabled:true}]);
+  useEffect(() => {
+    fetchDatalocation(); // Fetch choosedata when the component mounts
+  }, []);
 
+  const fetchDatalocation = async () => {
+    try {
+      const response = await axios.get("https://direckt-copy1.onrender.com/getlocations");
+      const dataFromBackend = response.data;
+      console.log("Data from backend:", dataFromBackend); // Log the data from the backend
+      // Check if the data is an array and has elements
+      if (Array.isArray(dataFromBackend) && dataFromBackend.length > 0) {
+        // Map over the data to convert it into the required format
+        const formattedData = dataFromBackend[0]?.locations.map(location => ({
+          key: location.key,
+          value: location.value
+        })) || [];
+        // Update the state with the formatted data
+        setchooselocation(formattedData);
+      } else {
+       return
+      }
+    } catch (error) {
+      console.error('Error fetching choosedata:', error);
+    }
+  };
+  
+  
+  
   return (
     <View style={styles.container}>
       <View style={styles.searchcontainer}>
@@ -280,13 +334,16 @@ const CustomerSearchBar = () => {
             <Feather name="search" size={30} color="#8A57E4" />
           </TouchableOpacity>
         </View>
-        <View style={styles.filtercontainer}>
-          <View
+        
+       <View
             style={{
               flexDirection: "row",
               alignItems: "center",
-              justifyContent: "flex-start",
+            justifyContent:'flex-start',
               columnGap: 10,
+             marginLeft:20,
+              width:'100%',
+          
             }}
           >
             <Text style={{ color: colorScheme === "dark" ? "grey" : "grey" }}>
@@ -296,18 +353,32 @@ const CustomerSearchBar = () => {
               value={availabilitystatus}
               onValueChange={setavailabilitystatus}
               color={availabilitystatus ? "#3C4142" : undefined}
+              style={{height:25,width:25}}
+            />
+          </View> 
+        <View style={styles.filtercontainer}>
+         
+           <View style={{ width: "45%" }}>
+            <SelectList
+             setSelected={(val) => setjoblocation(val)}
+              data={chooselocation}
+              save="value"
+              placeholder="Location"
+              dropdownTextStyles={{ color: "grey" }}
+              inputStyles={{ color: "grey" }}
             />
           </View>
           <View style={{ width: "45%" }}>
             <SelectList
               setSelected={(val) => setcategory(val)}
-              data={categories}
+              data={choosedata}
               save="value"
               placeholder="category"
               dropdownTextStyles={{ color: "grey" }}
               inputStyles={{ color: "grey" }}
             />
           </View>
+          
         </View>
         {linearProgress && (
           <LinearProgress

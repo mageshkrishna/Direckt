@@ -180,16 +180,63 @@ const Createthread = () => {
 
     fetchData();
   }, []);
-  const choosedata = [
-    { key: "1", value: "Mobiles" },
-    { key: "2", value: "Appliances" },
-    { key: "3", value: "Cameras" },
-    { key: "4", value: "Computers" },
-    { key: "5", value: "Vegetables" },
-    { key: "6", value: "Diary Products" },
-    { key: "7", value: "Drinks" },
-  ];
-  const chooselocation = [{ key: "1", value: "Vallioor" }];
+  const [choosedata, setChooseData] = useState([{key:'1', value:'loading...', disabled:true}]);
+  useEffect(() => {
+    fetchData(); // Fetch choosedata when the component mounts
+  }, []);
+
+  const fetchData = async () => {
+    try {
+      const response = await axios.get("https://direckt-copy1.onrender.com/direckt/getcategory");
+      const dataFromBackend = response.data;
+      console.log("Data from backend:", dataFromBackend); // Log the data from the backend
+      // Check if the data is an array and has elements
+      if (Array.isArray(dataFromBackend) && dataFromBackend.length > 0) {
+        // Map over the data to convert it into the required format
+        const formattedData = dataFromBackend[0]?.categories.map(category => ({
+          key: category.key,
+          value: category.value
+        })) || [];
+        // Update the state with the formatted data
+        setChooseData(formattedData);
+      } else {
+        return ;
+      }
+    } catch (error) {
+      console.error('Error fetching choosedata:', error);
+    }
+  };
+
+  const [chooselocation, setchooselocation] = useState([{key:'1', value:'loading...', disabled:true}]);
+  useEffect(() => {
+    fetchDatalocation(); // Fetch choosedata when the component mounts
+  }, []);
+
+  const fetchDatalocation = async () => {
+    try {
+      const response = await axios.get("https://direckt-copy1.onrender.com/direckt/getlocations");
+      const dataFromBackend = response.data;
+      console.log("Data from backend:", dataFromBackend); // Log the data from the backend
+      // Check if the data is an array and has elements
+      if (Array.isArray(dataFromBackend) && dataFromBackend.length > 0) {
+        // Map over the data to convert it into the required format
+        const formattedData = dataFromBackend[0]?.locations.map(location => ({
+          key: location.key,
+          value: location.value
+        })) || [];
+        // Update the state with the formatted data
+        setchooselocation(formattedData);
+      } else {
+       return
+      }
+    } catch (error) {
+      console.error('Error fetching choosedata:', error);
+    }
+  };
+  
+  
+  
+ 
   const string = 'success';
   return (
     <KeyboardAwareScrollView
@@ -198,7 +245,7 @@ const Createthread = () => {
       contentContainerStyle={styles.scrollContainer}
     >
       <SafeAreaView style={styles.box}>
-        <Modal
+        <Modal 
           animationType="fade"
           transparent={true}
           visible={modalVisible}

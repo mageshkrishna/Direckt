@@ -1,302 +1,426 @@
-import { ScrollView, StyleSheet, Text, View, TouchableOpacity, Linking, SafeAreaView, Alert, useColorScheme } from 'react-native'
-import { MaterialIcons, Entypo, FontAwesome5 } from '@expo/vector-icons';
-import { Feather, AntDesign } from '@expo/vector-icons';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { React, useEffect, useState } from 'react'
-import { Dimensions } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useNavigation } from '@react-navigation/native';
+import {
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  Linking,
+  SafeAreaView,
+  Alert,
+  useColorScheme,
+  TextInput,
+  Button,
+  ToastAndroid,
+  ActivityIndicator,
+} from "react-native";
+import { MaterialIcons, Entypo, FontAwesome5 } from "@expo/vector-icons";
+import { Feather, AntDesign } from "@expo/vector-icons";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { React, useEffect, useState } from "react";
+import { Dimensions } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useNavigation } from "@react-navigation/native";
 import * as SecureStore from "expo-secure-store";
-import { useSelector } from 'react-redux';
-const height = Dimensions.get("window").height
-const width = Dimensions.get("window").width
-
+import { useSelector } from "react-redux";
+import { COLORS } from "../../constants/Theme";
+import axios from "axios";
+const height = Dimensions.get("window").height;
+const width = Dimensions.get("window").width;
 
 const Profile = () => {
-    const navigation = useNavigation()
-    const customertoken = useSelector(
-        (state) => state.customerAuth.customertoken
-      );
-      console.log("customertoken" + customertoken);
-    const [customerdata, setCustomerData] = useState(null);
-    const data = [
-        { id:1,title: 'How to create a thread?', content: "To ensure that only one item expands at a time, you can maintain the index of the currently expanded item " },
-        { id:2,title: 'Why DirecKT?', content: 'To ensure that only one item expands at a time, you can maintain the index of the currently expanded item ' },
-        { id:3,title: 'How does DirecKT work?', content: 'To ensure that only one item expands at a time, you can maintain the index of the currently expanded item ' },
-        { id:4,title: 'is Support Available?', content: 'To ensure that only one item expands at a time, you can maintain the index of the currently expanded item ' },
-        { id:5,title: 'is direcKT Commission free?', content: 'To ensure that only one item expands at a time, you can maintain the index of the currently expanded item ' },
-    ];
+  const navigation = useNavigation();
+  const customertoken = useSelector(
+    (state) => state.customerAuth.customertoken
+  );
+  console.log("customertoken" + customertoken);
+  const [customerdata, setCustomerData] = useState(null);
+  const data = [
+    {
+      id: 1,
+      title: "How to create a thread?",
+      content:
+        "To ensure that only one item expands at a time, you can maintain the index of the currently expanded item ",
+    },
+    {
+      id: 2,
+      title: "Why DirecKT?",
+      content:
+        "To ensure that only one item expands at a time, you can maintain the index of the currently expanded item ",
+    },
+    {
+      id: 3,
+      title: "How does DirecKT work?",
+      content:
+        "To ensure that only one item expands at a time, you can maintain the index of the currently expanded item ",
+    },
+    {
+      id: 4,
+      title: "is Support Available?",
+      content:
+        "To ensure that only one item expands at a time, you can maintain the index of the currently expanded item ",
+    },
+    {
+      id: 5,
+      title: "is direcKT Commission free?",
+      content:
+        "To ensure that only one item expands at a time, you can maintain the index of the currently expanded item ",
+    },
+  ];
 
-    const [currentIndex, setCurrentIndex] = useState(null);
+  const [currentIndex, setCurrentIndex] = useState(null);
+  const [feedbackText, setFeedbackText] = useState('');
+  const [feedbackTextIndicator, setFeedbackTextindicator] = useState(false);
+  const handleFeedbackSubmit = async () => {
+    if(feedbackText.length===0){
+       showToast('feedback is empty')
+    }
+    try {
+      setFeedbackTextindicator(true)
+      const response = await axios.post('https://direckt-copy1.onrender.com/direckt/customerfeedback', { feedback: feedbackText });
+      showToast('feedback sent successfully')
+      setFeedbackText('')
+      setFeedbackTextindicator(false)
+      
+    } catch (error) {
+        console.log(error)
+        setFeedbackTextindicator(false)
+        showToast('feedback failed')
+      
+    }
+  };
+  const showToast = (e) => {
+    ToastAndroid.show(e, ToastAndroid.SHORT);
+  };
+  const toggleItem = (index) => {
+    if (currentIndex === index) {
+      setCurrentIndex(null);
+    } else {
+      setCurrentIndex(index);
+    }
+  };
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await AsyncStorage.getItem("customerdata");
 
-    const toggleItem = (index) => {
-        if (currentIndex === index) {
-            setCurrentIndex(null);
-        } else {
-            setCurrentIndex(index);
+        if (data) {
+          const parsedData = JSON.parse(data);
+          setCustomerData(parsedData);
         }
+
+        console.log(customerdata);
+      } catch (err) {
+        console.log(err);
+      }
     };
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const data = await AsyncStorage.getItem("customerdata");
 
-                if (data) {
-                    const parsedData = JSON.parse(data);
-                    setCustomerData(parsedData);
-                }
+    fetchData();
+  }, [customertoken]);
+  const removeData = async () => {
+    try {
+      await SecureStore.deleteItemAsync("customertoken");
+      console.log("Token removed successfully");
+      await AsyncStorage.removeItem("customerdata");
+      navigation.navigate("Home");
+      console.log("Data removed successfully");
+    } catch (error) {
+      console.error("Error removing data:", error);
+    }
+  };
+  const handleLogout = () => {
+    Alert.alert(
+      "Logout",
+      "Are you sure you want to logout?",
+      [
+        {
+          text: "Cancel",
+          style: "cancel",
+        },
+        {
+          text: "Logout",
+          onPress: () => {
+            removeData();
 
-                console.log(customerdata);
-            } catch (err) {
-                console.log(err);
-            }
-        };
-
-        fetchData();
-
-    }, [customertoken]);
-    const removeData = async () => {
-        try {
-            await SecureStore.deleteItemAsync('customertoken');
-    console.log('Token removed successfully');
-            await AsyncStorage.removeItem("customerdata");
-            navigation.navigate("Home");
-            console.log("Data removed successfully");
-        } catch (error) {
-            console.error("Error removing data:", error);
-        }
-    };
-    const handleLogout = () => {
-        Alert.alert(
-            "Logout",
-            "Are you sure you want to logout?",
-            [
-                {
-                    text: "Cancel",
-                    style: "cancel",
-                },
-                {
-                    text: "Logout",
-                    onPress: () => {
-                        removeData();
-
-                        console.log("Logging out...");
-                    },
-                },
-            ],
-            { cancelable: false }
-        );
-    };
-    return (
-        <SafeAreaView style={{ flex: 1 }}>
-            <ScrollView style={styles.container}>
-                <View style={styles.bodycontainer}>
-                    <View style={{ width: '100%', height: 60, paddingRight: 10, alignItems: 'flex-end', justifyContent: 'center', }}>
-                        <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center' }}  onPress={handleLogout} >
-                            <Text style={styles.logout}>Log out </Text>
-                            <MaterialIcons name="logout" size={24} color="red" />
-                        </TouchableOpacity>
-                    </View>
-                    <View style={styles.userdetails}>
-                        <View>
-                            <Text style={styles.bodyusername}>{customerdata ? "@" + customerdata.name : null}</Text>
-                        </View>
-                        <View style={{ flexDirection: 'row' }}>
-                            <MaterialIcons name="email" size={20} color="black" />
-                            <Text style={styles.bodyemail}>{customerdata ? customerdata.email : null}</Text>
-                        </View>
-                    </View>
-                    <View style={styles.faq}>
-                        <Text style={styles.faqtitle}>Frequently Asked Questions</Text>
-                        <ScrollView style={styles.faqcontainer}>
-                            {data.map((item, index) => (
-                                <AccordionItem
-                                    key={item.id}
-                                    index={index}
-                                    title={item.title}
-                                    content={item.content}
-                                    currentIndex={currentIndex}
-                                    toggleItem={toggleItem}
-                                />
-                            ))}
-                        </ScrollView>
-                    </View>
-                    <View style={styles.bodyfooter}>
-                        <View>
-                            <Text style={styles.footertitle}>How to use DirecKT</Text>
-                        </View>
-                        <View style={styles.sociallinks}>
-                            <TouchableOpacity onPress={() => Linking.openURL('https://instagram.com')}
-                                style={styles.iconContainer}>
-                                <Entypo name="instagram" size={38} color="red" />
-                            </TouchableOpacity>
-                            <TouchableOpacity onPress={() => Linking.openURL('https://whatsapp.com')}
-                                style={styles.iconContainer}>
-                                <FontAwesome5 name="whatsapp" size={40} color="green" />
-                            </TouchableOpacity>
-                            <TouchableOpacity onPress={() => Linking.openURL('https://youtube.com')}
-                                style={styles.iconContainer}>
-                                <Entypo name="youtube" size={38} color="red" />
-                            </TouchableOpacity>
-                        </View>
-                        <View style={styles.aboutlist}>
-                            <View>
-                                <TouchableOpacity
-                                    onPress={() => Linking.openURL('https://en.wikipedia.org/wiki/Terms_of_service')}
-                                    style={styles.aboutdetails}
-                                >
-                                    <AntDesign name="exclamationcircleo" size={24} color="black" />
-                                    <Text style={styles.aboutdireckt}>About Direckt</Text>
-                                </TouchableOpacity>
-                            </View>
-                            <View>
-                                <TouchableOpacity
-                                    onPress={() => Linking.openURL('https://en.wikipedia.org/wiki/Terms_of_service')}
-                                    style={styles.aboutdetails}
-                                >
-                                    <MaterialIcons name="privacy-tip" size={24} color="black" />
-                                    <Text style={styles.pp}>Privacy Policy</Text>
-                                </TouchableOpacity>
-                            </View>
-                            <View>
-                                <TouchableOpacity
-                                    onPress={() => Linking.openURL('https://en.wikipedia.org/wiki/Terms_of_service')}
-                                    style={styles.aboutdetailslast}
-                                >
-                                    <MaterialCommunityIcons name="file-document-multiple-outline" size={24} color="black" />
-                                    <Text style={styles.tc}>Terms & Conditions</Text>
-                                </TouchableOpacity>
-                            </View>
-                        </View>
-                    </View>
-                </View>
-            </ScrollView>
-        </SafeAreaView>
-    )
-}
-
-const AccordionItem = ({ title, content, index, currentIndex, toggleItem }) => {
-    const colorScheme = useColorScheme();
-    const isExpanded = index === currentIndex;
-
-    return (
-        <View>
-            <TouchableOpacity onPress={() => toggleItem(index)}>
-                <View style={styles.faqQuestion}>
-                    <Text style={{ color: 'grey' }}>{title}</Text>
-                </View>
-            </TouchableOpacity>
-            {isExpanded && (
-                <View style={styles.faqAnswer}>
-                    <Text style={{color: colorScheme === 'dark' ? 'white' : '#3C4142'}}>{content}</Text>
-                </View>
-            )}
-        </View>
+            console.log("Logging out...");
+          },
+        },
+      ],
+      { cancelable: false }
     );
+  };
+  return (
+    <SafeAreaView style={{ flex: 1 }}>
+      <ScrollView style={styles.container}>
+        <View style={styles.bodycontainer}>
+          <View
+            style={{
+              width: "100%",
+              height: 60,
+              paddingRight: 10,
+              alignItems: "flex-end",
+              justifyContent: "center",
+            }}
+          >
+            <TouchableOpacity
+              style={{ flexDirection: "row", alignItems: "center" }}
+              onPress={handleLogout}
+            >
+              <Text style={styles.logout}>Log out </Text>
+              <MaterialIcons name="logout" size={24} color="red" />
+            </TouchableOpacity>
+          </View>
+          <View style={styles.userdetails}>
+            <View>
+              <Text style={styles.bodyusername}>
+                {customerdata ? "@" + customerdata.name : null}
+              </Text>
+            </View>
+            <View style={{ flexDirection: "row" }}>
+              <MaterialIcons name="email" size={20} color="black" />
+              <Text style={styles.bodyemail}>
+                {customerdata ? customerdata.email : null}
+              </Text>
+            </View>
+          </View>
+          <View style={styles.faq}>
+            <Text style={styles.faqtitle}>Frequently Asked Questions</Text>
+            <ScrollView style={styles.faqcontainer}>
+              {data.map((item, index) => (
+                <AccordionItem
+                  key={item.id}
+                  index={index}
+                  title={item.title}
+                  content={item.content}
+                  currentIndex={currentIndex}
+                  toggleItem={toggleItem}
+                />
+              ))}
+            </ScrollView>
+          </View>
+          <View style={styles.bodyfooter}>
+            <View>
+              <Text style={styles.footertitle}>How to use DirecKT</Text>
+            </View>
+            <View style={styles.sociallinks}>
+              <TouchableOpacity
+                onPress={() => Linking.openURL("https://instagram.com")}
+                style={styles.iconContainer}
+              >
+                <Entypo name="instagram" size={38} color="red" />
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => Linking.openURL("https://whatsapp.com")}
+                style={styles.iconContainer}
+              >
+                <FontAwesome5 name="whatsapp" size={40} color="green" />
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => Linking.openURL("https://youtube.com")}
+                style={styles.iconContainer}
+              >
+                <Entypo name="youtube" size={38} color="red" />
+              </TouchableOpacity>
+            </View>
+          
+            <View style={styles.aboutlist}>
+              <View>
+                <TouchableOpacity
+                  onPress={() =>
+                    Linking.openURL(
+                      "https://en.wikipedia.org/wiki/Terms_of_service"
+                    )
+                  }
+                  style={styles.aboutdetails}
+                >
+                  <AntDesign
+                    name="exclamationcircleo"
+                    size={24}
+                    color="black"
+                  />
+                  <Text style={styles.aboutdireckt}>About Direckt</Text>
+                </TouchableOpacity>
+              </View>
+              <View>
+                <TouchableOpacity
+                  onPress={() =>
+                    Linking.openURL(
+                      "https://en.wikipedia.org/wiki/Terms_of_service"
+                    )
+                  }
+                  style={styles.aboutdetails}
+                >
+                  <MaterialIcons name="privacy-tip" size={24} color="black" />
+                  <Text style={styles.pp}>Privacy Policy</Text>
+                </TouchableOpacity>
+              </View>
+              <View>
+                <TouchableOpacity
+                  onPress={() =>
+                    Linking.openURL(
+                      "https://en.wikipedia.org/wiki/Terms_of_service"
+                    )
+                  }
+                  style={styles.aboutdetailslast}
+                >
+                  <MaterialCommunityIcons
+                    name="file-document-multiple-outline"
+                    size={24}
+                    color="black"
+                  />
+                  <Text style={styles.tc}>Terms & Conditions</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+             
+          </View>
+           <View
+              style={{ height: 200, width: "100%", flexDirection:'column',alignItems:'flex-start',justifyContent:'center',gap:10,paddingLeft:15}}
+            >
+              <Text>Your Feedback Matters: Suggestions, Bug Reports Welcome!</Text>
+              <TextInput
+                style={{
+                  flex: 1,
+                  textAlignVertical: "top",
+                  borderWidth: 1,
+                  borderColor: "gray",
+                  padding: 10,
+                  width:'100%',
+                  borderRadius:5
+                }}
+                multiline
+                numberOfLines={4}
+                placeholder="Type your feedback here..."
+                value={feedbackText}
+                onChangeText={setFeedbackText}
+              />
+              <TouchableOpacity style={{backgroundColor:COLORS.primary,paddingHorizontal:12,paddingVertical:8,borderRadius:4}} onPress={handleFeedbackSubmit}><Text style={{fontSize:18}}>Submit</Text>{feedbackTextIndicator&&<ActivityIndicator size={18}/>}</TouchableOpacity>
+            </View>
+        </View>
+      </ScrollView>
+    </SafeAreaView>
+  );
 };
 
+const AccordionItem = ({ title, content, index, currentIndex, toggleItem }) => {
+  const colorScheme = useColorScheme();
+  const isExpanded = index === currentIndex;
 
-export default Profile
+  return (
+    <View>
+      <TouchableOpacity onPress={() => toggleItem(index)}>
+        <View style={styles.faqQuestion}>
+          <Text style={{ color: "grey" }}>{title}</Text>
+        </View>
+      </TouchableOpacity>
+      {isExpanded && (
+        <View style={styles.faqAnswer}>
+          <Text style={{ color: colorScheme === "dark" ? "white" : "#3C4142" }}>
+            {content}
+          </Text>
+        </View>
+      )}
+    </View>
+  );
+};
+
+export default Profile;
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        height: (height * 100) / 100,
+  container: {
+    flex: 1,
+  },
+  headercontainer: {
+    justifyContent: "space-between",
+    height: (height * 30) / 100,
+    padding: 30,
+    justifyContent: "flex-end",
+  },
+  headername: {
+    color: "black",
+    fontWeight: "medium",
+    fontSize: 40,
+  },
+  bodycontainer: {
+    flex: 1,
+    elevation: 8,
+    shadowOffset: {
+      height: 2,
+      width: 2,
     },
-    headercontainer: {
-        flex: 1,
-        justifyContent: "space-between",
-        height: (height * 30) / 100,
-        padding: 30,
-        justifyContent: 'flex-end',
-    },
-    headername: {
-        color: "black",
-        fontWeight: 'medium',
-        fontSize: 40,
-    },
-    bodycontainer: {
-        flex: 1,
-        elevation: 8,
-        shadowOffset: {
-            height: 2,
-            width: 2
-        },
-        shadowColor: "black",
-        borderTopLeftRadius: 15,
-        borderTopRightRadius: 15,
-        backgroundColor: "white",
-        padding: 30,
-        marginTop: -10,
-    },
-    userdetails: {
-        height: (height * 20) / 100,
-        justifyContent: 'space-evenly'
-    },
-    bodyusername: {
-        fontSize: 25,
-    },
-    bodyemail: {
-        fontSize: 18,
-        paddingLeft: 5,
-    },
-    faq: {
-        flex: 1,
-        paddingVertical: 15,
-    },
-    faqcontainer: {
-        flex: 1,
-        paddingHorizontal: 20,
-        paddingVertical: 20,
-    },
-    faqQuestion: {
-        paddingHorizontal: '3%',
-        paddingVertical: '9%',
-    },
-    faqAnswer: {
-        paddingHorizontal: '4%',
-        paddingVertical: '1%',
-    },
-    bodyfooter: {
-        height: (height * 44) / 100,
-    },
-    footertitle: {
-        fontSize: 18,
-    },
-    sociallinks: {
-        paddingVertical: 30,
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: "space-evenly",
-    },
-    aboutlist: {
-        height: (height * 30) / 100,
-        justifyContent: 'space-evenly',
-    },
-    aboutdetails: {
-        flexDirection: 'row',
-        padding: 20,
-        alignItems: 'center',
-        borderBottomWidth: 1,
-        borderColor: 'grey',
-    },
-    aboutdetailslast: {
-        flexDirection: 'row',
-        padding: 20,
-        alignItems: 'center',
-    },
-    aboutdireckt: {
-        paddingHorizontal: 20,
-    },
-    pp: {
-        paddingHorizontal: 20,
-    },
-    tc: {
-        paddingHorizontal: 20,
-    },
-    logout: {
-        color: 'red',
-        fontSize: 18,
-    },
-
-})
+    shadowColor: "black",
+    borderTopLeftRadius: 15,
+    borderTopRightRadius: 15,
+    backgroundColor: "white",
+    padding: 30,
+    marginTop: -10,
+  },
+  userdetails: {
+    height: (height * 20) / 100,
+    justifyContent: "space-evenly",
+  },
+  bodyusername: {
+    fontSize: 25,
+  },
+  bodyemail: {
+    fontSize: 18,
+    paddingLeft: 5,
+  },
+  faq: {
+    flex: 1,
+    paddingVertical: 15,
+  },
+  faqcontainer: {
+    flex: 1,
+    paddingHorizontal: 20,
+    paddingVertical: 20,
+  },
+  faqQuestion: {
+    paddingHorizontal: "3%",
+    paddingVertical: "9%",
+  },
+  faqAnswer: {
+    paddingHorizontal: "4%",
+    paddingVertical: "1%",
+  },
+  bodyfooter: {
+    height: (height *50) / 100,
+  },
+  footertitle: {
+    fontSize: 18,
+  },
+  sociallinks: {
+    paddingVertical: 30,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-evenly",
+  },
+  aboutlist: {
+    height: (height * 30) / 100,
+    justifyContent: "space-evenly",
+  },
+  aboutdetails: {
+    flexDirection: "row",
+    padding: 20,
+    alignItems: "center",
+    borderBottomWidth: 1,
+    borderColor: "grey",
+  },
+  aboutdetailslast: {
+    flexDirection: "row",
+    padding: 20,
+    alignItems: "center",
+  },
+  aboutdireckt: {
+    paddingHorizontal: 20,
+  },
+  pp: {
+    paddingHorizontal: 20,
+  },
+  tc: {
+    paddingHorizontal: 20,
+  },
+  logout: {
+    color: "red",
+    fontSize: 18,
+  },
+});

@@ -29,7 +29,7 @@ const height = Dimensions.get("window").height;
 const width = Dimensions.get("window").width;
 import { COLORS } from "../../constants/Theme";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import { useFocusEffect, useNavigation, useRoute } from "@react-navigation/native";
 import ImagePopup from "../ShopownerHomepage/Imagepopup";
 
 UIManager.setLayoutAnimationEnabledExperimental &&
@@ -433,6 +433,7 @@ const AccordionItem = ({ data, token, onRefresh }) => {
 };
 
 const Threadsavailable = ({route}) => {
+  const router = useRoute();
   const navigation = useNavigation();
   const colorScheme = useColorScheme();
   const [data, setdata] = useState([]);
@@ -445,7 +446,7 @@ const Threadsavailable = ({route}) => {
   useFocusEffect(
     React.useCallback(() => {
       const handleBackPress = () => {
-        if (route.name === "homeCustomer") {
+        if (router.name === "homeCustomer") {
           BackHandler.exitApp();
           return true; // Prevent going back to the previous page
         }
@@ -460,7 +461,7 @@ const Threadsavailable = ({route}) => {
       return () => {
         backHandler.remove();
       };
-    }, [route.name])
+    }, [router.name])
   );
   useEffect(() => {
     if (route.params) {

@@ -198,13 +198,7 @@ const EditOwnerProfile = () => {
   };
 
 
-  const locations = [{ key: '1', value: "Vallioor" }];
-
-  const categories = [
-    { key: "1", value: "electronic" },
-    { key: "2", value: "plumbing" },
-    { key: "3", value: "Computers" },
-  ];
+  
 
   const deleteimage =(itemToRemove)=>{
     Alert.alert(
@@ -224,7 +218,60 @@ const EditOwnerProfile = () => {
       { cancelable: false }
     )
   }
+  const [choosedata, setChooseData] = useState([{key:'1', value:'loading...', disabled:true}]);
+  useEffect(() => {
+    fetchData(); // Fetch choosedata when the component mounts
+  }, []);
 
+  const fetchData = async () => {
+    try {
+      const response = await axios.get("https://direckt-copy1.onrender.com/direckt/getcategory");
+      const dataFromBackend = response.data;
+      console.log("Data from backend:", dataFromBackend); // Log the data from the backend
+      // Check if the data is an array and has elements
+      if (Array.isArray(dataFromBackend) && dataFromBackend.length > 0) {
+        // Map over the data to convert it into the required format
+        const formattedData = dataFromBackend[0]?.categories.map(category => ({
+          key: category.key,
+          value: category.value
+        })) || [];
+        // Update the state with the formatted data
+        setChooseData(formattedData);
+      } else {
+        return ;
+      }
+    } catch (error) {
+      console.error('Error fetching choosedata:', error);
+    }
+  };
+
+  const [chooselocation, setchooselocation] = useState([{key:'1', value:'loading...', disabled:true}]);
+  useEffect(() => {
+    fetchDatalocation(); // Fetch choosedata when the component mounts
+  }, []);
+
+  const fetchDatalocation = async () => {
+    try {
+      const response = await axios.get("https://direckt-copy1.onrender.com/direckt/getlocations");
+      const dataFromBackend = response.data;
+      console.log("Data from backend:", dataFromBackend); // Log the data from the backend
+      // Check if the data is an array and has elements
+      if (Array.isArray(dataFromBackend) && dataFromBackend.length > 0) {
+        // Map over the data to convert it into the required format
+        const formattedData = dataFromBackend[0]?.locations.map(location => ({
+          key: location.key,
+          value: location.value
+        })) || [];
+        // Update the state with the formatted data
+        setchooselocation(formattedData);
+      } else {
+       return
+      }
+    } catch (error) {
+      console.error('Error fetching choosedata:', error);
+    }
+  };
+  
 
 
 
@@ -271,7 +318,7 @@ const EditOwnerProfile = () => {
           <Text style={styles.editstorenamelabel}>Location</Text>
           <SelectList
             setSelected={(val) => setlocation(val)}
-            data={locations}
+            data={chooselocation}
             save="value"
             style={styles.storelocationselect}
             defaultOption={{ key: '2', value: 'Vallioor' }}
@@ -293,7 +340,7 @@ const EditOwnerProfile = () => {
 
           <MultipleSelectList
             setSelected={(val) => setcategory(val)}
-            data={categories}
+            data={choosedata}
             save="value"
 
 

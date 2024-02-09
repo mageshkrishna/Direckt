@@ -27,7 +27,11 @@ import { configureStore } from "@reduxjs/toolkit";
 
 const Stack = createStackNavigator();
 const store = configureStore({reducer:rootReducer});
+
+
+
 const App = () => {
+  
   return (
     <Provider store={store}>
     <NavigationContainer>

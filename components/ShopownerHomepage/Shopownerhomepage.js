@@ -17,9 +17,10 @@ import JobCard from "./Jobcard";
 import * as SecureStore from "expo-secure-store";
 import { useSelector } from "react-redux";
 import { COLORS } from "../../constants/Theme";
-import { useFocusEffect } from "@react-navigation/native";
+import { useFocusEffect, useRoute } from "@react-navigation/native";
 
 const Shopownerhomepage = () => {
+  const route = useRoute();
   useFocusEffect(
     React.useCallback(() => {
       const handleBackPress = () => {
