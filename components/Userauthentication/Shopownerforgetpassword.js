@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   ToastAndroid,
   ActivityIndicator,
+  Alert
 } from "react-native";
 import React, { useState,useEffect} from "react";
 import { SafeAreaView, StyleSheet } from "react-native";
@@ -37,7 +38,6 @@ const ShopownerForgetpassword = () => {
     if (running) {
       interval = setInterval(updateCountdown, 1000);
     }
-
     return () => clearInterval(interval);
   }, [running]);
   const updateCountdown = () => {
@@ -51,31 +51,42 @@ const ShopownerForgetpassword = () => {
   };
 
   const sendemail = async () => {
-    console.log("Started");
     if (!email) {
       showToast("Fill the email feild");
       return;
     }
 
     try {
-      setindicator(!indicator);
+      setindicator(true);
       const response = await axios.post(
         "https://direckt-copy1.onrender.com/auth/Shopownerforgetpassword",
         { email: email }
       );
       showToast("otp send succesfully to the email");
-      setindicator(!indicator);
+      setindicator(false);
       setisSendBtnVisible(!isSendBtnVisible);
       startCountdown();
     } catch (error) {
-      setindicator(indicator);
-      showToast("Otp failed or Invalid user");
+      setindicator(false);
+      if (axios.isAxiosError(error)) {
+        // Axios-related error
+        if (error.response) {
+          // Response received with an error status code
+          showToast(`Error: ${error.response.data.error}`);
+        } else {
+          // Network error (no response received)
+          showToast("Network error. Please check your internet connection.");
+        }
+      } else {
+        // Non-Axios error
+        console.log(error);
+        showToast("An error occurred. Please try again.");
+      }
       console.log(error);
     }
   };
 
   const sendotp = async () => {
-    console.log(email)
     console.log("started");
     if (!otp) {
       showToast("Fill the otp feild");
@@ -86,23 +97,35 @@ const ShopownerForgetpassword = () => {
       return;
     }
     try {
-      setotpindicator(!otpindicator);
+      setotpindicator(true);
       const response = await axios.post(
         "https://direckt-copy1.onrender.com/auth/Shopownerverifyotp",
         { otp: otp, email: email }
       );
       showToast("otp verified succesfully");
-      setotpindicator(!otpindicator);
-      console.log(response.data);
+      setotpindicator(false);
       console.log(response.data.token);
       if (response.status === 200) {
         return navigation.navigate("Shopownerchangepassword", { email: email, token: response.data.token });
       }
 
     } catch (error) {
-      setotpindicator(otpindicator);
-      showToast("Invalid OTP");
-      console.log("Error : "+error);
+      setotpindicator(false);
+      if (axios.isAxiosError(error)) {
+        // Axios-related error
+        if (error.response) {
+          // Response received with an error status code
+          console.log(error.response);
+          showToast(`Error: ${error.response.data.error}`);
+        } else {
+          // Network error (no response received)
+          showToast("Network error. Please check your internet connection.");
+        }
+      } else {
+        // Non-Axios error
+        console.log(error);
+        showToast("An error occurred. Please try again.");
+      }
     }
   };
   const showToast = (e) => {
@@ -246,16 +269,3 @@ const styles = StyleSheet.create({
     fontSize: 23,
   },
 });
-
-
-
-
-
-
-
-
-
-
-
-//https://direckt-copy1.onrender.com/auth/Shopownerforgetpassword
-//https://direckt-copy1.onrender.com/auth/Shopownerverifyotp

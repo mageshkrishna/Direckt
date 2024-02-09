@@ -14,7 +14,7 @@ const Imagepick = ({ setSelectedImage }) => {
       });
 
       if (!result.canceled) {
-        console.log(result.assets[0].uri)
+        // console.log(result.assets[0].uri)
         setSelectedImage(result.assets[0].uri);
       }
     } catch (error) {

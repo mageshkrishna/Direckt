@@ -39,8 +39,8 @@ const StoreProfile = () => {
         setActiveImageIndex(null);
     };
 
-    const showToast = () => {
-        ToastAndroid.show('Google map is not linked', ToastAndroid.SHORT);
+    const showToast = (e) => {
+        ToastAndroid.show(e, ToastAndroid.SHORT);
     };
 
     useEffect(() => {
@@ -60,15 +60,28 @@ const StoreProfile = () => {
             
                 .then(response => {
 
-                    console.log(response.data);
                     setstoredata(response.data)
                     
                 })
                 .catch(err => {
                     console.log(err);
                 });
-        } catch (err) {
-            console.log(err);
+        } catch (error) {
+            if (axios.isAxiosError(error)) {
+                // Axios-related error
+                if (error.response) {
+                  // Response received with an error status code
+                  console.log(error.response);
+                  showToast(`Error: ${error.response.data.error}`);
+                } else {
+                  // Network error (no response received)
+                  showToast("Network error. Please check your internet connection.");
+                }
+              } else {
+                // Non-Axios error
+                console.log(error);
+                showToast("An error occurred. Please try again.");
+              }
         }
     }, [_id,token]);
     if (!storedata && _id) {
@@ -157,7 +170,7 @@ const StoreProfile = () => {
                     <View style={styles.ctcsection}>
                         <TouchableOpacity
                             onPress={() => {
-                                storedata.gmaplink ? Linking.openURL(storedata.gmaplink) : showToast()
+                                storedata.gmaplink ? Linking.openURL(storedata.gmaplink) : showToast('Google map is not linked');
                             }}
                             style={[styles.ctcicon, styles.ctcdirection]}>
                             <FontAwesome5 name="directions" size={42} color="#5271FF" />

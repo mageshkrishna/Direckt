@@ -78,13 +78,25 @@ const JobCard = ({ item, ownerdetail, token }) => {
           },
         }
       );
-      console.log(response.status);
       setuploading(false);
       setModalVisible(!modalVisible);
-    } catch (e) {
+    } catch (error) {
       setuploading(false);
-      console.log(e);
-      showToast('You have already replied to this job!');
+      // showToast('You have already replied to this job!');
+      if (axios.isAxiosError(error)) {
+        // Axios-related error
+        if (error.response) {
+          // Response received with an error status code
+          showToast(`Error: ${error.response.data.error}`);
+        } else {
+          // Network error (no response received)
+          showToast("Network error. Please check your internet connection.");
+        }
+      } else {
+        // Non-Axios error
+        console.log(error);
+        showToast("An error occurred. Please try again.");
+      }
     }
   };
 
@@ -408,78 +420,3 @@ const styles = StyleSheet.create({
     fontSize:17,
   },
 });
-
-// <Text style={{ color: "grey" }} >Delivery option</Text>
-// <Checkbox
-//    value={deliverystatus}
-//    onValueChange={setdeliverystatus}
-//    color={deliverystatus ? "#4630EB" : undefined}
-//  />
-{
-  /* <Text style={{ color: "grey" }}>
-                Write a Reply Message (optional)
-              </Text> */
-}
-//   <TextInput
-//   style={styles.replyinput}
-//   multiline={true}
-//   onChangeText={(val) => {
-//     setreplymessage(val);
-//   }}
-// />
-
-//     <TouchableOpacity
-//     onPress={() => {
-//       createreply();
-//     }}
-//     style={styles.acceptorder} >
-
-//     {uploading&&<ActivityIndicator  color="white" style={{height:10,width:10}} />}
-//     <Text style={{ color: "white" }}>Accept</Text>
-
-// </TouchableOpacity>
-
-// <View>
-// <View  style={{
-//       flexDirection: "row",
-//       alignItems: 'center',
-//       justifyContent: 'flex-start',
-//       columnGap:10,
-//      marginBottom:10
-//     }}>
-//     <Text style={{ color: "grey" }} >Delivery option</Text>
-//    <Checkbox
-//       value={deliverystatus}
-//       onValueChange={setdeliverystatus}
-//       color={deliverystatus ? "#4630EB" : undefined}
-//     />
-//     </View>
-//   <Text style={{ color: "grey" }}>
-//     Write a Reply Message (optional)
-//   </Text>
-//   <View
-//     style={{
-//       flexDirection: "row",
-//       alignItems: "flex-end",
-//       justifyContent: "space-between",
-//     }}
-//   >
-//     <TextInput
-//       style={styles.replyinput}
-//       multiline={true}
-//       onChangeText={(val) => {
-//         setreplymessage(val);
-//       }}
-//     />
-//      <TouchableOpacity
-//         onPress={() => {
-//           createreply();
-//         }}
-//         style={styles.acceptorder} >
-
-//         {uploading&&<ActivityIndicator  color="white" style={{height:10,width:10}} />}
-//         <Text style={{ color: "white" }}>Accept</Text>
-
-//     </TouchableOpacity>
-//   </View>
-// </View>

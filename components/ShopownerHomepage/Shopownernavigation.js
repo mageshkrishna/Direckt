@@ -32,12 +32,7 @@ import Shopownerhomepage from "./Shopownerhomepage";
  
 const Shopownernav = () => {
     const navigation = useNavigation();
-  
     const route = useRoute();
-    
-  
-   
-   
     const removeData = async () => {
       try {
         // Remove data
@@ -107,7 +102,6 @@ const Shopownernav = () => {
                 borderTopColor: "gray",
                 paddingBottom: 8,
                 height: 60,
-                // Optional: Border color
               },
             })}
           >

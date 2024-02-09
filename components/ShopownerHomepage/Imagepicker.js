@@ -41,7 +41,7 @@ const Imagepicker = ({ editprofile, addphoto, setprofilepic,setphotos,profilepic
       const ref = firebase.storage().ref().child(filename);
       await ref.put(blob);
       const downloadURL = await ref.getDownloadURL();
-      console.log("downloadurl"+downloadURL);
+      // console.log("downloadurl"+downloadURL);
       setdownloadurl(downloadURL);
       if(setprofilepic&&downloadURL){
       setprofilepic(downloadURL);
@@ -51,7 +51,7 @@ const Imagepicker = ({ editprofile, addphoto, setprofilepic,setphotos,profilepic
       setphotos((prevPhotos) => [...prevPhotos, downloadURL]);
       }
       setUploading(false);
-      Alert.alert("Photo Uploaded");
+      // Alert.alert("Photo Uploaded");
       setImage(null);
     } catch (error) {
       setUploading(false);

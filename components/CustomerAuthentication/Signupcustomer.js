@@ -86,11 +86,24 @@ const Signupcustomer = ({route}) => {
         // Alert.alert('Success', 'Account created successfully');
         setModalVisible(!modalVisible);
       } else {
-        Alert.alert('Error', 'Email is already used. Try again');
+        showToast('Error', 'Email is already used. Try again');
       }
     } catch (error) {
-      // console.error(error);
-      showToast("This email user already Exists!")
+      if (axios.isAxiosError(error)) {
+        // Axios-related error
+        if (error.response) {
+          // Response received with an error status code
+          console.log(error.response);
+          showToast(`Error: ${error.response.data.error}`);
+        } else {
+          // Network error (no response received)
+          showToast("Network error. Please check your internet connection.");
+        }
+      } else {
+        // Non-Axios error
+        console.log(error);
+        showToast("An error occurred. Please try again.");
+      }
     } finally {
       setLoading(false); // Set loading to false when the request completes (success or error)
     }

@@ -31,11 +31,11 @@ const Userregister = ({route}) => {
 
 
   useEffect(() => {
-    if (route.params) {
+    if (route && route.params) {
       setemail(route.params.email || '');
       setpassword(route.params.password || '');
     }
-  }, [route.params]);
+  }, [route]);
 
   const validateEmail = (email) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -110,18 +110,30 @@ const Userregister = ({route}) => {
       const { status } = response.data;
 
       if (status) {
-        // Alert.alert('Success', 'Account created successfully');
         setModalVisible(!modalVisible);
         setbuinessname(null)
         setemail(null)
         setphonenumber(null)
         setpassword(null)
       } else {
-        Alert.alert('Error', 'Email is already used. Try again');
+        showToast('Error', 'Email is already used. Try again');
       }
     } catch (error) {
-      // console.error(error);
-      showToast("This email or Phone number already Exists!")
+      if (axios.isAxiosError(error)) {
+        // Axios-related error
+        if (error.response) {
+          // Response received with an error status code
+          console.log(error.response);
+          showToast(`Error: ${error.response.data.error}`);
+        } else {
+          // Network error (no response received)
+          showToast("Network error. Please check your internet connection.");
+        }
+      } else {
+        // Non-Axios error
+        console.log(error);
+        Alert.alert("An error occurred. Please try again.");
+      }
     } finally {
       setLoading(false);
     }
@@ -217,19 +229,16 @@ export default Userregister;
 const styles = StyleSheet.create({
   box1: {
     flex: 2,
-
     paddingLeft: (Width * 13) / 100,
     justifyContent: "flex-end",
   },
   box2: {
     flex: 4,
-
     alignItems: "center",
     justifyContent: "space-evenly",
   },
   box3: {
     flex: 1,
-
     gap: 10,
     alignItems: "center",
   },
@@ -305,29 +314,3 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
 });
-//   <View style={styles.box2}>
-//   <TextInput style={styles.box2input} placeholder="Username" />
-//   <TextInput style={styles.box2input} placeholder="Password" />
-// </View>
-// <View style={styles.box3}>
-//   <TouchableOpacity underlayColor="white">
-//     <View style={styles.box3opacity}>
-//       <Text
-//         style={{ color: "white", fontSize: 18, fontWeight: "bold" }}
-//       >
-//         Sign up
-//       </Text>
-//     </View>
-//   </TouchableOpacity>
-//   <View style={{ flexDirection: "row", gap: 10 }}>
-//     <Text>Already have an account? </Text>
-//     <TouchableOpacity
-//       style={{ paddingTop: 0 }}
-//       onPress={(e) => {
-//         navigation.navigate("Logincustomer");
-//       }}
-//     >
-//       <Text style={{ color: COLORS.primary }}>Log in</Text>
-//     </TouchableOpacity>
-//   </View>
-// </View>
