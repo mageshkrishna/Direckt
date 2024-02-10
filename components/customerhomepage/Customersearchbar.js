@@ -220,6 +220,9 @@ const CustomerSearchBar = () => {
   
   
 
+  const showToast = (e) => {
+    ToastAndroid.show(e, ToastAndroid.SHORT);
+};
   useEffect(()=>{
     SecureStore.getItemAsync("customertoken")
       .then((value) => {
@@ -229,7 +232,7 @@ const CustomerSearchBar = () => {
   }, [])
 
   const fetchData = async () => {
-    if (!businessname && !category) {
+    if ((!businessname && !category) || !jobselection) {
       showToast("businessname required");
       return;
     }
@@ -251,9 +254,9 @@ const CustomerSearchBar = () => {
       if (availabilitystatus) {
         formdata.availabilitystatus = availabilitystatus;
       }
-
+    console.log (formdata)
       const response = await axios.get(
-        "https://direckt-copy1.onrender.com/shopowner/direckt/getshops",
+        "https://direckt-copy1.onrender.com/shopowner/getshops",
         {
           params: formdata,
           headers: {
@@ -272,6 +275,7 @@ const CustomerSearchBar = () => {
         setlinearProgress(false);
       }, 2000);
     } catch (error) {
+      console.log(error.response)
       setlinearProgress(false);
       if (axios.isAxiosError(error)) {
         // Axios-related error
@@ -296,7 +300,7 @@ const CustomerSearchBar = () => {
 
   const fetchDatalocation = async () => {
     try {
-      const response = await axios.get("https://direckt-copy1.onrender.com/getlocations");
+      const response = await axios.get("https://direckt-copy1.onrender.com/direckt/getlocations");
       const dataFromBackend = response.data;
       console.log("Data from backend:", dataFromBackend); // Log the data from the backend
       // Check if the data is an array and has elements

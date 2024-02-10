@@ -65,7 +65,9 @@ const JobCard = ({ item, ownerdetail, token }) => {
       shopowner_id: ownerdetail,
       deliverystatus: deliverystatus,
       replymessage: replymessage,
+     
     };
+    console.log(formdata)
     try {
       const response = await axios.post(
         "https://direckt-copy1.onrender.com/shopowner/createjobreply",

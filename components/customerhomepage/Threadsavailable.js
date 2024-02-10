@@ -454,7 +454,7 @@ const Threadsavailable = ({route}) => {
   const [email, setemail] = useState();
   const [indicator, setindicator] = useState(false);
   const [token, settoken] = useState(null);
-
+   const router = useRoute()
   const v = false;
   useFocusEffect(
     React.useCallback(() => {
