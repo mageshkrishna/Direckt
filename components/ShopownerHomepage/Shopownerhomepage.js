@@ -45,7 +45,7 @@ const Shopownerhomepage = () => {
   const shopOwnerToken = useSelector(
     (state) => state.shopOwnerAuth.shopOwnerToken
   );
-  console.log("shopOwnerToken" + shopOwnerToken);
+  
 
   const [refreshing, setRefreshing] = useState(false);
   const [token, setToken] = useState(null);

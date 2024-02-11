@@ -18,6 +18,7 @@ import {
   ToastAndroid,
   Modal,
 } from "react-native";
+import moment from 'moment';
 import * as SecureStore from "expo-secure-store";
 import { useState, useEffect } from "react";
 import {
@@ -49,19 +50,14 @@ const JobCard = ({ item, ownerdetail, token }) => {
     ToastAndroid.show(e, ToastAndroid.SHORT);
   };
 
-  const options = {
-    day: "2-digit",
-    month: "2-digit",
-    year: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-    second: "2-digit",
-    hour12: true, // Use 12-hour format
-    timeZone: "UTC" // Set the time zone to UTC to match the input date
-  };
-  const expiryDate = new Date(item.expiryAt);
-  const formattedExpiry = expiryDate.toLocaleString("en-US", options);
-  console.log(formattedExpiry);
+ 
+
+ const timestamp =item.expiryAt;
+ const localDateTime = moment(timestamp).utcOffset('+00:00').format('DD-MM-YYYY h:mm:ss A');
+ 
+ console.log( "moment"+localDateTime); 
+ 
+
   const createreply = async () => {
     setuploading(true);
     if (!replymessage) {
@@ -149,7 +145,7 @@ const JobCard = ({ item, ownerdetail, token }) => {
         </Modal>
         <View style={styles.job}>
           <View style={styles.expirationtitle}>
-            <Text style={styles.expireText}>This Job will expire at {formattedExpiry}</Text>
+            <Text style={styles.expireText}>Job expire at {localDateTime} or before</Text>
           </View>
           <View style={styles.jobcardsection}>
             <TouchableOpacity
@@ -310,7 +306,8 @@ const styles = StyleSheet.create({
   },
   expireText: {
     color: 'grey',
-    fontSize: 11,
+    fontSize: 14,
+    color:COLORS.gray
   },
   jobcardsection: {
     flexDirection: 'row',

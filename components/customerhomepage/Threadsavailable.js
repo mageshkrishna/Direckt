@@ -31,6 +31,7 @@ import { COLORS } from "../../constants/Theme";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFocusEffect, useNavigation, useRoute } from "@react-navigation/native";
 import ImagePopup from "../ShopownerHomepage/Imagepopup";
+import moment from "moment";
 const showToast = (e) => {
   ToastAndroid.show(e, ToastAndroid.SHORT);
 };
@@ -183,6 +184,12 @@ const AccordionItem = ({ data, token, onRefresh }) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [deleteindicator, setdeleteindicator] = useState(false)
   const [deactivateindicator, setdeactivateindicator] = useState(false)
+
+  const timestamp = data.expiryAt;
+ const localDateTime = moment(timestamp).utcOffset('+00:00').format('DD-MM-YYYY h:mm:ss A');
+ 
+ console.log( "moment"+localDateTime); 
+ 
   const deactivatejob = async () => {
     try {
       setdeactivateindicator(true)
@@ -284,7 +291,12 @@ const AccordionItem = ({ data, token, onRefresh }) => {
             </View>
           </View>
         </Modal>
+        
+        <View style={styles.expirationtitle}>
+            <Text style={styles.expireText}>Job expire at {localDateTime}</Text>
+          </View>
         <View style={styles.thread}>
+      
           <TouchableOpacity
             style={styles.threadImage}
             onPress={() => setShowPopup(true)}
@@ -669,7 +681,18 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-
+  expirationtitle: {
+    alignItems: 'center',
+    paddingVertical: 5,
+    borderBottomWidth: 0.5,
+    borderColor: '#f4f5fb',
+    justifyContent: 'center',
+  },
+  expireText: {
+    color: 'grey',
+    fontSize: 14,
+    color:COLORS.gray
+  },
   threadcontainer: {
     flex: 1,
     height: (height * 85) / 100,
