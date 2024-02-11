@@ -232,8 +232,12 @@ const CustomerSearchBar = () => {
   }, [])
 
   const fetchData = async () => {
+    if(!jobselection){
+      showToast('Select Location ');
+      return;
+    }
     if ((!businessname && !category) || !jobselection) {
-      showToast("businessname required");
+      showToast("Businessname or Category is required");
       return;
     }
     console.log("searching....");

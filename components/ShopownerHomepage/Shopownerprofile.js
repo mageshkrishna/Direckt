@@ -61,10 +61,11 @@ const Shopownerprofile = () => {
   const [feedbackTextIndicator, setFeedbackTextindicator] = useState(false);
   const handleFeedbackSubmit = async () => {
     if(feedbackText.length===0){
-       showToast('feedback is empty')
+       showToast('feedback is empty');
+       return;
     }
     try {
-      setFeedbackTextindicator(true)
+      setFeedbackTextindicator(true);
       const response = await axios.post('https://direckt-copy1.onrender.com/direckt/shopownerfeedback', { feedback: feedbackText });
       showToast('feedback sent successfully')
       setFeedbackText('')
@@ -516,7 +517,7 @@ const Shopownerprofile = () => {
                 value={feedbackText}
                 onChangeText={setFeedbackText}
               />
-              <TouchableOpacity style={{backgroundColor:COLORS.primary,paddingHorizontal:12,paddingVertical:8,borderRadius:4}} onPress={handleFeedbackSubmit}><Text style={{fontSize:18}}>Submit</Text>{feedbackTextIndicator&&<ActivityIndicator size={18}/>}</TouchableOpacity>
+              <TouchableOpacity style={{backgroundColor:COLORS.primary,paddingHorizontal:12,paddingVertical:8,borderRadius:4,flexDirection:'row'}} onPress={handleFeedbackSubmit}><Text style={{fontSize:18,color:'#fff'}}>Submit</Text>{feedbackTextIndicator&&<ActivityIndicator size={18}/>}</TouchableOpacity>
             </View>
       </View>
     </ScrollView>

@@ -48,6 +48,20 @@ const JobCard = ({ item, ownerdetail, token }) => {
   const showToast = (e) => {
     ToastAndroid.show(e, ToastAndroid.SHORT);
   };
+
+  const options = {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hour12: true, // Use 12-hour format
+    timeZone: "UTC" // Set the time zone to UTC to match the input date
+  };
+  const expiryDate = new Date(item.expiryAt);
+  const formattedExpiry = expiryDate.toLocaleString("en-US", options);
+  console.log(formattedExpiry);
   const createreply = async () => {
     setuploading(true);
     if (!replymessage) {
@@ -65,7 +79,7 @@ const JobCard = ({ item, ownerdetail, token }) => {
       shopowner_id: ownerdetail,
       deliverystatus: deliverystatus,
       replymessage: replymessage,
-     
+
     };
     console.log(formdata)
     try {
@@ -134,50 +148,55 @@ const JobCard = ({ item, ownerdetail, token }) => {
           </View>
         </Modal>
         <View style={styles.job}>
-          <TouchableOpacity
-            style={styles.jobImage}
-            onPress={() => setShowPopup(true)}
-          >
-
-            {item.image_url ? <Image
-              source={{
-                uri: item.image_url,
-              }}
-
-              style={{ height: "100%", width: "90%", backgroundColor: "red" }}
-            /> : <Image
-              source={{ uri: 'https://img.freepik.com/premium-vector/default-image-icon-vector-missing-picture-page-website-design-mobile-app-no-photo-available_87543-11093.jpg', }}
-
-              style={{ height: "100%", width: "90%", backgroundColor: "red" }}
-            />
-            }
-            <View style={{ flexDirection: "row", alignItems: "center" }}>
-              <MaterialIcons name="category" size={17} color="black" />
-              <Text style={styles.jobcategory} numberOfLines={1}>
-                {item.category}
-              </Text>
-            </View>
-          </TouchableOpacity>
-          <Pressable style={styles.jobdetails} onPress={toggleExpand}>
-            <Text style={styles.jobtitle} numberOfLines={2}>
-              {item.jobtitle}
-            </Text>
-            <Text style={styles.jobdes} numberOfLines={3}>
-              {item.jobdescription}
-            </Text>
-            <View
-              style={{
-                flexDirection: "row",
-                marginTop: 3,
-                alignItems: "center",
-              }}
+          <View style={styles.expirationtitle}>
+            <Text style={styles.expireText}>This Job will expire at {formattedExpiry}</Text>
+          </View>
+          <View style={styles.jobcardsection}>
+            <TouchableOpacity
+              style={styles.jobImage}
+              onPress={() => setShowPopup(true)}
             >
-              <Text style={styles.location}>{ }</Text>
-              <View style={styles.viewdetails}>
-                <Text>View details</Text>
+
+              {item.image_url ? <Image
+                source={{
+                  uri: item.image_url,
+                }}
+
+                style={{ height: "100%", width: "90%", backgroundColor: "red" }}
+              /> : <Image
+                source={{ uri: 'https://img.freepik.com/premium-vector/default-image-icon-vector-missing-picture-page-website-design-mobile-app-no-photo-available_87543-11093.jpg', }}
+
+                style={{ height: "100%", width: "90%", backgroundColor: "red" }}
+              />
+              }
+              <View style={{ flexDirection: "row", alignItems: "center" }}>
+                <MaterialIcons name="category" size={17} color="black" />
+                <Text style={styles.jobcategory} numberOfLines={1}>
+                  {item.category}
+                </Text>
               </View>
-            </View>
-          </Pressable>
+            </TouchableOpacity>
+            <Pressable style={styles.jobdetails} onPress={toggleExpand}>
+              <Text style={styles.jobtitle} numberOfLines={2}>
+                {item.jobtitle}
+              </Text>
+              <Text style={styles.jobdes} numberOfLines={3}>
+                {item.jobdescription}
+              </Text>
+              <View
+                style={{
+                  flexDirection: "row",
+                  marginTop: 3,
+                  alignItems: "center",
+                }}
+              >
+                <Text style={styles.location}>{ }</Text>
+                <View style={styles.viewdetails}>
+                  <Text>View details</Text>
+                </View>
+              </View>
+            </Pressable>
+          </View>
         </View>
       </View>
       {showPopup && (
@@ -275,14 +294,27 @@ export default JobCard;
 const styles = StyleSheet.create({
   job: {
     flex: 1,
-    alignItems: "center",
-    flexDirection: "row",
-    height: (height * 18) / 100,
+    height: (height * 20) / 100,
     backgroundColor: "white",
     elevation: 1,
     marginVertical: "3%",
     marginHorizontal: "3%",
     borderRadius: 5,
+  },
+  expirationtitle: {
+    alignItems: 'center',
+    paddingVertical: 5,
+    borderBottomWidth: 0.5,
+    borderColor: '#f4f5fb',
+    justifyContent: 'center',
+  },
+  expireText: {
+    color: 'grey',
+    fontSize: 11,
+  },
+  jobcardsection: {
+    flexDirection: 'row',
+    alignItems: "center",
   },
   jobImage: {
     width: (width * 35) / 100,
@@ -312,7 +344,7 @@ const styles = StyleSheet.create({
   jobtitle: {
     fontSize: 18,
     fontWeight: "medium",
-    color:COLORS.primary
+    color: COLORS.primary
   },
   jobdes: {
     fontSize: 13,
@@ -367,8 +399,8 @@ const styles = StyleSheet.create({
     borderRadius: 3,
     borderWidth: 0.9,
     width: "100%",
-    paddingHorizontal:5,
-    paddingVertical:8
+    paddingHorizontal: 5,
+    paddingVertical: 8
   },
   acceptorder: {
     flexDirection: "row",
@@ -392,7 +424,7 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     justifyContent: 'space-evenly',
     padding: 40,
-    paddingHorizontal:60,
+    paddingHorizontal: 60,
     alignItems: 'center',
     shadowColor: '#000',
     shadowOffset: {
@@ -419,6 +451,6 @@ const styles = StyleSheet.create({
   modalText: {
     paddingVertical: 15,
     textAlign: 'center',
-    fontSize:17,
+    fontSize: 17,
   },
 });

@@ -260,7 +260,7 @@ const Profile = () => {
                       "https://en.wikipedia.org/wiki/Terms_of_service"
                     )
                   }
-                  style={styles.aboutdetailslast}
+                  style={styles.aboutdetails}
                 >
                   <MaterialCommunityIcons
                     name="file-document-multiple-outline"
@@ -293,7 +293,7 @@ const Profile = () => {
                 value={feedbackText}
                 onChangeText={setFeedbackText}
               />
-              <TouchableOpacity style={{backgroundColor:COLORS.primary,paddingHorizontal:12,paddingVertical:8,borderRadius:4}} onPress={handleFeedbackSubmit}><Text style={{fontSize:18}}>Submit</Text>{feedbackTextIndicator&&<ActivityIndicator size={18}/>}</TouchableOpacity>
+              <TouchableOpacity style={{backgroundColor:COLORS.primary,paddingHorizontal:12,paddingVertical:8,borderRadius:4}} onPress={handleFeedbackSubmit}><Text style={{fontSize:18,color:'#fff'}}>Submit</Text>{feedbackTextIndicator&&<ActivityIndicator size={18}/>}</TouchableOpacity>
             </View>
         </View>
       </ScrollView>

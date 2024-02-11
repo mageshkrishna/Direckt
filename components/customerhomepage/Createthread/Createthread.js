@@ -316,10 +316,15 @@ const Createthread = () => {
             <View>
               <Imagepick setSelectedImage={setSelectedImage} />
               {selectedImage ? (
-                <Image
+                <View style={{alignItems:'center'}}>
+                  <Image
                   source={{ uri: selectedImage }}
                   style={{ width: 80, height: 80, borderRadius: 50 }}
                 />
+                <TouchableOpacity onPress={()=>setSelectedImage(null)}>
+                <Text>remove Image</Text>
+                </TouchableOpacity>
+                  </View>
               ) : null}
             </View>
             {indicator ? (<View>
