@@ -124,28 +124,3 @@ const App = () => {
 };
 
 export default App;
-
-// import { StatusBar } from "expo-status-bar";
-// import { StyleSheet, Text, View } from "react-native";
-// import Home from "./components/Home/Home";
-// import { NavigationContainer } from "@react-navigation/native";
-// import { createStackNavigator } from "@react-navigation/stack";
-// import Logincustomer from "./components/CustomerAuthentication/Logincustomer";
-
-// import Signupcustomer from "./components/CustomerAuthentication/Signupcustomer";
-// const stack = createStackNavigator();
-// const App = () => {
-//   return (
-//     <NavigationContainer>
-//       <stack.Navigator
-//         screenOptions={{ headerShown: false }}
-//         initialRouteName="Home"
-//       >
-//         <stack.Screen name="Home" component={Home} />
-//         <stack.Screen name="Logincustomer" component={Logincustomer} />
-//         <stack.Screen name="Signupcustomer" component={Signupcustomer} />
-//       </stack.Navigator>
-//     </NavigationContainer>
-//   );
-// };
-// export default App;

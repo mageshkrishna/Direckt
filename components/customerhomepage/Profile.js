@@ -32,7 +32,7 @@ const Profile = () => {
   const customertoken = useSelector(
     (state) => state.customerAuth.customertoken
   );
-  console.log("customertoken" + customertoken);
+  // console.log("customertoken" + customertoken);
   const [customerdata, setCustomerData] = useState(null);
   const data = [
     {
@@ -73,18 +73,32 @@ const Profile = () => {
   const handleFeedbackSubmit = async () => {
     if(feedbackText.length===0){
        showToast('feedback is empty')
+       return;
     }
     try {
       setFeedbackTextindicator(true)
       const response = await axios.post('https://direckt-copy1.onrender.com/direckt/customerfeedback', { feedback: feedbackText });
-      showToast('feedback sent successfully')
+      showToast('Thanks for your feedback!');
       setFeedbackText('')
       setFeedbackTextindicator(false)
       
     } catch (error) {
         console.log(error)
         setFeedbackTextindicator(false)
-        showToast('feedback failed')
+        if (axios.isAxiosError(error)) {
+          // Axios-related error
+          if (error.response) {
+            // Response received with an error status code
+            showToast("Feedback failed");
+          } else {
+            // Network error (no response received)
+            showToast("Network error. Please check your internet connection.");
+          }
+        } else {
+          // Non-Axios error
+          console.log(error);
+          showToast("An error occurred. Please try again.");
+        }
       
     }
   };
@@ -293,7 +307,7 @@ const Profile = () => {
                 value={feedbackText}
                 onChangeText={setFeedbackText}
               />
-              <TouchableOpacity style={{backgroundColor:COLORS.primary,paddingHorizontal:12,paddingVertical:8,borderRadius:4}} onPress={handleFeedbackSubmit}><Text style={{fontSize:18,color:'#fff'}}>Submit</Text>{feedbackTextIndicator&&<ActivityIndicator size={18}/>}</TouchableOpacity>
+              <TouchableOpacity style={{backgroundColor:COLORS.primary,paddingHorizontal:12,paddingVertical:8,borderRadius:4,flexDirection:'row',alignItems:'center'}} onPress={handleFeedbackSubmit}><Text style={{fontSize:18,color:'#fff'}}>Submit</Text>{feedbackTextIndicator&&<ActivityIndicator size={18} color={'#fff'}/>}</TouchableOpacity>
             </View>
         </View>
       </ScrollView>

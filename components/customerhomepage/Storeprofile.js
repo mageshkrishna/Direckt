@@ -100,7 +100,7 @@ const StoreProfile = () => {
                 source={
                     // require('../../assets/icon.png')
                     {
-                        uri: 'https://a.cdn-hotels.com/gdcs/production181/d1528/3a35ad9e-1a07-4161-a28b-7c069d02efdf.jpg?impolicy=fcrop&w=800&h=533&q=medium',
+                        uri: 'https://static.vecteezy.com/system/resources/previews/008/878/933/non_2x/online-shopping-store-on-smartphone-with-shopping-cart-and-bags-on-purple-background-3d-rendering-free-photo.jpg',
                       }
                 }
                 style={styles.headercontainer}>
@@ -274,7 +274,7 @@ const styles = StyleSheet.create({
         height: 120,
         width: 120,
         borderRadius: 70,
-        borderWidth: 2,
+        borderWidth: 0.9,
         borderColor: 'white',
     },
     bodycontainer: {

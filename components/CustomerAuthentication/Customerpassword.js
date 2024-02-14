@@ -12,12 +12,18 @@ const Customerpassword = ({route}) => {
     const navigation = useNavigation();
   const [newPassword, setnewPassword] = useState();
 
+  const validatePassword = (password) => {
+    // Password should be at least 6 characters long and contain both letters and numbers
+    const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$/;
+    return passwordRegex.test(password);
+  };
   const sendnewPassword =async()=>{
   
-    if (!newPassword) {
+    if (!validatePassword(newPassword)) {
       showToast('Password must be at least 6 characters long and contain both letters and numbers');
       return;
-    } 
+    }
+
    else{
     try{
         console.log(email,token)
@@ -27,8 +33,8 @@ const Customerpassword = ({route}) => {
       if(response.status===200){
         showToast('passwordchanged successfully')
       }
-
-      return navigation.navigate('Logincustomer')
+      const password=newPassword;
+      return navigation.navigate('Logincustomer',{email,password});
     }
     catch(error){
       // showToast('retry and generate new otp')
@@ -78,6 +84,9 @@ const Customerpassword = ({route}) => {
               </Text>
             </View>
           </TouchableOpacity>
+          <View>
+            <Text>Don't go back from this page.Enter the password and submit.</Text>
+          </View>
         </View>
     
   )

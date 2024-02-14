@@ -111,7 +111,7 @@ const UserLogin = ({route,setShopOwnerToken}) => {
         // Axios-related error
         if (error.response) {
           // Response received with an error status code
-          showToast(`Error: ${error.response.data.error}`);
+          showToast('Error: Invalid User');
         } else {
           // Network error (no response received)
           showToast("Network error. Please check your internet connection.");

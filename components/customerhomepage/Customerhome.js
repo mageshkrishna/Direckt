@@ -18,11 +18,9 @@ import {
 } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-
 import Profile from "./Profile";
 import { Ionicons, Feather, Entypo } from "@expo/vector-icons";
 import { COLORS } from "../../constants/Theme";
-
 import Createthread from "./Createthread/Createthread";
 import Threadsavailable from "./Threadsavailable";
 import { TextInput } from "react-native-gesture-handler";
@@ -48,7 +46,7 @@ const Customerhome = () => {
       navigation.navigate("Home");
       console.log("Data removed successfully");
     } catch (error) {
-      console.error("Error removing data:", error);
+      console.log("Error removing data:", error);
     }
   };
   const handleLogout = () => {
@@ -85,7 +83,7 @@ const Customerhome = () => {
         }}
       >
         <TouchableOpacity style={styles.searchbar} onPress={handleFocus}>
-          <Text style={styles.searchinput}>search shop nearby</Text>
+          <Text style={styles.searchinput}>Search shops near you...</Text>
           <Feather name="search" size={30} color="black" />
         </TouchableOpacity>
 

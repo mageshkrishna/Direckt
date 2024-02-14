@@ -47,9 +47,10 @@ const EditOwnerProfile = () => {
   const [token, settoken] = useState(null);
   const editprofile = true;
   const addphoto = true;
-
   const [isButtonDisabled, setButtonDisabled] = useState(false);
   const [uploading, setuploading] = useState(false)
+
+
   const handleButtonPress = () => {
     if (!isButtonDisabled) {
       // Disable the button to prevent multiple rapid clicks
@@ -105,7 +106,7 @@ const EditOwnerProfile = () => {
           .then((value) => {
             settoken(value);
           })
-          .catch((error) => console.error("Error retrieving value:", error));
+          .catch((error) => console.log("Error retrieving value:", error));
         const data = await AsyncStorage.getItem("shopownerdata");
         if (data) {
           const parsedData = JSON.parse(data);
@@ -131,7 +132,19 @@ const EditOwnerProfile = () => {
     fetchData();
   }, []);
 
+  const isValidUrl = (url) => {
+    const urlPattern = /^(ftp|http|https):\/\/[^ "]+$/;
+    return urlPattern.test(url);
+  };
   const updateshopowner = async () => {
+    if (gmaplink.trim() === '') {
+    }
+    else {
+      if (!isValidUrl(gmaplink)) {
+        showToast('Enter a valid Google map Link');
+        return;
+      }
+    }
     setuploading(true)
     const formdata = {
       shopownerId: shopownerId,
@@ -198,9 +211,9 @@ const EditOwnerProfile = () => {
   };
 
 
-  
 
-  const deleteimage =(itemToRemove)=>{
+
+  const deleteimage = (itemToRemove) => {
     Alert.alert(
       'Confirmation',
       'Are you sure you want to delete this image?',
@@ -210,15 +223,17 @@ const EditOwnerProfile = () => {
           onPress: () => console.log('Cancel Pressed'),
           style: 'cancel',
         },
-        { text: 'delete', onPress: () => {
-          const updated = photos.filter(item => item !== itemToRemove);
-          setphotos(updated);
-        } },
+        {
+          text: 'delete', onPress: () => {
+            const updated = photos.filter(item => item !== itemToRemove);
+            setphotos(updated);
+          }
+        },
       ],
       { cancelable: false }
     )
   }
-  const [choosedata, setChooseData] = useState([{key:'1', value:'loading...', disabled:true}]);
+  const [choosedata, setChooseData] = useState([{ key: '1', value: 'loading...', disabled: true }]);
   useEffect(() => {
     fetchData(); // Fetch choosedata when the component mounts
   }, []);
@@ -238,14 +253,27 @@ const EditOwnerProfile = () => {
         // Update the state with the formatted data
         setChooseData(formattedData);
       } else {
-        return ;
+        return;
       }
     } catch (error) {
-      console.error('Error fetching choosedata:', error);
+      if (axios.isAxiosError(error)) {
+        // Axios-related error
+        if (error.response) {
+          // Response received with an error status code
+          showToast(`Error: ${error.response.data.error}`);
+        } else {
+          // Network error (no response received)
+          showToast("Network error. Please check your internet connection.");
+        }
+      } else {
+        // Non-Axios error
+        console.log(error);
+        showToast("An error occurred. Please try again.");
+      }
     }
   };
 
-  const [chooselocation, setchooselocation] = useState([{key:'1', value:'loading...', disabled:true}]);
+  const [chooselocation, setchooselocation] = useState([{ key: '1', value: 'loading...', disabled: true }]);
   useEffect(() => {
     fetchDatalocation(); // Fetch choosedata when the component mounts
   }, []);
@@ -265,13 +293,26 @@ const EditOwnerProfile = () => {
         // Update the state with the formatted data
         setchooselocation(formattedData);
       } else {
-       return
+        return
       }
     } catch (error) {
-      console.error('Error fetching choosedata:', error);
+      if (axios.isAxiosError(error)) {
+        // Axios-related error
+        if (error.response) {
+          // Response received with an error status code
+          showToast(`Error: ${error.response.data.error}`);
+        } else {
+          // Network error (no response received)
+          showToast("Network error. Please check your internet connection.");
+        }
+      } else {
+        // Non-Axios error
+        console.log(error);
+        showToast("An error occurred. Please try again.");
+      }
     }
   };
-  
+
 
 
 
@@ -386,9 +427,9 @@ const EditOwnerProfile = () => {
                   source={{ uri: item }}
                 />
                 <TouchableOpacity
-                  onPress={()=>deleteimage(item)}
+                  onPress={() => deleteimage(item)}
                 >
-                <Text style={{textAlign:'center',color:'red'}}>Delete</Text>
+                  <Text style={{ textAlign: 'center', color: 'red' }}>Delete</Text>
                 </TouchableOpacity>
               </View>
             );
