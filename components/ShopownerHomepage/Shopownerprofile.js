@@ -79,7 +79,21 @@ const Shopownerprofile = () => {
   };
 
   const removeData = async () => {
-    try {
+ 
+      const formdata ={
+        email:email
+      }
+      try {
+        const response = await axios.post(
+          "https://direckt-copy1.onrender.com/auth/shopownerlogout",
+          formdata,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              'Content-Type': 'application/json',
+            },
+          }
+        );
       dispatch(clearShopOwnerToken());
       await SecureStore.deleteItemAsync('shopownertoken');
       console.log('Token removed successfully');
@@ -91,6 +105,11 @@ const Shopownerprofile = () => {
       navigation.navigate("Home");
       console.log("Data removed successfully");
     } catch (error) {
+      dispatch(clearShopOwnerToken());
+      await SecureStore.deleteItemAsync('shopownertoken');
+      console.log('Token removed successfully');
+      await AsyncStorage.removeItem("shopownerdata");
+      navigation.navigate("Home");
       console.error("Error removing data:", error);
     }
   };

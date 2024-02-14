@@ -28,11 +28,13 @@ const height = Dimensions.get("window").height;
 const width = Dimensions.get("window").width;
 
 const Profile = () => {
+  const [token, settoken] = useState(null);
+
   const navigation = useNavigation();
   const customertoken = useSelector(
     (state) => state.customerAuth.customertoken
   );
-  console.log("customertoken" + customertoken);
+  
   const [customerdata, setCustomerData] = useState(null);
   const data = [
     {
@@ -88,6 +90,7 @@ const Profile = () => {
       
     }
   };
+  
   const showToast = (e) => {
     ToastAndroid.show(e, ToastAndroid.SHORT);
   };
@@ -107,7 +110,12 @@ const Profile = () => {
           const parsedData = JSON.parse(data);
           setCustomerData(parsedData);
         }
-
+        SecureStore.getItemAsync("customertoken")
+          .then((value) => {
+            console.log("Retrieved value:", value);
+            settoken(value);
+          })
+          .catch((error) => console.error("Error retrieving value:", error));
         console.log(customerdata);
       } catch (err) {
         console.log(err);
@@ -117,13 +125,30 @@ const Profile = () => {
     fetchData();
   }, [customertoken]);
   const removeData = async () => {
+    const formdata ={
+      email:customerdata.email
+    }
     try {
+      const response = await axios.post(
+        "https://direckt-copy1.onrender.com/auth/customerlogout",
+        formdata,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        }
+      );
       await SecureStore.deleteItemAsync("customertoken");
       console.log("Token removed successfully");
       await AsyncStorage.removeItem("customerdata");
       navigation.navigate("Home");
       console.log("Data removed successfully");
     } catch (error) {
+      await SecureStore.deleteItemAsync("customertoken");
+      console.log("Token removed successfully");
+      await AsyncStorage.removeItem("customerdata");
+      navigation.navigate("Home");
       console.error("Error removing data:", error);
     }
   };

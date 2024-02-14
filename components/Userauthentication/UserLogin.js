@@ -31,14 +31,20 @@ const UserLogin = ({route,setShopOwnerToken}) => {
   const [password, setpassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
-
+   const[devicetoken,setdeviceToken]= useState(null)
   useEffect(() => {
     if (route && route.params) {
       setemail(route.params.email || '');
       setpassword(route.params.password || '');
     }
   }, [route]);
-
+  useEffect(()=>{
+    const fecthdevicetoken = async()=>{
+    const value = await SecureStore.getItemAsync("devicetoken");
+    setdeviceToken(value);
+    }
+    fecthdevicetoken();
+  },[])
   const validateEmail = (email) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
@@ -63,11 +69,11 @@ const UserLogin = ({route,setShopOwnerToken}) => {
       showToast('Please enter your password!');
       return;
     }
-  
+   
     setLoading(true);
   
-    const formDataLogin = { email, password };
-  
+    const formDataLogin = { email, password,devicetoken};
+    console.log(devicetoken);
     try {
       const response = await axios.post(
         "https://direckt-copy1.onrender.com/auth/login",
