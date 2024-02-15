@@ -129,7 +129,7 @@ const Profile = () => {
       email:customerdata.email
     }
     try {
-      const response = await axios.post(
+      const response =  axios.post(
         "https://direckt-copy1.onrender.com/auth/customerlogout",
         formdata,
         {
