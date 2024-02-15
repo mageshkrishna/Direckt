@@ -31,7 +31,7 @@ const Customerpassword = ({route}) => {
       ,{email:email,newPassword:newPassword,token:token}
       )
       if(response.status===200){
-        showToast('passwordchanged successfully')
+        showToast('password changed successfully')
       }
       const password=newPassword;
       return navigation.navigate('Logincustomer',{email,password});
@@ -84,8 +84,8 @@ const Customerpassword = ({route}) => {
               </Text>
             </View>
           </TouchableOpacity>
-          <View>
-            <Text>Don't go back from this page.Enter the password and submit.</Text>
+          <View style={{paddingRight:20}}>
+            <Text style={{color:'grey',fontSize:15}}>Don't go back from this page. Enter the password and submit.</Text>
           </View>
         </View>
     

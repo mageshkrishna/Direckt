@@ -587,7 +587,6 @@ const Threadsavailable = ({ route }) => {
         style={{
           flex: 1,
           flexDirection: "column",
-
         }}
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
@@ -598,14 +597,15 @@ const Threadsavailable = ({ route }) => {
             flexDirection: "column",
             justifyContent: "center",
             alignItems: "center",
-            height: 560
+            height:730,
+            padding:10,
+            backgroundColor:'#E0E5FF',
           }}
 
         >
-
           <Image
-            source={require("../../assets/Location-review-pana.png")}
-            style={{ height: "50%", width: "80%" }}
+            source={require("../../assets/homepage.png")}
+            style={{ height: "100%", width: "100%" }}
           />
           <TouchableOpacity
             onPress={() => navigation.navigate("Createthread")}
@@ -617,7 +617,7 @@ const Threadsavailable = ({ route }) => {
               flexDirection: "row",
               justifyContent: "center",
               alignItems: "center",
-              marginVertical: 20
+              marginBottom:40,
             }}
           >
             <MaterialIcons name="add" size={14} color="white" />

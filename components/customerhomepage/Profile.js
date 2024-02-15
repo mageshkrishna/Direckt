@@ -28,11 +28,13 @@ const height = Dimensions.get("window").height;
 const width = Dimensions.get("window").width;
 
 const Profile = () => {
+  const [token, settoken] = useState(null);
+
   const navigation = useNavigation();
   const customertoken = useSelector(
     (state) => state.customerAuth.customertoken
   );
-  // console.log("customertoken" + customertoken);
+  console.log("customertoken" + customertoken);
   const [customerdata, setCustomerData] = useState(null);
   const data = [
     {
@@ -71,9 +73,9 @@ const Profile = () => {
   const [feedbackText, setFeedbackText] = useState('');
   const [feedbackTextIndicator, setFeedbackTextindicator] = useState(false);
   const handleFeedbackSubmit = async () => {
-    if(feedbackText.length===0){
-       showToast('feedback is empty')
-       return;
+    if (feedbackText.length === 0) {
+      showToast('feedback is empty')
+      return;
     }
     try {
       setFeedbackTextindicator(true)
@@ -81,27 +83,28 @@ const Profile = () => {
       showToast('Thanks for your feedback!');
       setFeedbackText('')
       setFeedbackTextindicator(false)
-      
+
     } catch (error) {
-        console.log(error)
-        setFeedbackTextindicator(false)
-        if (axios.isAxiosError(error)) {
-          // Axios-related error
-          if (error.response) {
-            // Response received with an error status code
-            showToast("Feedback failed");
-          } else {
-            // Network error (no response received)
-            showToast("Network error. Please check your internet connection.");
-          }
+      console.log(error)
+      setFeedbackTextindicator(false)
+      if (axios.isAxiosError(error)) {
+        // Axios-related error
+        if (error.response) {
+          // Response received with an error status code
+          showToast("Feedback failed");
         } else {
-          // Non-Axios error
-          console.log(error);
-          showToast("An error occurred. Please try again.");
+          // Network error (no response received)
+          showToast("Network error. Please check your internet connection.");
         }
-      
+      } else {
+        // Non-Axios error
+        console.log(error);
+        showToast("An error occurred. Please try again.");
+      }
+
     }
   };
+
   const showToast = (e) => {
     ToastAndroid.show(e, ToastAndroid.SHORT);
   };
@@ -121,7 +124,12 @@ const Profile = () => {
           const parsedData = JSON.parse(data);
           setCustomerData(parsedData);
         }
-
+        SecureStore.getItemAsync("customertoken")
+          .then((value) => {
+            console.log("Retrieved value:", value);
+            settoken(value);
+          })
+          .catch((error) => console.error("Error retrieving value:", error));
         console.log(customerdata);
       } catch (err) {
         console.log(err);
@@ -131,14 +139,43 @@ const Profile = () => {
     fetchData();
   }, [customertoken]);
   const removeData = async () => {
+    const formdata = {
+      email: customerdata.email
+    }
     try {
+      const response =await axios.post(
+        "https://direckt-copy1.onrender.com/auth/customerlogout",
+        formdata,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        }
+      );
       await SecureStore.deleteItemAsync("customertoken");
       console.log("Token removed successfully");
       await AsyncStorage.removeItem("customerdata");
       navigation.navigate("Home");
       console.log("Data removed successfully");
     } catch (error) {
-      console.error("Error removing data:", error);
+      if (axios.isAxiosError(error)) {
+        // Axios-related error
+        if (error.response) {
+          // Response received with an error status code
+          showToast(`Error: ${error.response.data.error}`);
+        } else {
+          // Network error (no response received)
+          showToast("Network error. Please check your internet connection.");
+        }
+      } else {
+        // Non-Axios error
+        await SecureStore.deleteItemAsync("customertoken");
+        console.log("Token removed successfully");
+        await AsyncStorage.removeItem("customerdata");
+        navigation.navigate("Home");
+        console.error("Error removing data:", error);
+      }
     }
   };
   const handleLogout = () => {
@@ -235,7 +272,7 @@ const Profile = () => {
                 <Entypo name="youtube" size={38} color="red" />
               </TouchableOpacity>
             </View>
-          
+
             <View style={styles.aboutlist}>
               <View>
                 <TouchableOpacity
@@ -285,30 +322,30 @@ const Profile = () => {
                 </TouchableOpacity>
               </View>
             </View>
-             
+
           </View>
-           <View
-              style={{ height: 200, width: "100%", flexDirection:'column',alignItems:'flex-start',justifyContent:'center',gap:10,paddingLeft:15}}
-            >
-              <Text>Your Feedback Matters: Suggestions, Bug Reports Welcome!</Text>
-              <TextInput
-                style={{
-                  flex: 1,
-                  textAlignVertical: "top",
-                  borderWidth: 1,
-                  borderColor: "gray",
-                  padding: 10,
-                  width:'100%',
-                  borderRadius:5
-                }}
-                multiline
-                numberOfLines={4}
-                placeholder="Type your feedback here..."
-                value={feedbackText}
-                onChangeText={setFeedbackText}
-              />
-              <TouchableOpacity style={{backgroundColor:COLORS.primary,paddingHorizontal:12,paddingVertical:8,borderRadius:4,flexDirection:'row',alignItems:'center'}} onPress={handleFeedbackSubmit}><Text style={{fontSize:18,color:'#fff'}}>Submit</Text>{feedbackTextIndicator&&<ActivityIndicator size={18} color={'#fff'}/>}</TouchableOpacity>
-            </View>
+          <View
+            style={{ height: 200, width: "100%", flexDirection: 'column', alignItems: 'flex-start', justifyContent: 'center', gap: 10, paddingLeft: 15 }}
+          >
+            <Text>Your Feedback Matters: Suggestions, Bug Reports Welcome!</Text>
+            <TextInput
+              style={{
+                flex: 1,
+                textAlignVertical: "top",
+                borderWidth: 1,
+                borderColor: "gray",
+                padding: 10,
+                width: '100%',
+                borderRadius: 5
+              }}
+              multiline
+              numberOfLines={4}
+              placeholder="Type your feedback here..."
+              value={feedbackText}
+              onChangeText={setFeedbackText}
+            />
+            <TouchableOpacity style={{ backgroundColor: COLORS.primary, paddingHorizontal: 12, paddingVertical: 8, borderRadius: 4, flexDirection: 'row', alignItems: 'center' }} onPress={handleFeedbackSubmit}><Text style={{ fontSize: 18, color: '#fff' }}>Submit</Text>{feedbackTextIndicator && <ActivityIndicator size={18} color={'#fff'} />}</TouchableOpacity>
+          </View>
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -397,7 +434,7 @@ const styles = StyleSheet.create({
     paddingVertical: "1%",
   },
   bodyfooter: {
-    height: (height *50) / 100,
+    height: (height * 50) / 100,
   },
   footertitle: {
     fontSize: 18,

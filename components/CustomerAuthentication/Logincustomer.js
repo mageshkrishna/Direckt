@@ -32,7 +32,7 @@ const Logincustomer = ({route,setCustomerToken}) => {
   const [password, setpassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
-
+  const[devicetoken,setdeviceToken]= useState(null)
   useEffect(() => {
     if (route.params) {
       setemail(route.params.email || '');
@@ -48,7 +48,13 @@ const Logincustomer = ({route,setCustomerToken}) => {
   const togglePasswordVisibility = () => {
     setIsPasswordVisible((e) => !e);
   };
-
+  useEffect(()=>{
+    const fecthdevicetoken = async()=>{
+    const value = await SecureStore.getItemAsync("devicetoken");
+    setdeviceToken(value);
+    }
+    fecthdevicetoken();
+  },[])
 
 
 const handleLogin = async () => {
@@ -69,7 +75,7 @@ const handleLogin = async () => {
 
   setLoading(true);
 
-  const formDataLogin = { email, password };
+  const formDataLogin = { email, password,devicetoken };
 
   try {
     const response = await axios.post(

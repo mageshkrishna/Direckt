@@ -78,6 +78,9 @@ const Shopownerpassword = ({route}) => {
               </Text>
             </View>
           </TouchableOpacity>
+          <View style={{paddingRight:20}}>
+            <Text style={{color:'grey',fontSize:15}}>Don't go back from this page. Enter the password and submit.</Text>
+          </View>
         </View>
     
   )

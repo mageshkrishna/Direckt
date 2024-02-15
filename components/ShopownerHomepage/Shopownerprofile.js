@@ -79,7 +79,21 @@ const Shopownerprofile = () => {
   };
 
   const removeData = async () => {
-    try {
+ 
+      const formdata ={
+        email:email
+      }
+      try {
+        const response =await axios.post(
+          "https://direckt-copy1.onrender.com/auth/shopownerlogout",
+          formdata,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              'Content-Type': 'application/json',
+            },
+          }
+        );
       dispatch(clearShopOwnerToken());
       await SecureStore.deleteItemAsync('shopownertoken');
       console.log('Token removed successfully');
@@ -91,7 +105,20 @@ const Shopownerprofile = () => {
       navigation.navigate("Home");
       console.log("Data removed successfully");
     } catch (error) {
-      showToast("Error removing data:", error);
+      if (axios.isAxiosError(error)) {
+        // Axios-related error
+        if (error.response) {
+          // Response received with an error status code
+          showToast(`Error: ${error.response.data.error}`);
+        } else {
+          // Network error (no response received)
+          showToast("Network error. Please check your internet connection.");
+        }
+      } else {
+        // Non-Axios error
+        console.log(error);
+        showToast("An error occurred. Please try again.");
+      }
     }
   };
   const delivery = async () => {
@@ -255,7 +282,6 @@ const Shopownerprofile = () => {
         if (data) {
           const parsedData = JSON.parse(data);
           setshopownerId(parsedData._id)
-
           setbusinessname(parsedData.businessname);
           setphonenumber(parsedData.phonenumber.toString());
           setemail(parsedData.email);

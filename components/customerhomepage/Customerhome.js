@@ -39,37 +39,6 @@ const Customerhome = () => {
   };
   const inputRef = React.createRef();
 
-  const removeData = async () => {
-    try {
-      // Remove data
-      await AsyncStorage.removeItem("customerdata");
-      navigation.navigate("Home");
-      console.log("Data removed successfully");
-    } catch (error) {
-      console.log("Error removing data:", error);
-    }
-  };
-  const handleLogout = () => {
-    Alert.alert(
-      "Logout",
-      "Are you sure you want to logout?",
-      [
-        {
-          text: "Cancel",
-          style: "cancel",
-        },
-        {
-          text: "Logout",
-          onPress: () => {
-            removeData();
-
-            console.log("Logging out...");
-          },
-        },
-      ],
-      { cancelable: false }
-    );
-  };
   const Tab = createBottomTabNavigator();
   return (
     <View style={{ flex: 1 }}>
