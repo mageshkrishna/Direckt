@@ -54,7 +54,7 @@ const Shopownerprofile = () => {
 
 
     } catch (error) {
-      console.error(error);
+      showToast(error);
     }
   };
   const [feedbackText, setFeedbackText] = useState('');
@@ -67,7 +67,7 @@ const Shopownerprofile = () => {
     try {
       setFeedbackTextindicator(true);
       const response = await axios.post('https://direckt-copy1.onrender.com/direckt/shopownerfeedback', { feedback: feedbackText });
-      showToast('feedback sent successfully')
+      showToast('Thankyou for your valuable feedback!')
       setFeedbackText('')
       setFeedbackTextindicator(false)
       
@@ -84,7 +84,7 @@ const Shopownerprofile = () => {
         email:email
       }
       try {
-        const response =  axios.post(
+        const response = await axios.post(
           "https://direckt-copy1.onrender.com/auth/shopownerlogout",
           formdata,
           {
@@ -105,12 +105,20 @@ const Shopownerprofile = () => {
       navigation.navigate("Home");
       console.log("Data removed successfully");
     } catch (error) {
-      dispatch(clearShopOwnerToken());
-      await SecureStore.deleteItemAsync('shopownertoken');
-      console.log('Token removed successfully');
-      await AsyncStorage.removeItem("shopownerdata");
-      navigation.navigate("Home");
-      console.error("Error removing data:", error);
+      if (axios.isAxiosError(error)) {
+        // Axios-related error
+        if (error.response) {
+          // Response received with an error status code
+          showToast(`Error: ${error.response.data.error}`);
+        } else {
+          // Network error (no response received)
+          showToast("Network error. Please check your internet connection.");
+        }
+      } else {
+        // Non-Axios error
+        console.log(error);
+        showToast("An error occurred. Please try again.");
+      }
     }
   };
   const delivery = async () => {
@@ -193,7 +201,7 @@ const Shopownerprofile = () => {
 
 
     } catch (error) {
-      console.error(error);
+      showToast(error);
     }
   };
   const availability = async () => {
@@ -213,14 +221,11 @@ const Shopownerprofile = () => {
             setshopindicator(true)
             console.log("availabilitystatus" + availabilitystatus)
 
-
-
             const formdata = {
               shopownerId: shopownerId,
               availabilitystatus: !availabilitystatus,
               email:email,
             };
-
 
             try {
               // Assuming the API request is uncommented
@@ -271,13 +276,12 @@ const Shopownerprofile = () => {
         .then((value) => {
           settoken(value);
         })
-        .catch((error) => console.error("Error retrieving value:", error));
+        .catch((error) => console.log("Error retrieving value:", error));
         const data = await AsyncStorage.getItem("shopownerdata");
   
         if (data) {
           const parsedData = JSON.parse(data);
           setshopownerId(parsedData._id)
-
           setbusinessname(parsedData.businessname);
           setphonenumber(parsedData.phonenumber.toString());
           setemail(parsedData.email);
@@ -307,7 +311,7 @@ const Shopownerprofile = () => {
       <ImageBackground
         source={
           {
-            uri: 'https://a.cdn-hotels.com/gdcs/production181/d1528/3a35ad9e-1a07-4161-a28b-7c069d02efdf.jpg?impolicy=fcrop&w=800&h=533&q=medium',
+            uri: 'https://static.vecteezy.com/system/resources/previews/008/878/933/non_2x/online-shopping-store-on-smartphone-with-shopping-cart-and-bags-on-purple-background-3d-rendering-free-photo.jpg',
           }
         }
         style={styles.headercontainer}>
@@ -536,7 +540,7 @@ const Shopownerprofile = () => {
                 value={feedbackText}
                 onChangeText={setFeedbackText}
               />
-              <TouchableOpacity style={{backgroundColor:COLORS.primary,paddingHorizontal:12,paddingVertical:8,borderRadius:4,flexDirection:'row'}} onPress={handleFeedbackSubmit}><Text style={{fontSize:18,color:'#fff'}}>Submit</Text>{feedbackTextIndicator&&<ActivityIndicator size={18}/>}</TouchableOpacity>
+              <TouchableOpacity style={{backgroundColor:COLORS.primary,paddingHorizontal:12,paddingVertical:8,borderRadius:4,flexDirection:'row',alignItems:'center'}} onPress={handleFeedbackSubmit}><Text style={{fontSize:18,color:'#fff'}}>Submit</Text>{feedbackTextIndicator&&<ActivityIndicator size={18} color={'#fff'}/>}</TouchableOpacity>
             </View>
       </View>
     </ScrollView>
@@ -566,7 +570,7 @@ const styles = StyleSheet.create({
     height: 120,
     width: 120,
     borderRadius: 70,
-    borderWidth: 2,
+    borderWidth: 0.5,
     borderColor: 'white',
   },
   bodycontainer: {

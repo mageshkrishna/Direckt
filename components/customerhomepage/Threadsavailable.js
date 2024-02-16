@@ -32,6 +32,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFocusEffect, useNavigation, useRoute } from "@react-navigation/native";
 import ImagePopup from "../ShopownerHomepage/Imagepopup";
 import moment from "moment";
+import { useSelector } from "react-redux";
 const showToast = (e) => {
   ToastAndroid.show(e, ToastAndroid.SHORT);
 };
@@ -40,7 +41,7 @@ UIManager.setLayoutAnimationEnabledExperimental &&
 const InsideAccorditon = ({ data }) => {
   const [showPopup, setShowPopup] = useState(false);
   const navigation = useNavigation();
-
+  console.log(data.deliverystatus);
   return (
     <View
       style={{
@@ -135,9 +136,9 @@ const InsideAccorditon = ({ data }) => {
               alignItems: "flex-start",
             }}
           >
-            {data.deliveryStatus ? (
+            {data.deliverystatus ? (
               <Text>
-                Delivery:<Text style={{ color: "green" }}> YES</Text>
+                Delivery:<Text style={{ color: "green" }}> Yes</Text>
               </Text>
             ) : (
               <Text>
@@ -186,10 +187,10 @@ const AccordionItem = ({ data, token, onRefresh }) => {
   const [deactivateindicator, setdeactivateindicator] = useState(false)
 
   const timestamp = data.expiryAt;
- const localDateTime = moment(timestamp).utcOffset('+00:00').format('DD-MM-YYYY h:mm:ss A');
- 
- console.log( "moment"+localDateTime); 
- 
+  const localDateTime = moment(timestamp).utcOffset('+00:00').format('DD-MM-YYYY h:mm:ss A');
+
+  // console.log("moment" + localDateTime);
+
   const deactivatejob = async () => {
     try {
       setdeactivateindicator(true)
@@ -202,7 +203,8 @@ const AccordionItem = ({ data, token, onRefresh }) => {
       setdeactivateindicator(false)
       ToastAndroid.show('Job Deactivated', ToastAndroid.SHORT);
     }
-    catch {
+    catch(error) {
+      setdeactivateindicator(false)
       if (axios.isAxiosError(error)) {
         // Axios-related error
         if (error.response) {
@@ -291,155 +293,155 @@ const AccordionItem = ({ data, token, onRefresh }) => {
             </View>
           </View>
         </Modal>
-        
-        <View style={styles.expirationtitle}>
-            <Text style={styles.expireText}>Job expire at {localDateTime}</Text>
-          </View>
+
+
         <View style={styles.thread}>
-      
-          <TouchableOpacity
-            style={styles.threadImage}
-            onPress={() => setShowPopup(true)}
-          >
-            {data.image_url ? <Image
-              source={{
-                uri: data.image_url,
-              }}
-              style={{
-                height: "100%",
-                width: "100%",
-                backgroundColor: "white",
-              }}
-            /> : <Image
-              source={{ uri: 'https://img.freepik.com/premium-vector/default-image-icon-vector-missing-picture-page-website-design-mobile-app-no-photo-available_87543-11093.jpg', }}
-              style={{
-                height: "100%",
-                width: "100%",
-                backgroundColor: "white",
-              }}
-            />
-            }
-            {showPopup && (
-              <ImagePopup
-                imageUrl={data.image_url}
-                onClose={() => setShowPopup(false)}
-              />
-            )}
-            <View style={{ flexDirection: "row", }}>
-              <Text style={styles.threadcategory} numberOfLines={1}>
-                {" "}
-                {data.category}
-              </Text>
-            </View>
-          </TouchableOpacity>
-          <Pressable style={styles.threaddetails} onPress={toggleExpand}>
-            {data.status ? (
-              <TouchableOpacity
-                style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                  justifyContent: "flex-end",
+          {data.status ? <View style={styles.expirationtitle}>
+            <Text style={styles.expireText}>Job expire at {localDateTime}</Text>
+          </View> : <></>}
+          <View style={styles.threadcardsection}>
+            <TouchableOpacity
+              style={styles.threadImage}
+              onPress={() => setShowPopup(true)}
+            >
+              {data.image_url ? <Image
+                source={{
+                  uri: data.image_url,
                 }}
-                onPress={() =>
-                  Alert.alert(
-                    "Confirm Deactivation",
-                    "You can Deactivate the Job only once. Do you want to deactivate?",
-                    [
-                      {
-                        text: "Cancel",
-                        style: "cancel",
-                      },
-                      {
-                        text: "Deactivate", // Corrected from "deactivated" to "Deactivate"
-                        onPress: async () => {
-                          await deactivatejob();
-                          onRefresh()
+                style={{
+                  height: "100%",
+                  width: "100%",
+                  backgroundColor: "white",
+                }}
+              /> : <Image
+                source={{ uri: 'https://img.freepik.com/premium-vector/default-image-icon-vector-missing-picture-page-website-design-mobile-app-no-photo-available_87543-11093.jpg', }}
+                style={{
+                  height: "100%",
+                  width: "100%",
+                  backgroundColor: "white",
+                }}
+              />
+              }
+              {showPopup && data.image_url ? (
+                <ImagePopup
+                  imageUrl={data.image_url}
+                  onClose={() => setShowPopup(false)}
+                />
+              ) : <></>}
+              <View style={{ flexDirection: "row", alignItems: "center" }}>
+                <MaterialIcons name="category" size={17} color="black" />
+                <Text style={styles.threadcategory} numberOfLines={1}>
+                  {data.category}
+                </Text>
+              </View>
+            </TouchableOpacity>
+            <Pressable style={styles.threaddetails} onPress={toggleExpand}>
+              {data.status ? (
+                <TouchableOpacity
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    justifyContent: "flex-end",
+                  }}
+                  onPress={() =>
+                    Alert.alert(
+                      "Confirm Deactivation",
+                      "You can Deactivate the Job only once. Do you want to deactivate?",
+                      [
+                        {
+                          text: "Cancel",
+                          style: "cancel",
                         },
-                      },
-                    ],
-                    { cancelable: true }
-                  )
-                }
-              >
-                {deactivateindicator && <ActivityIndicator size={18} color="purple" />}
-                <Text style={styles.deactivate}>Deactivate</Text>
-              </TouchableOpacity>
-            ) : (
+                        {
+                          text: "Deactivate", // Corrected from "deactivated" to "Deactivate"
+                          onPress: async () => {
+                            await deactivatejob();
+                            onRefresh()
+                          },
+                        },
+                      ],
+                      { cancelable: true }
+                    )
+                  }
+                >
+                  {deactivateindicator && <ActivityIndicator size={18} color="purple" />}
+                  <Text style={styles.deactivate}>Deactivate</Text>
+                </TouchableOpacity>
+              ) : (
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    justifyContent: "flex-end",
+                  }}
+                >
+                  <Text style={styles.deactivated}>Not active</Text>
+                </View>
+              )}
+              <Text style={styles.threadtitle} numberOfLines={2}>
+                {data.jobtitle}
+              </Text>
+              <Text style={styles.threaddes} numberOfLines={3}>
+                {data.jobdescription}
+              </Text>
               <View
                 style={{
                   flexDirection: "row",
-                  alignItems: "center",
-                  justifyContent: "flex-end",
-                }}
-              >
-                <Text style={styles.deactivated}>Not active</Text>
-              </View>
-            )}
-
-
-            <Text style={styles.threadtitle} numberOfLines={2}>
-              {data.jobtitle}
-            </Text>
-            <Text style={styles.threaddes} numberOfLines={3}>
-              {data.jobdescription}
-            </Text>
-            <View
-              style={{
-                flexDirection: "row",
-                marginTop: 3,
-                alignItems: "center",
-                justifyContent: "space-evenly",
-              }}
-            >
-              <TouchableOpacity
-                style={{
-                  flexDirection: "row",
+                  marginTop: 3,
                   alignItems: "center",
                   justifyContent: "space-evenly",
                 }}
-                onPress={() =>
-                  Alert.alert(
-                    "Confirm Deletion",
-                    "Do you want to delete?",
-                    [
-                      {
-                        text: "Cancel",
-                        style: "cancel",
-                      },
-                      {
-                        text: "delete",
-                        onPress: () => {
-                          handleDeleteJob();
-                        },
-                      },
-                    ],
-                    { cancelable: true }
-                  )
-                }
               >
-                {deleteindicator ? <ActivityIndicator size={18} color="purple" /> : <AntDesign name="delete" size={12} color="red" />}
+                <TouchableOpacity
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    justifyContent: "space-evenly",
+                  }}
+                  onPress={() =>
+                    Alert.alert(
+                      "Confirm Deletion",
+                      "Do you want to delete?",
+                      [
+                        {
+                          text: "Cancel",
+                          style: "cancel",
+                        },
+                        {
+                          text: "delete",
+                          onPress: () => {
+                            handleDeleteJob();
+                          },
+                        },
+                      ],
+                      { cancelable: true }
+                    )
+                  }
+                >
+                  {deleteindicator ? <ActivityIndicator size={18} color="purple" /> : <AntDesign name="delete" size={12} color="red" />}
 
-                <Text style={styles.threadowner}> Delete</Text>
-              </TouchableOpacity>
-              <View style={styles.viewdetails}>
-                {jobreply.length > 0 ? (
-                  <>
-                    <Text style={{ color: "green" }}>
-                      {jobreply.length} response
-                    </Text>
-                  </>
-                ) : (
-                  <TouchableOpacity
-                    onPress={() => {
-                      ToastAndroid.show('No responses come back after some minutes', ToastAndroid.SHORT);
-                    }}
-                  >
-                    <Text>no response</Text>
-                  </TouchableOpacity>
-                )}
+                  <Text style={styles.threadowner}> Delete</Text>
+                </TouchableOpacity>
+                <View style={styles.viewdetails}>
+                  {jobreply.length > 0 ? (
+                    <>
+                      <Text style={{ color: "green" }}>
+                        {jobreply.length} response
+                      </Text>
+                    </>
+                  ) : (
+                    <TouchableOpacity
+                      onPress={() => {
+                        ToastAndroid.show('No responses come back after some minutes', ToastAndroid.SHORT);
+                      }}
+                    >
+                      <Text>no response</Text>
+                    </TouchableOpacity>
+                  )}
+                </View>
               </View>
-            </View>
-          </Pressable>
+            </Pressable>
+          </View>
         </View>
       </Pressable>
       {expanded && jobreply && jobreply.length > 0 && (
@@ -458,7 +460,7 @@ const AccordionItem = ({ data, token, onRefresh }) => {
   );
 };
 
-const Threadsavailable = ({route}) => {
+const Threadsavailable = ({ route }) => {
   const navigation = useNavigation();
   const colorScheme = useColorScheme();
   const [data, setdata] = useState([]);
@@ -466,7 +468,7 @@ const Threadsavailable = ({route}) => {
   const [email, setemail] = useState();
   const [indicator, setindicator] = useState(false);
   const [token, settoken] = useState(null);
-   const router = useRoute()
+  const router = useRoute()
   const v = false;
   useFocusEffect(
     React.useCallback(() => {
@@ -493,7 +495,10 @@ const Threadsavailable = ({route}) => {
       onRefresh();
     }
   }, [route.params]);
-
+  const custoken = useSelector(
+    (state) => state.customerAuth.customertoken
+  );
+  console.log("customertoken" + custoken);
   useEffect(() => {
     setindicator(true);
     const fetchData = async () => {
@@ -502,26 +507,33 @@ const Threadsavailable = ({route}) => {
           .then((value) => {
             settoken(value);
           })
-          .catch((error) => console.error("Error retrieving value:", error));
+          .catch((error) => console.log("Error retrieving value:", error));
         const data = await AsyncStorage.getItem("customerdata");
-        if (data) {
+        console.log("inide fetchdata ...........????"+data)
+        
           const parsedData = JSON.parse(data);
           setemail(parsedData.email);
-        }
+          setindicator(false);
       } catch (err) {
+        setindicator(false);
         console.log(err);
       }
     };
 
     fetchData();
-  }, []);
+  }, [custoken]);
 
   useEffect(() => {
-    if (refreshing || !email || !token) {
+    if (refreshing ) {
       return;
     }
-    const fetchData = async () => {
+    const fetchjob = async () => {
+      if(!email || !token){
+        return;
+      }
+  
       try {
+        setindicator(true)
         const response = await axios.get(
           `https://direckt-copy1.onrender.com/Customerdata/getreplydata?email=${email}`,
           {
@@ -554,8 +566,8 @@ const Threadsavailable = ({route}) => {
       }
     };
 
-    fetchData();
-  }, [email, refreshing, token]);
+    fetchjob();
+  }, [email,refreshing,token]);
 
   const onRefresh = React.useCallback(async () => {
     setRefreshing(true); // Set refreshing to true before fetching data
@@ -586,7 +598,6 @@ const Threadsavailable = ({route}) => {
         style={{
           flex: 1,
           flexDirection: "column",
-
         }}
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
@@ -597,14 +608,15 @@ const Threadsavailable = ({route}) => {
             flexDirection: "column",
             justifyContent: "center",
             alignItems: "center",
-            height: 560
+            height:730,
+            padding:10,
+            backgroundColor:'#E0E5FF',
           }}
 
         >
-
           <Image
-            source={require("../../assets/Location-review-pana.png")}
-            style={{ height: "50%", width: "80%" }}
+            source={require("../../assets/homepage.png")}
+            style={{ height: "100%", width: "100%" }}
           />
           <TouchableOpacity
             onPress={() => navigation.navigate("Createthread")}
@@ -616,7 +628,7 @@ const Threadsavailable = ({route}) => {
               flexDirection: "row",
               justifyContent: "center",
               alignItems: "center",
-              marginVertical: 20
+              marginBottom:40,
             }}
           >
             <MaterialIcons name="add" size={14} color="white" />
@@ -691,7 +703,7 @@ const styles = StyleSheet.create({
   expireText: {
     color: 'grey',
     fontSize: 14,
-    color:COLORS.gray
+    color: COLORS.gray
   },
   threadcontainer: {
     flex: 1,
@@ -702,14 +714,18 @@ const styles = StyleSheet.create({
   thread: {
     flex: 1,
     alignItems: "center",
-    flexDirection: "row",
-    height: (height * 18) / 100,
+    height: (height * 22) / 100,
     backgroundColor: "white",
     elevation: 1,
     marginVertical: "3%",
     marginHorizontal: "3%",
     borderRadius: 5,
     borderWidth: 0.3,
+  },
+  threadcardsection: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    height: (height * 20) / 100,
   },
   threadImage: {
     width: (width * 35) / 100,

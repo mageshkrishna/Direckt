@@ -50,21 +50,17 @@ const JobCard = ({ item, ownerdetail, token }) => {
     ToastAndroid.show(e, ToastAndroid.SHORT);
   };
 
- 
-
- const timestamp =item.expiryAt;
- const localDateTime = moment(timestamp).utcOffset('+00:00').format('DD-MM-YYYY h:mm:ss A');
- 
- console.log( "moment"+localDateTime); 
- 
+  const timestamp = item.expiryAt;
+  const localDateTime = moment(timestamp).utcOffset('+00:00').format('DD-MM-YYYY h:mm:ss A');
+  //  console.log( "moment"+localDateTime); 
 
   const createreply = async () => {
-    setuploading(true);
     if (!replymessage) {
       showToast("Please fill  fields");
       setuploading(false);
       return;
     }
+    setuploading(true);
     if (!job_id || !ownerdetail) {
       showToast("Something went wrong. Refresh the app");
       setuploading(false);
@@ -75,9 +71,7 @@ const JobCard = ({ item, ownerdetail, token }) => {
       shopowner_id: ownerdetail,
       deliverystatus: deliverystatus,
       replymessage: replymessage,
-
     };
-    console.log(formdata)
     try {
       const response = await axios.post(
         "https://direckt-copy1.onrender.com/shopowner/createjobreply",
@@ -91,6 +85,8 @@ const JobCard = ({ item, ownerdetail, token }) => {
         }
       );
       setuploading(false);
+      setreplymessage('');
+      setdeliverystatus(false);
       setModalVisible(!modalVisible);
     } catch (error) {
       setuploading(false);
@@ -99,7 +95,7 @@ const JobCard = ({ item, ownerdetail, token }) => {
         // Axios-related error
         if (error.response) {
           // Response received with an error status code
-          showToast(`Error: ${error.response.data.error}`);
+          showToast('You have already replied!');
         } else {
           // Network error (no response received)
           showToast("Network error. Please check your internet connection.");
@@ -157,12 +153,10 @@ const JobCard = ({ item, ownerdetail, token }) => {
                 source={{
                   uri: item.image_url,
                 }}
-
-                style={{ height: "100%", width: "90%", backgroundColor: "red" }}
+                style={{ height: "100%", width: "90%", backgroundColor: "white" }}
               /> : <Image
                 source={{ uri: 'https://img.freepik.com/premium-vector/default-image-icon-vector-missing-picture-page-website-design-mobile-app-no-photo-available_87543-11093.jpg', }}
-
-                style={{ height: "100%", width: "90%", backgroundColor: "red" }}
+                style={{ height: "100%", width: "90%", backgroundColor: "white" }}
               />
               }
               <View style={{ flexDirection: "row", alignItems: "center" }}>
@@ -195,12 +189,12 @@ const JobCard = ({ item, ownerdetail, token }) => {
           </View>
         </View>
       </View>
-      {showPopup && (
+      {showPopup && item.image_url ? (
         <ImagePopup
           imageUrl={item.image_url}
           onClose={() => setShowPopup(false)}
         />
-      )}
+      ) : <></>}
       {expanded && (
         <View style={styles.jobdetailcontainer}>
           <View style={styles.detailcard}>
@@ -223,8 +217,6 @@ const JobCard = ({ item, ownerdetail, token }) => {
             <View
               style={{
                 width: "100%",
-
-
                 gap: 30,
               }}
             >
@@ -258,7 +250,7 @@ const JobCard = ({ item, ownerdetail, token }) => {
                   <Text style={{ color: "grey" }}>Delivery option</Text>
                   <Checkbox
                     value={deliverystatus}
-                    onValueChange={setdeliverystatus}
+                    onValueChange={() => setdeliverystatus(!deliverystatus)}
                     color={deliverystatus ? "#4630EB" : undefined}
                   />
                 </View>
@@ -307,7 +299,7 @@ const styles = StyleSheet.create({
   expireText: {
     color: 'grey',
     fontSize: 14,
-    color:COLORS.gray
+    color: COLORS.gray
   },
   jobcardsection: {
     flexDirection: 'row',

@@ -214,7 +214,20 @@ const CustomerSearchBar = () => {
         console.error("Data from backend is not in the expected format.");
       }
     } catch (error) {
-      console.error('Error fetching choosedata:', error);
+      if (axios.isAxiosError(error)) {
+        // Axios-related error
+        if (error.response) {
+          // Response received with an error status code
+          showToast(`Error: ${error.response.data.error}`);
+        } else {
+          // Network error (no response received)
+          showToast("Network error. Please check your internet connection.");
+        }
+      } else {
+        // Non-Axios error
+        console.log(error);
+        showToast("An error occurred. Please try again.");
+      }
     }
   };
   
@@ -228,7 +241,7 @@ const CustomerSearchBar = () => {
       .then((value) => {
         settoken(value);
       })
-      .catch((error) => console.error("Error retrieving value:", error));
+      .catch((error) => console.log("Error retrieving value:", error));
   }, [])
 
   const fetchData = async () => {
@@ -240,7 +253,9 @@ const CustomerSearchBar = () => {
       showToast("Businessname or Category is required");
       return;
     }
-    console.log("searching....");
+    if(businessname){
+      setbusinessname(businessname.trim())
+    }
     try {
       setlinearProgress(true);
 
@@ -320,7 +335,20 @@ const CustomerSearchBar = () => {
        return
       }
     } catch (error) {
-      console.error('Error fetching choosedata:', error);
+      if (axios.isAxiosError(error)) {
+        // Axios-related error
+        if (error.response) {
+          // Response received with an error status code
+          showToast(`Error: ${error.response.data.error}`);
+        } else {
+          // Network error (no response received)
+          showToast("Network error. Please check your internet connection.");
+        }
+      } else {
+        // Non-Axios error
+        console.log(error);
+        showToast("An error occurred. Please try again.");
+      }
     }
   };
   
