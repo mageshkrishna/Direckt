@@ -86,7 +86,7 @@ const UserLogin = ({route,setShopOwnerToken}) => {
       );
      console.log (response.data)
       const { status, data, token } = response.data;
-      setShopOwnerToken(token)
+    
          console .log (token)
       if (status) {
         console.log(status);
@@ -103,6 +103,7 @@ const UserLogin = ({route,setShopOwnerToken}) => {
         .then(() => console.log('Value stored securely'))
        
         .catch(error => console.error('Error storing value:', error));
+        setShopOwnerToken(token)
         showToast("Login Successful!");
   
         // Navigate to the next screen or perform other actions
