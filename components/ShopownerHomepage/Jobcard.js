@@ -320,6 +320,7 @@ const styles = StyleSheet.create({
     height: "100%",
     justifyContent: "center",
     width: (width * 65) / 100,
+    gap:10,
     padding: 7,
   },
   jobsection: {
