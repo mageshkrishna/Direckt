@@ -27,6 +27,7 @@ import { COLORS } from "../../../constants/Theme";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import uploadMedia from "./UploadImage";
+import { useSelector } from "react-redux";
 const Height = Dimensions.get("window").height;
 const Width = Dimensions.get("window").width;
 
@@ -43,6 +44,9 @@ const Createthread = () => {
   const [token, settoken] = useState(null);
   const navigation = useNavigation();
   const [modalVisible, setModalVisible] = useState(false);
+  const customertoken = useSelector(
+    (state) => state.customerAuth.customertoken
+  );
   const showToast = (e) => {
     ToastAndroid.show(e, ToastAndroid.SHORT);
   };
@@ -170,6 +174,7 @@ const Createthread = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
+       
         SecureStore.getItemAsync("customertoken")
           .then((value) => {
             console.log("Retrieved value:", value);
@@ -179,13 +184,15 @@ const Createthread = () => {
         const data = await AsyncStorage.getItem("customerdata");
         const parsedData = JSON.parse(data);
         setemail(parsedData.email);
+        console.log(email,token+"..........................................createthread")
       } catch (err) {
         console.log(err);
       }
     };
 
     fetchData();
-  }, []);
+  }, [customertoken]);
+  
   const [choosedata, setChooseData] = useState([{key:'1', value:'loading...', disabled:true}]);
   useEffect(() => {
     fetchData(); // Fetch choosedata when the component mounts

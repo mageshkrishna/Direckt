@@ -253,12 +253,15 @@ const CustomerSearchBar = () => {
       showToast("Businessname or Category is required");
       return;
     }
+    if(businessname){
+      setbusinessname(businessname.trim())
+    }
     try {
       setlinearProgress(true);
 
       setProgress(0.15);
       let formdata = {
-        businessname: businessname.trim(),
+        businessname: businessname,
         location:jobselection
       };
 

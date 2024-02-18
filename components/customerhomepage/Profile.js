@@ -21,9 +21,10 @@ import { Dimensions } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/native";
 import * as SecureStore from "expo-secure-store";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { COLORS } from "../../constants/Theme";
 import axios from "axios";
+import { clearCustomerToken } from "../../redux/customerAuthActions";
 const height = Dimensions.get("window").height;
 const width = Dimensions.get("window").width;
 
@@ -31,6 +32,7 @@ const Profile = () => {
   const [token, settoken] = useState(null);
 
   const navigation = useNavigation();
+  const dispatch = useDispatch();
   const customertoken = useSelector(
     (state) => state.customerAuth.customertoken
   );
@@ -143,7 +145,7 @@ const Profile = () => {
       email: customerdata.email
     }
     try {
-      const response =await axios.post(
+      const response = await axios.post(
         "https://direckt-copy1.onrender.com/auth/customerlogout",
         formdata,
         {
@@ -153,6 +155,7 @@ const Profile = () => {
           },
         }
       );
+      dispatch(clearCustomerToken());
       await SecureStore.deleteItemAsync("customertoken");
       console.log("Token removed successfully");
       await AsyncStorage.removeItem("customerdata");

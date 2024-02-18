@@ -90,7 +90,7 @@ const handleLogin = async () => {
    console.log (response.data)
     const { status, data, token } = response.data;
        console .log (token)
-       setCustomerToken(token)
+       
     if (status) {
       console.log(status);
       console.log(JSON.stringify(data));
@@ -107,7 +107,7 @@ const handleLogin = async () => {
       .then(() => console.log('Value stored securely'))
       .catch(error => console.error('Error storing value:', error));
       showToast("Login Successful!");
-      // Navigate to the next screen or perform other actions
+      setCustomerToken(token)
       navigation.navigate("Customerhome");
 
     } else {

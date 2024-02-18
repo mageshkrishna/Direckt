@@ -138,6 +138,7 @@ const EditOwnerProfile = () => {
   };
   const updateshopowner = async () => {
     if (gmaplink.trim() === '') {
+      
     }
     else {
       if (!isValidUrl(gmaplink)) {
@@ -204,7 +205,7 @@ const EditOwnerProfile = () => {
         }
       } else {
         // Non-Axios error
-        console.log(error);
+       
         showToast("An error occurred. Please try again.");
       }
     }

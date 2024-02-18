@@ -84,7 +84,7 @@ const Shopownerprofile = () => {
         email:email
       }
       try {
-        const response =await axios.post(
+        const response = await axios.post(
           "https://direckt-copy1.onrender.com/auth/shopownerlogout",
           formdata,
           {

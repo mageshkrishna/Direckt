@@ -32,6 +32,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFocusEffect, useNavigation, useRoute } from "@react-navigation/native";
 import ImagePopup from "../ShopownerHomepage/Imagepopup";
 import moment from "moment";
+import { useSelector } from "react-redux";
 const showToast = (e) => {
   ToastAndroid.show(e, ToastAndroid.SHORT);
 };
@@ -501,7 +502,10 @@ const Threadsavailable = ({ route }) => {
       onRefresh();
     }
   }, [route.params]);
-
+  const custoken = useSelector(
+    (state) => state.customerAuth.customertoken
+  );
+  console.log("customertoken" + custoken);
   useEffect(() => {
     setindicator(true);
     const fetchData = async () => {
@@ -512,24 +516,31 @@ const Threadsavailable = ({ route }) => {
           })
           .catch((error) => console.log("Error retrieving value:", error));
         const data = await AsyncStorage.getItem("customerdata");
-        if (data) {
+        console.log("inide fetchdata ...........????"+data)
+        
           const parsedData = JSON.parse(data);
           setemail(parsedData.email);
-        }
+          setindicator(false);
       } catch (err) {
+        setindicator(false);
         console.log(err);
       }
     };
 
     fetchData();
-  }, []);
+  }, [custoken]);
 
   useEffect(() => {
-    if (refreshing || !email || !token) {
+    if (refreshing ) {
       return;
     }
-    const fetchData = async () => {
+    const fetchjob = async () => {
+      if(!email || !token){
+        return;
+      }
+  
       try {
+        setindicator(true)
         const response = await axios.get(
           `https://direckt-copy1.onrender.com/Customerdata/getreplydata?email=${email}`,
           {
@@ -562,8 +573,8 @@ const Threadsavailable = ({ route }) => {
       }
     };
 
-    fetchData();
-  }, [email, refreshing, token]);
+    fetchjob();
+  }, [email,refreshing,token]);
 
   const onRefresh = React.useCallback(async () => {
     setRefreshing(true); // Set refreshing to true before fetching data
