@@ -4,20 +4,20 @@ import {
   View,
   Dimensions,
   Image,
-  ImageBackground,
+
   TouchableOpacity,
   Linking,
   useColorScheme,
   ToastAndroid,
 } from "react-native";
 import React, { useEffect, useState } from "react";
-import { FontAwesome5, AntDesign } from "@expo/vector-icons";
+import { FontAwesome5} from "@expo/vector-icons";
 import { MaterialIcons } from "@expo/vector-icons";
 import { ScrollView } from "react-native";
 import { TextInput } from "react-native";
-import { Feather, Entypo, Ionicons } from "@expo/vector-icons";
+import { Feather,Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
-import { Alert } from "react-native";
+
 import { SelectList } from "react-native-dropdown-select-list";
 import Checkbox from "expo-checkbox";
 import axios from "axios";
@@ -26,7 +26,7 @@ import { COLORS } from "../../constants/Theme";
 import ImagePopup from "../ShopownerHomepage/Imagepopup";
 import * as SecureStore from "expo-secure-store";
 const height = Dimensions.get("window").height;
-const width = Dimensions.get("window").width;
+
 
 const Shopcard = ({ data, index }) => {
   const colorScheme = useColorScheme();
@@ -200,18 +200,17 @@ const CustomerSearchBar = () => {
     try {
       const response = await axios.get("https://direckt-copy1.onrender.com/direckt/getcategory");
       const dataFromBackend = response.data;
-      console.log("Data from backend:", dataFromBackend); // Log the data from the backend
-      // Check if the data is an array and has elements
+   
       if (Array.isArray(dataFromBackend) && dataFromBackend.length > 0) {
-        // Map over the data to convert it into the required format
+      
         const formattedData = dataFromBackend[0]?.categories.map(category => ({
           key: category.key,
           value: category.value
         })) || [];
-        // Update the state with the formatted data
+       
         setChooseData(formattedData);
       } else {
-        console.error("Data from backend is not in the expected format.");
+        
       }
     } catch (error) {
       if (axios.isAxiosError(error)) {
@@ -225,7 +224,7 @@ const CustomerSearchBar = () => {
         }
       } else {
         // Non-Axios error
-        console.log(error);
+       
         showToast("An error occurred. Please try again.");
       }
     }
@@ -241,7 +240,7 @@ const CustomerSearchBar = () => {
       .then((value) => {
         settoken(value);
       })
-      .catch((error) => console.log("Error retrieving value:", error));
+      .catch((error) => {});
   }, [])
 
   const fetchData = async () => {
@@ -273,7 +272,7 @@ const CustomerSearchBar = () => {
       if (availabilitystatus) {
         formdata.availabilitystatus = availabilitystatus;
       }
-    console.log (formdata)
+ 
       const response = await axios.get(
         "https://direckt-copy1.onrender.com/shopowner/getshops",
         {
@@ -294,7 +293,7 @@ const CustomerSearchBar = () => {
         setlinearProgress(false);
       }, 2000);
     } catch (error) {
-      console.log(error.response)
+      
       setlinearProgress(false);
       if (axios.isAxiosError(error)) {
         // Axios-related error
@@ -306,8 +305,7 @@ const CustomerSearchBar = () => {
           showToast("Network error. Please check your internet connection.");
         }
       } else {
-        // Non-Axios error
-        console.log(error);
+  
         showToast("An error occurred. Please try again.");
       }
     }
@@ -321,8 +319,7 @@ const CustomerSearchBar = () => {
     try {
       const response = await axios.get("https://direckt-copy1.onrender.com/direckt/getlocations");
       const dataFromBackend = response.data;
-      console.log("Data from backend:", dataFromBackend); // Log the data from the backend
-      // Check if the data is an array and has elements
+      
       if (Array.isArray(dataFromBackend) && dataFromBackend.length > 0) {
         // Map over the data to convert it into the required format
         const formattedData = dataFromBackend[0]?.locations.map(location => ({
@@ -345,8 +342,7 @@ const CustomerSearchBar = () => {
           showToast("Network error. Please check your internet connection.");
         }
       } else {
-        // Non-Axios error
-        console.log(error);
+       
         showToast("An error occurred. Please try again.");
       }
     }
@@ -551,7 +547,6 @@ const styles = StyleSheet.create({
   },
   storenotavailable: {
     padding: 4,
-    // backgroundColor: '#FAF9F9',
     borderRadius: 5,
     fontSize: 12,
     color: "red",

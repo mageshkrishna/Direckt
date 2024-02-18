@@ -9,12 +9,12 @@ import {
   Alert,
   useColorScheme,
   TextInput,
-  Button,
+
   ToastAndroid,
   ActivityIndicator,
 } from "react-native";
 import { MaterialIcons, Entypo, FontAwesome5 } from "@expo/vector-icons";
-import { Feather, AntDesign } from "@expo/vector-icons";
+import {  AntDesign } from "@expo/vector-icons";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { React, useEffect, useState } from "react";
 import { Dimensions } from "react-native";
@@ -26,7 +26,7 @@ import { COLORS } from "../../constants/Theme";
 import axios from "axios";
 import { clearCustomerToken } from "../../redux/customerAuthActions";
 const height = Dimensions.get("window").height;
-const width = Dimensions.get("window").width;
+
 
 const Profile = () => {
   const [token, settoken] = useState(null);
@@ -36,7 +36,7 @@ const Profile = () => {
   const customertoken = useSelector(
     (state) => state.customerAuth.customertoken
   );
-  console.log("customertoken" + customertoken);
+
   const [customerdata, setCustomerData] = useState(null);
   const data = [
     {
@@ -87,7 +87,7 @@ const Profile = () => {
       setFeedbackTextindicator(false)
 
     } catch (error) {
-      console.log(error)
+    
       setFeedbackTextindicator(false)
       if (axios.isAxiosError(error)) {
         // Axios-related error
@@ -99,9 +99,8 @@ const Profile = () => {
           showToast("Network error. Please check your internet connection.");
         }
       } else {
-        // Non-Axios error
-        console.log(error);
-        showToast("An error occurred. Please try again.");
+       
+        showToast("An error occurred. Please try again. logout and resign in");
       }
 
     }
@@ -128,13 +127,13 @@ const Profile = () => {
         }
         SecureStore.getItemAsync("customertoken")
           .then((value) => {
-            console.log("Retrieved value:", value);
+            
             settoken(value);
           })
-          .catch((error) => console.error("Error retrieving value:", error));
-        console.log(customerdata);
+          .catch((error) => {});
+      
       } catch (err) {
-        console.log(err);
+      
       }
     };
 
@@ -157,16 +156,20 @@ const Profile = () => {
       );
       dispatch(clearCustomerToken());
       await SecureStore.deleteItemAsync("customertoken");
-      console.log("Token removed successfully");
+     
       await AsyncStorage.removeItem("customerdata");
       navigation.navigate("Home");
-      console.log("Data removed successfully");
+      
     } catch (error) {
       if (axios.isAxiosError(error)) {
         // Axios-related error
         if (error.response) {
           // Response received with an error status code
-          showToast(`Error: ${error.response.data.error}`);
+          
+          await SecureStore.deleteItemAsync("customertoken");
+        
+          await AsyncStorage.removeItem("customerdata");
+          navigation.navigate("Home");
         } else {
           // Network error (no response received)
           showToast("Network error. Please check your internet connection.");
@@ -174,10 +177,10 @@ const Profile = () => {
       } else {
         // Non-Axios error
         await SecureStore.deleteItemAsync("customertoken");
-        console.log("Token removed successfully");
+        
         await AsyncStorage.removeItem("customerdata");
         navigation.navigate("Home");
-        console.error("Error removing data:", error);
+        
       }
     }
   };
@@ -195,7 +198,7 @@ const Profile = () => {
           onPress: () => {
             removeData();
 
-            console.log("Logging out...");
+         
           },
         },
       ],

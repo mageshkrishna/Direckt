@@ -1,69 +1,27 @@
 
 import {
     View,
-    Text,
-    Alert,
-    Button,
-    SafeAreaView,
-    BackHandler,
-    Dimensions,
-    StyleSheet,
+
     Image
   } from "react-native";
-  import React, { useEffect } from "react";
-  import {
-    useFocusEffect,
-    useNavigation,
-    useRoute,
-  } from "@react-navigation/native";
-  import AsyncStorage from "@react-native-async-storage/async-storage";
+  import React from "react";
+ 
   import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
   
   
-  import { Ionicons, Feather, Entypo } from "@expo/vector-icons";
+  import { Ionicons } from "@expo/vector-icons";
   import { COLORS } from "../../constants/Theme";
-  
 
-  import { TextInput } from "react-native-gesture-handler";
 import Shopownerprofile from "./Shopownerprofile";
 import Shopownerhomepage from "./Shopownerhomepage";
-  const Width = Dimensions.get("window").width;
-  const Height = Dimensions.get("window").height;
+
+
  
 const Shopownernav = () => {
-    const navigation = useNavigation();
-    const route = useRoute();
-    const removeData = async () => {
-      try {
-        // Remove data
-        await AsyncStorage.removeItem("customerdata");
-        navigation.navigate("Home");
-        console.log("Data removed successfully");
-      } catch (error) {
-        console.error("Error removing data:", error);
-      }
-    };
-    const handleLogout = () => {
-      Alert.alert(
-        "Logout",
-        "Are you sure you want to logout?",
-        [
-          {
-            text: "Cancel",
-            style: "cancel",
-          },
-          {
-            text: "Logout",
-            onPress: () => {
-              removeData();
+    
+
+
   
-              console.log("Logging out...");
-            },
-          },
-        ],
-        { cancelable: false }
-      );
-    };
     const Tab = createBottomTabNavigator();
     return (
       <View style={{ flex: 1 }}>
@@ -121,31 +79,5 @@ const Shopownernav = () => {
       </View>
     );
   };
-  const styles = StyleSheet.create({
-    box1: {
-      backgroundColor: COLORS.primary,
-      height: 100,
-      width: Width,
-    },
-    searchbar: {
-      
-      width:'90%',
-      flexDirection: "row",
-      alignItems: "center",
-      justifyContent: "center",
-      height: 50,
-      backgroundColor: "white",
-      elevation: 5,
-      borderRadius: 10,
-      shadowOffset: {
-        height: 2,
-        width: 2,
-      },
-      shadowColor: "black",
-    },
-    searchinput: {
-      height: "100%",
-      width: "80%",
-    },
-  });
+
   export default Shopownernav

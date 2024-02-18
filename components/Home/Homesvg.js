@@ -1,13 +1,12 @@
 
-import { Image,Dimensions } from "react-native";
+import { Image} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import logo from "../Home/Direcktsvg.png"
 import { useEffect } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/native";
 
-const Width = Dimensions.get("window").width;
-const Height = Dimensions.get("window").height;
+
 const Direcktsvg = () => {
     const navigation = useNavigation(); 
     useEffect(() => {
@@ -27,11 +26,11 @@ const Direcktsvg = () => {
             }
         
           } catch (error) {
-            console.error('Error retrieving data from AsyncStorage:', error);
+           
           }
         };
     
-        // Call the function to retrieve data when the component mounts
+       
         retrieveData();
       }, []);
     return(

@@ -5,10 +5,9 @@ import {
   StyleSheet,
   Dimensions,
   TextInput,
-  KeyboardAvoidingView,
+
   Platform,
-  Button,
-  Alert,
+
   Image,
   ActivityIndicator,
   ToastAndroid,
@@ -20,7 +19,7 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 import * as SecureStore from "expo-secure-store";
 import { SelectList } from "react-native-dropdown-select-list";
 import { TouchableOpacity } from "react-native-gesture-handler";
-import { FontAwesome, Feather } from '@expo/vector-icons';
+import { Feather } from '@expo/vector-icons';
 import { useNavigation } from "@react-navigation/native";
 import Imagepick from "./Imagepick";
 import { COLORS } from "../../../constants/Theme";
@@ -28,7 +27,7 @@ import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import uploadMedia from "./UploadImage";
 import { useSelector } from "react-redux";
-const Height = Dimensions.get("window").height;
+
 const Width = Dimensions.get("window").width;
 
 const Createthread = () => {
@@ -38,8 +37,8 @@ const Createthread = () => {
   const [location, setjoblocation] = useState(null);
   const [category, setjobcategory] = useState(null);
   const [email, setemail] = useState(null);
-  const [onFirebaseImage, setonFirebaseImage] = useState(null);
-  const [image, setimage] = useState(null);
+
+
   const [indicator, setindicator] = useState(false);
   const [token, settoken] = useState(null);
   const navigation = useNavigation();
@@ -102,7 +101,7 @@ const Createthread = () => {
         }
       );
   
-      console.log("Response:", response.data);
+
   
       setjobtitle("");
       setjobdescription("");
@@ -115,16 +114,14 @@ const Createthread = () => {
       if (axios.isAxiosError(error)) {
         // Axios-related error
         if (error.response) {
-          // Response received with an error status code
-          console.log(error.response);
+    
           showToast(`Error: ${error.response.data.error}`);
         } else {
           // Network error (no response received)
           showToast("Network error. Please check your internet connection.");
         }
       } else {
-        // Non-Axios error
-        console.log(error);
+     
         showToast("An error occurred. Please try again.");
       }
     }
@@ -157,7 +154,7 @@ const Createthread = () => {
     try {
       setindicator(true)
       if (selectedImage) {
-        console.log("Selected Image:", selectedImage);
+
 
         // Use await to wait for uploadMedia promise to resolve
         const firebaseImageUrl = await uploadMedia(selectedImage);
@@ -168,7 +165,7 @@ const Createthread = () => {
       }
 
     } catch (error) {
-      console.error("Error in handlesubmit:", error);
+    
     }
   };
   useEffect(() => {
@@ -177,16 +174,16 @@ const Createthread = () => {
        
         SecureStore.getItemAsync("customertoken")
           .then((value) => {
-            console.log("Retrieved value:", value);
+        
             settoken(value);
           })
-          .catch((error) => console.error("Error retrieving value:", error));
+          .catch((error) => {});
         const data = await AsyncStorage.getItem("customerdata");
         const parsedData = JSON.parse(data);
         setemail(parsedData.email);
-        console.log(email,token+"..........................................createthread")
+      
       } catch (err) {
-        console.log(err);
+        
       }
     };
 
@@ -202,8 +199,7 @@ const Createthread = () => {
     try {
       const response = await axios.get("https://direckt-copy1.onrender.com/direckt/getcategory");
       const dataFromBackend = response.data;
-      console.log("Data from backend:", dataFromBackend); // Log the data from the backend
-      // Check if the data is an array and has elements
+     
       if (Array.isArray(dataFromBackend) && dataFromBackend.length > 0) {
         // Map over the data to convert it into the required format
         const formattedData = dataFromBackend[0]?.categories.map(category => ({
@@ -226,8 +222,7 @@ const Createthread = () => {
           showToast("Network error. Please check your internet connection.");
         }
       } else {
-        // Non-Axios error
-        console.log(error);
+        
         showToast("An error occurred. Please try again.");
       }
     }
@@ -242,8 +237,7 @@ const Createthread = () => {
     try {
       const response = await axios.get("https://direckt-copy1.onrender.com/direckt/getlocations");
       const dataFromBackend = response.data;
-      console.log("Data from backend:", dataFromBackend); // Log the data from the backend
-      // Check if the data is an array and has elements
+     
       if (Array.isArray(dataFromBackend) && dataFromBackend.length > 0) {
         // Map over the data to convert it into the required format
         const formattedData = dataFromBackend[0]?.locations.map(location => ({
@@ -266,8 +260,8 @@ const Createthread = () => {
           showToast("Network error. Please check your internet connection.");
         }
       } else {
-        // Non-Axios error
-        console.log(error);
+    
+      
         showToast("An error occurred. Please try again.");
       }
     }

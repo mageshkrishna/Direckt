@@ -2,11 +2,9 @@ import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
-  Button,
-  Alert,
+
   RefreshControl,
   ScrollView,
-  StyleSheet,
   ActivityIndicator,
   Image,
   BackHandler,
@@ -71,7 +69,7 @@ const Shopownerhomepage = () => {
       }
     } catch (err) {
       setLoading(false);
-      console.log(err);
+   
     }
   };
 
@@ -110,7 +108,7 @@ const Shopownerhomepage = () => {
           }
         );
         setJob(response1.data);
-        console.log(response1.data)
+    
         setLoading(false);
       } catch (error) {
         setLoading(false);
@@ -124,8 +122,7 @@ const Shopownerhomepage = () => {
             showToast("Network error. Please check your internet connection.");
           }
         } else {
-          // Non-Axios error
-          console.log(error);
+        
           showToast("An error occurred. Please try again.");
         }
       }
@@ -214,14 +211,3 @@ const Shopownerhomepage = () => {
 
 export default Shopownerhomepage;
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  scrollView: {
-    flex: 1,
-    backgroundColor: "pink",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-});

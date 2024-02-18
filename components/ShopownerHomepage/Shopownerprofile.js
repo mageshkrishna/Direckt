@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, ScrollView, ImageBackground, TouchableOpacity, Dimensions, Image, Linking, Alert, Pressable, ToastAndroid, ActivityIndicator } from 'react-native'
+import { StyleSheet, Text, View, ScrollView ,TouchableOpacity, Dimensions, Image, Linking, Alert, Pressable, ToastAndroid, ActivityIndicator } from 'react-native'
 import { FontAwesome5, AntDesign, MaterialCommunityIcons, MaterialIcons, Feather, Entypo } from '@expo/vector-icons';
 import { React, useEffect, useState } from 'react'
 import { useIsFocused, useNavigation } from '@react-navigation/native';
@@ -96,28 +96,43 @@ const Shopownerprofile = () => {
         );
       dispatch(clearShopOwnerToken());
       await SecureStore.deleteItemAsync('shopownertoken');
-      console.log('Token removed successfully');
+   
       await AsyncStorage.removeItem("shopownerdata");
       navigation.reset({
         index: 0,
         routes: [{ name: 'Shopownerhomepage' }],
       });
       navigation.navigate("Home");
-      console.log("Data removed successfully");
+ 
     } catch (error) {
       if (axios.isAxiosError(error)) {
-        // Axios-related error
+       
         if (error.response) {
-          // Response received with an error status code
-          showToast(`Error: ${error.response.data.error}`);
+    
+        
+          await SecureStore.deleteItemAsync('shopownertoken');
+   
+          await AsyncStorage.removeItem("shopownerdata");
+          navigation.reset({
+            index: 0,
+            routes: [{ name: 'Shopownerhomepage' }],
+          });
+          navigation.navigate("Home");
         } else {
-          // Network error (no response received)
+          
           showToast("Network error. Please check your internet connection.");
         }
       } else {
-        // Non-Axios error
-        console.log(error);
-        showToast("An error occurred. Please try again.");
+          
+    
+        await SecureStore.deleteItemAsync('shopownertoken');
+   
+        await AsyncStorage.removeItem("shopownerdata");
+        navigation.reset({
+          index: 0,
+          routes: [{ name: 'Shopownerhomepage' }],
+        });
+        navigation.navigate("Home");
       }
     }
   };
@@ -129,14 +144,14 @@ const Shopownerprofile = () => {
       [
         {
           text: 'No',
-          onPress: () => console.log('No Pressed'), // Do nothing if 'No' is pressed
+          onPress: () => {}, // Do nothing if 'No' is pressed
           style: 'cancel'
         },
         {
           text: 'Yes',
           onPress: async () => {
             setdeliveryindicator(true)
-            console.log("delivery" + deliverystatus)
+           
 
 
 
@@ -174,8 +189,7 @@ const Shopownerprofile = () => {
                   showToast("Network error. Please check your internet connection.");
                 }
               } else {
-                // Non-Axios error
-                console.log(error);
+              
                 showToast("An error occurred. Please try again.");
               }
             }
@@ -212,14 +226,14 @@ const Shopownerprofile = () => {
       [
         {
           text: 'No',
-          onPress: () => console.log('No Pressed'), // Do nothing if 'No' is pressed
+          onPress: () => {}, // Do nothing if 'No' is pressed
           style: 'cancel'
         },
         {
           text: 'Yes',
           onPress: async () => {
             setshopindicator(true)
-            console.log("availabilitystatus" + availabilitystatus)
+        
 
             const formdata = {
               shopownerId: shopownerId,
@@ -252,8 +266,7 @@ const Shopownerprofile = () => {
                   showToast("Network error. Please check your internet connection.");
                 }
               } else {
-                // Non-Axios error
-                console.log(error);
+               
                 showToast("An error occurred. Please try again.");
               }
             }
@@ -276,7 +289,7 @@ const Shopownerprofile = () => {
         .then((value) => {
           settoken(value);
         })
-        .catch((error) => console.log("Error retrieving value:", error));
+        .catch((error) =>{});
         const data = await AsyncStorage.getItem("shopownerdata");
   
         if (data) {
@@ -298,7 +311,7 @@ const Shopownerprofile = () => {
           setdeliverystatus(parsedData.deliverystatus)
         }
       } catch (err) {
-        console.log(err);
+     
       }
     };
 
@@ -309,11 +322,7 @@ const Shopownerprofile = () => {
   return (
     <ScrollView style={styles.container}>
       <View
-        // source={
-        //   {
-        //     uri: 'https://static.vecteezy.com/system/resources/previews/008/878/933/non_2x/online-shopping-store-on-smartphone-with-shopping-cart-and-bags-on-purple-background-3d-rendering-free-photo.jpg',
-        //   }
-        // }
+   
         style={styles.headercontainer}>
         <View style={styles.profilecontainer}>
           {profilepic ? <Image
@@ -377,7 +386,7 @@ const Shopownerprofile = () => {
                   [
                     {
                       text: 'Cancel',
-                      onPress: () => console.log('Cancel Pressed'),
+                      onPress: () => {},
                       style: 'cancel',
                     },
                     { text: 'open', onPress: () => gmaplink ? Linking.openURL(gmaplink) : showToast('Google map is not linked') },
@@ -504,7 +513,7 @@ const Shopownerprofile = () => {
                   [
                     {
                       text: 'Cancel',
-                      onPress: () => console.log('Cancel Pressed'),
+                      onPress: () => {},
                       style: 'cancel',
                     },
                     { text: 'Logout', onPress: () => removeData() },

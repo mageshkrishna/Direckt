@@ -1,6 +1,4 @@
-import React, { useState, useEffect } from "react";
-import { View, Text, Alert, TouchableOpacity, Image, ActivityIndicator } from "react-native";
-import * as ImagePicker from "expo-image-picker";
+
 import * as FileSystem from "expo-file-system";
 import { firebase } from "./Config";
 
@@ -8,10 +6,10 @@ import { firebase } from "./Config";
 
 
 
- const uploadMedia = async (selectedimage,setonFirebaseImage) => {
+ const uploadMedia = async (selectedimage) => {
     
     
-   console.log("uploadmedia"+selectedimage)
+   
 
   
 
@@ -32,11 +30,11 @@ import { firebase } from "./Config";
       const ref = firebase.storage().ref().child(filename);
       await ref.put(blob);
       const downloadURL = await ref.getDownloadURL();
-      // console.log(downloadURL)
+      
      return downloadURL;
     
     } catch (error) {
-      console.error("Error uploading media:", error);
+     
       return false;
     }
   };

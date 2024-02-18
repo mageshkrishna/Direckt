@@ -18,7 +18,7 @@ import {
   SelectList,
   MultipleSelectList,
 } from "react-native-dropdown-select-list";
-import { MaterialIcons, Feather } from "@expo/vector-icons";
+
 import { React, useEffect, useState } from "react";
 import axios from "axios";
 import Imagepicker from "./Imagepicker";
@@ -42,7 +42,7 @@ const EditOwnerProfile = () => {
   const [category, setcategory] = useState([]);
   const [category2, setcategory2] = useState([]);
   const [shopownerId, setshopownerId] = useState(null);
-  const [shopownerdata, setshopownerdata] = useState(null);
+
   const [email, setemail] = useState('');
   const [token, settoken] = useState(null);
   const editprofile = true;
@@ -106,7 +106,7 @@ const EditOwnerProfile = () => {
           .then((value) => {
             settoken(value);
           })
-          .catch((error) => console.log("Error retrieving value:", error));
+          .catch((error) => {});
         const data = await AsyncStorage.getItem("shopownerdata");
         if (data) {
           const parsedData = JSON.parse(data);
@@ -125,7 +125,7 @@ const EditOwnerProfile = () => {
           setshopownerId(parsedData._id)
         }
       } catch (err) {
-        console.log(err);
+   
       }
     };
 
@@ -176,14 +176,14 @@ const EditOwnerProfile = () => {
         }
       );
       if (updateuser.data && updateuser.data._id) {
-        console.log(updateuser.data);
+     
         await AsyncStorage.setItem(
           "shopownerdata",
           JSON.stringify(updateuser.data)
         );
-        console.log("AsyncStorage updated successfully");
+       
       } else {
-        console.warn("Received invalid or undefined data from the server");
+       
       }
       const local = await AsyncStorage.setItem(
         "shopownerdata",
@@ -221,7 +221,7 @@ const EditOwnerProfile = () => {
       [
         {
           text: 'Cancel',
-          onPress: () => console.log('Cancel Pressed'),
+          onPress: () =>{},
           style: 'cancel',
         },
         {
@@ -243,8 +243,7 @@ const EditOwnerProfile = () => {
     try {
       const response = await axios.get("https://direckt-copy1.onrender.com/direckt/getcategory");
       const dataFromBackend = response.data;
-      console.log("Data from backend:", dataFromBackend); // Log the data from the backend
-      // Check if the data is an array and has elements
+      
       if (Array.isArray(dataFromBackend) && dataFromBackend.length > 0) {
         // Map over the data to convert it into the required format
         const formattedData = dataFromBackend[0]?.categories.map(category => ({
@@ -268,7 +267,7 @@ const EditOwnerProfile = () => {
         }
       } else {
         // Non-Axios error
-        console.log(error);
+       
         showToast("An error occurred. Please try again.");
       }
     }
@@ -283,32 +282,30 @@ const EditOwnerProfile = () => {
     try {
       const response = await axios.get("https://direckt-copy1.onrender.com/direckt/getlocations");
       const dataFromBackend = response.data;
-      console.log("Data from backend:", dataFromBackend); // Log the data from the backend
-      // Check if the data is an array and has elements
+     
       if (Array.isArray(dataFromBackend) && dataFromBackend.length > 0) {
-        // Map over the data to convert it into the required format
+        
         const formattedData = dataFromBackend[0]?.locations.map(location => ({
           key: location.key,
           value: location.value
         })) || [];
-        // Update the state with the formatted data
+       
         setchooselocation(formattedData);
       } else {
         return
       }
     } catch (error) {
       if (axios.isAxiosError(error)) {
-        // Axios-related error
+       
         if (error.response) {
-          // Response received with an error status code
+        
           showToast(`Error: ${error.response.data.error}`);
         } else {
-          // Network error (no response received)
+          
           showToast("Network error. Please check your internet connection.");
         }
       } else {
-        // Non-Axios error
-        console.log(error);
+    
         showToast("An error occurred. Please try again.");
       }
     }

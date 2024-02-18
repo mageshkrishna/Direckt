@@ -87,31 +87,30 @@ const handleLogin = async () => {
         },
       }
     );
-   console.log (response.data)
+  
     const { status, data, token } = response.data;
-       console .log (token)
+       
        
     if (status) {
-      console.log(status);
-      console.log(JSON.stringify(data));
+    
 
-      // Store user data in AsyncStorage
+    
       try {
         await AsyncStorage.setItem('customerdata', JSON.stringify(data));
-        console.log("Data stored successfully:", data);
+     
       } catch (error) {
-        console.error("Error storing data:", error);
+     
       }
       // Store the token securely using react-native-keychain
       SecureStore.setItemAsync('customertoken',token)
-      .then(() => console.log('Value stored securely'))
-      .catch(error => console.error('Error storing value:', error));
+      .then(() => {})
+      .catch(error => {});
       showToast("Login Successful!");
       setCustomerToken(token)
       navigation.navigate("Customerhome");
 
     } else {
-      console.log(status);
+  
       showToast("Error", "Invalid login data");
     }
   } catch (error) {
@@ -126,7 +125,7 @@ const handleLogin = async () => {
       }
     } else {
       // Non-Axios error
-      console.log(error);
+    
       showToast("An error occurred. Please try again.");
     }
   } finally {
@@ -208,7 +207,7 @@ const handleLogin = async () => {
           <TouchableOpacity
               style={{ padding: 4 }}
               onPress={(e) => {
-                navigation.navigate("CustomerForgetpassword");
+               return navigation.navigate("CustomerForgetpassword",{email});
               }}
             >
               <Text style={{ color: COLORS.primary, fontSize: 16 }}>

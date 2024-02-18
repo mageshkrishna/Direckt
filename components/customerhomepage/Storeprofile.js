@@ -1,15 +1,15 @@
-import { StyleSheet, Text, View, ScrollView, ImageBackground, TouchableOpacity, Dimensions, Image, Linking, ActivityIndicator, Alert, ToastAndroid } from 'react-native'
-import { FontAwesome5, AntDesign } from '@expo/vector-icons';
+import { StyleSheet, Text, View, ScrollView , TouchableOpacity, Dimensions, Image, Linking, ActivityIndicator, ToastAndroid } from 'react-native'
+import { FontAwesome5 } from '@expo/vector-icons';
 import { MaterialIcons, Ionicons } from '@expo/vector-icons';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { React, useDeferredValue, useEffect, useState } from 'react'
+import { React , useEffect, useState } from 'react'
 import axios from 'axios';
 import { useNavigation } from "@react-navigation/native";
 import { useRoute } from '@react-navigation/native';
 import ImagePopup from '../ShopownerHomepage/Imagepopup';
 import * as SecureStore from "expo-secure-store";
 const height = Dimensions.get("window").height
-const width = Dimensions.get("window").width
+
 
 const StoreProfile = () => {
     const route = useRoute();
@@ -25,10 +25,10 @@ const StoreProfile = () => {
     useEffect(() => {
         SecureStore.getItemAsync("customertoken")
             .then((value) => {
-                console.log("Retrieved value:", value);
+            
                 settoken(value);
             })
-            .catch((error) => console.error("Error retrieving value:", error));
+            .catch((error) => {});
     }, [])
 
     const handleImagePress = (index) => {
@@ -47,7 +47,7 @@ const StoreProfile = () => {
         if (!token || !_id) {
             return;
         }
-        console.log("started")
+       
         try {
             axios.get(`https://direckt-copy1.onrender.com/shopowner/getshopownerprofile?_id=${_id}`,
                 {
@@ -64,22 +64,20 @@ const StoreProfile = () => {
 
                 })
                 .catch(err => {
-                    console.log(err);
+                  
                 });
         } catch (error) {
             if (axios.isAxiosError(error)) {
                 // Axios-related error
                 if (error.response) {
-                    // Response received with an error status code
-                    console.log(error.response);
+                   
                     showToast(`Error: ${error.response.data.error}`);
                 } else {
                     // Network error (no response received)
                     showToast("Network error. Please check your internet connection.");
                 }
             } else {
-                // Non-Axios error
-                console.log(error);
+             
                 showToast("An error occurred. Please try again.");
             }
         }

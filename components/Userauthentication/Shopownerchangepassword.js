@@ -1,11 +1,11 @@
-import { View, Text, StyleSheet, Dimensions, TouchableOpacity, ToastAndroid, Alert } from 'react-native'
+import { View, Text, StyleSheet, Dimensions, TouchableOpacity, ToastAndroid } from 'react-native'
 import React, { useState } from 'react'
 import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
 import { COLORS } from '../../constants/Theme';
 import { TextInput } from 'react-native-gesture-handler';
 const Width = Dimensions.get("window").width;
-const Height = Dimensions.get("window").height;
+
 const Shopownerpassword = ({route}) => {
     const email = route.params?.email;
     const token = route.params?.token;
@@ -20,14 +20,15 @@ const Shopownerpassword = ({route}) => {
     } 
    else{
     try{
-        console.log(email,token)
+       
       const response = await axios.post('https://direckt-copy1.onrender.com/auth/Shopownerupdatepassword'
       ,{email:email,newPassword:newPassword,token:token}
       )
       if(response.status===200){
         showToast('passwordchanged successfully')
       }
-      return navigation.navigate('Userlogin')
+      const password = newPassword;
+      return navigation.navigate('Userlogin',{email,password})
     }
     catch(error){
       if (axios.isAxiosError(error)) {
@@ -40,8 +41,7 @@ const Shopownerpassword = ({route}) => {
           showToast("Network error. Please check your internet connection.");
         }
       } else {
-        // Non-Axios error
-        console.log(error);
+       
         showToast("An error occurred. Please try again.");
       }
       navigation.goBack()
@@ -79,7 +79,7 @@ const Shopownerpassword = ({route}) => {
             </View>
           </TouchableOpacity>
           <View style={{paddingRight:20}}>
-            <Text style={{color:'grey',fontSize:15}}>Don't go back from this page. Enter the password and submit.</Text>
+            <Text style={{color:'grey',fontSize:15}}>Don't go back from this page. Enter the password and submit.This page only available for 5 minutes</Text>
           </View>
         </View>
     

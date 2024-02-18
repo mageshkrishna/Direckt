@@ -6,7 +6,7 @@ import {
   TouchableOpacity,
   ToastAndroid,
   ActivityIndicator,
-  Alert
+
 } from "react-native";
 import React, { useState,useEffect} from "react";
 import { SafeAreaView, StyleSheet } from "react-native";
@@ -15,8 +15,8 @@ import { useNavigation } from "@react-navigation/native";
 import axios from "axios";
 
 const Width = Dimensions.get("window").width;
-const Height = Dimensions.get("window").height;
-const ShopownerForgetpassword = () => {
+
+const ShopownerForgetpassword = ({route}) => {
   const navigation = useNavigation();
   const [email, setemail] = useState();
   const [indicator, setindicator] = useState(false);
@@ -25,7 +25,12 @@ const ShopownerForgetpassword = () => {
   const [otp, setotp] = useState(null);
   const [seconds, setSeconds] = useState(60);
   const [running, setRunning] = useState(false);
-
+  useEffect(() => {
+    if (route && route.params) {
+      setemail(route.params.email || '');
+     
+    }
+  }, [route]);
   const startCountdown = () => {
     setSeconds(60);
     setRunning(true);
@@ -79,15 +84,15 @@ const ShopownerForgetpassword = () => {
         }
       } else {
         // Non-Axios error
-        console.log(error);
+       
         showToast("An error occurred. Please try again.");
       }
-      console.log(error);
+      
     }
   };
 
   const sendotp = async () => {
-    console.log("started");
+   
     if (!otp) {
       showToast("Fill the otp feild");
       return;
@@ -104,7 +109,7 @@ const ShopownerForgetpassword = () => {
       );
       showToast("otp verified succesfully");
       setotpindicator(false);
-      console.log(response.data.token);
+      
       if (response.status === 200) {
         return navigation.navigate("Shopownerchangepassword", { email: email, token: response.data.token });
       }
@@ -114,16 +119,14 @@ const ShopownerForgetpassword = () => {
       if (axios.isAxiosError(error)) {
         // Axios-related error
         if (error.response) {
-          // Response received with an error status code
-          console.log(error.response);
+       
           showToast(`Error: ${error.response.data.error}`);
         } else {
           // Network error (no response received)
           showToast("Network error. Please check your internet connection.");
         }
       } else {
-        // Non-Axios error
-        console.log(error);
+      
         showToast("An error occurred. Please try again.");
       }
     }

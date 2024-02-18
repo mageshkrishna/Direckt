@@ -5,7 +5,7 @@ import axios from 'axios';
 import { COLORS } from '../../constants/Theme';
 import { TextInput } from 'react-native-gesture-handler';
 const Width = Dimensions.get("window").width;
-const Height = Dimensions.get("window").height;
+
 const Customerpassword = ({route}) => {
     const email = route.params?.email;
     const token = route.params?.token;
@@ -13,7 +13,7 @@ const Customerpassword = ({route}) => {
   const [newPassword, setnewPassword] = useState();
 
   const validatePassword = (password) => {
-    // Password should be at least 6 characters long and contain both letters and numbers
+   
     const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$/;
     return passwordRegex.test(password);
   };
@@ -26,7 +26,7 @@ const Customerpassword = ({route}) => {
 
    else{
     try{
-        console.log(email,token)
+        
       const response = await axios.post('https://direckt-copy1.onrender.com/auth/customerupdatepassword'
       ,{email:email,newPassword:newPassword,token:token}
       )
@@ -37,19 +37,18 @@ const Customerpassword = ({route}) => {
       return navigation.navigate('Logincustomer',{email,password});
     }
     catch(error){
-      // showToast('retry and generate new otp')
+     
       if (axios.isAxiosError(error)) {
-        // Axios-related error
+       
         if (error.response) {
-          // Response received with an error status code
+      
           showToast(`Error: ${error.response.data.error}`);
         } else {
-          // Network error (no response received)
+         
           showToast("Network error. Please check your internet connection.");
         }
       } else {
-        // Non-Axios error
-        console.log(error);
+       
         showToast("An error occurred. Please try again.");
       }
     }
@@ -85,7 +84,7 @@ const Customerpassword = ({route}) => {
             </View>
           </TouchableOpacity>
           <View style={{paddingRight:20}}>
-            <Text style={{color:'grey',fontSize:15}}>Don't go back from this page. Enter the password and submit.</Text>
+            <Text style={{color:'grey',fontSize:15}}>Don't go back from this page. Enter the password and submit. This pages only available for the next 5 minutes</Text>
           </View>
         </View>
     

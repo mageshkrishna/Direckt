@@ -16,7 +16,7 @@ import { useNavigation } from "@react-navigation/native";
 import { FontAwesome, Feather } from '@expo/vector-icons';
 import axios from 'axios';
 const Width = Dimensions.get("window").width;
-const Height = Dimensions.get("window").height;
+
 const Signupcustomer = ({route}) => {
   const [modalVisible, setModalVisible] = useState(false);
   const navigation = useNavigation();
@@ -92,16 +92,14 @@ const Signupcustomer = ({route}) => {
       if (axios.isAxiosError(error)) {
         // Axios-related error
         if (error.response) {
-          // Response received with an error status code
-          console.log(error.response);
+        
           showToast(`Error: ${error.response.data.error}`);
         } else {
           // Network error (no response received)
           showToast("Network error. Please check your internet connection.");
         }
       } else {
-        // Non-Axios error
-        console.log(error);
+       
         showToast("An error occurred. Please try again.");
       }
     } finally {

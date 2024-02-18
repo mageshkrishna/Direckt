@@ -8,7 +8,7 @@ import {
   LayoutAnimation,
   UIManager,
   Image,
-  ImageBackground,
+
   Pressable,
   Linking,
   Alert,
@@ -23,7 +23,7 @@ import * as SecureStore from "expo-secure-store";
 import { useState, useEffect } from "react";
 import { MaterialIcons, AntDesign, Ionicons } from "@expo/vector-icons";
 import React from "react";
-import axios, { Axios } from "axios";
+import axios from "axios";
 import { Entypo, Feather } from "@expo/vector-icons";
 const height = Dimensions.get("window").height;
 const width = Dimensions.get("window").width;
@@ -41,7 +41,7 @@ UIManager.setLayoutAnimationEnabledExperimental &&
 const InsideAccorditon = ({ data }) => {
   const [showPopup, setShowPopup] = useState(false);
   const navigation = useNavigation();
-  console.log(data.deliverystatus);
+
   return (
     <View
       style={{
@@ -189,7 +189,6 @@ const AccordionItem = ({ data, token, onRefresh }) => {
   const timestamp = data.expiryAt;
   const localDateTime = moment(timestamp).utcOffset('+00:00').format('DD-MM-YYYY h:mm:ss A');
 
-  // console.log("moment" + localDateTime);
 
   const deactivatejob = async () => {
     try {
@@ -215,14 +214,13 @@ const AccordionItem = ({ data, token, onRefresh }) => {
           showToast("Network error. Please check your internet connection.");
         }
       } else {
-        // Non-Axios error
-        console.log(error);
+        
         showToast("An error occurred. Please try again.");
       }
     }
   }
   const handleDeleteJob = async () => {
-    console.log(jobIdToDelete);
+  
     try {
       setdeleteindicator(true)
       const response = await axios.delete(
@@ -253,8 +251,7 @@ const AccordionItem = ({ data, token, onRefresh }) => {
           showToast("Network error. Please check your internet connection.");
         }
       } else {
-        // Non-Axios error
-        console.log(error);
+   
         showToast("An error occurred. Please try again.");
       }
     }
@@ -505,7 +502,7 @@ const Threadsavailable = ({ route }) => {
   const custoken = useSelector(
     (state) => state.customerAuth.customertoken
   );
-  console.log("customertoken" + custoken);
+ 
   useEffect(() => {
     setindicator(true);
     const fetchData = async () => {
@@ -514,16 +511,16 @@ const Threadsavailable = ({ route }) => {
           .then((value) => {
             settoken(value);
           })
-          .catch((error) => console.log("Error retrieving value:", error));
+          .catch((error) => {});
         const data = await AsyncStorage.getItem("customerdata");
-        console.log("inide fetchdata ...........????"+data)
+      
         
           const parsedData = JSON.parse(data);
           setemail(parsedData.email);
           setindicator(false);
       } catch (err) {
         setindicator(false);
-        console.log(err);
+     
       }
     };
 
@@ -550,7 +547,7 @@ const Threadsavailable = ({ route }) => {
             },
           }
         );
-        console.log(response.data);
+        
         setdata(response.data.result);
         setindicator(false);
       } catch (error) {
@@ -566,8 +563,7 @@ const Threadsavailable = ({ route }) => {
             showToast("Network error. Please check your internet connection.");
           }
         } else {
-          // Non-Axios error
-          console.log(error);
+       
           showToast("An error occurred. Please try again.");
         }
       }

@@ -14,11 +14,11 @@ import React, { useState, useEffect } from "react";
 import { SafeAreaView, StyleSheet } from "react-native";
 import { COLORS } from "../../constants/Theme";
 import { useNavigation } from "@react-navigation/native";
-import { State } from "react-native-gesture-handler";
+
 import { FontAwesome, Feather } from '@expo/vector-icons';
 import axios from "axios";
 const Width = Dimensions.get("window").width;
-const Height = Dimensions.get("window").height;
+
 const Userregister = ({route}) => {
   const navigation = useNavigation();
   const [businessname, setbuinessname] = useState('');
@@ -122,16 +122,14 @@ const Userregister = ({route}) => {
       if (axios.isAxiosError(error)) {
         // Axios-related error
         if (error.response) {
-          // Response received with an error status code
-          console.log(error.response);
+       
           showToast(`Error: ${error.response.data.error}`);
         } else {
           // Network error (no response received)
           showToast("Network error. Please check your internet connection.");
         }
       } else {
-        // Non-Axios error
-        console.log(error);
+   
         Alert.alert("An error occurred. Please try again.");
       }
     } finally {

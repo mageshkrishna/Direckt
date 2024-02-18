@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
-  Alert,
+
   TouchableOpacity,
   Image,
   ActivityIndicator,
@@ -12,7 +12,7 @@ import {
 import * as ImagePicker from "expo-image-picker";
 import * as FileSystem from "expo-file-system";
 import { firebase } from "../customerhomepage/Createthread/Config";
-import { MaterialIcons, Feather } from "@expo/vector-icons";
+import { MaterialIcons } from "@expo/vector-icons";
 const width = Dimensions.get("window").width;
 const height = Dimensions.get("window").height;
 const Imagepicker = ({ editprofile, addphoto, setprofilepic,setphotos,profilepic}) => {
@@ -41,12 +41,12 @@ const Imagepicker = ({ editprofile, addphoto, setprofilepic,setphotos,profilepic
       const ref = firebase.storage().ref().child(filename);
       await ref.put(blob);
       const downloadURL = await ref.getDownloadURL();
-      // console.log("downloadurl"+downloadURL);
+
       setdownloadurl(downloadURL);
       if(setprofilepic&&downloadURL){
       setprofilepic(downloadURL);
       }
-      console.log("hello");
+     
       if(setphotos&&downloadURL){
       setphotos((prevPhotos) => [...prevPhotos, downloadURL]);
       }
@@ -55,7 +55,7 @@ const Imagepicker = ({ editprofile, addphoto, setprofilepic,setphotos,profilepic
       setImage(null);
     } catch (error) {
       setUploading(false);
-      console.error("Error uploading media:", error);
+     
     }
   };
   useEffect(() => {
@@ -75,7 +75,7 @@ const Imagepicker = ({ editprofile, addphoto, setprofilepic,setphotos,profilepic
         setUploading(true);
       }
     } catch (error) {
-      console.error("Error picking image:", error);
+      
     }
   };
   if (editprofile) {

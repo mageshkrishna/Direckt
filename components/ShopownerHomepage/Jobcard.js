@@ -19,13 +19,11 @@ import {
   Modal,
 } from "react-native";
 import moment from 'moment';
-import * as SecureStore from "expo-secure-store";
-import { useState, useEffect } from "react";
+
+import { useState} from "react";
 import {
   MaterialIcons,
-  AntDesign,
-  Ionicons,
-  FontAwesome5,
+
   Feather
 } from "@expo/vector-icons";
 import "react-native";
@@ -52,7 +50,7 @@ const JobCard = ({ item, ownerdetail, token }) => {
 
   const timestamp = item.expiryAt;
   const localDateTime = moment(timestamp).utcOffset('+00:00').format('DD-MM-YYYY h:mm:ss A');
-  //  console.log( "moment"+localDateTime); 
+ 
 
   const createreply = async () => {
     if (!replymessage) {
@@ -101,8 +99,7 @@ const JobCard = ({ item, ownerdetail, token }) => {
           showToast("Network error. Please check your internet connection.");
         }
       } else {
-        // Non-Axios error
-        console.log(error);
+      
         showToast("An error occurred. Please try again.");
       }
     }

@@ -1,6 +1,6 @@
 // Imagepick.js
-import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, Image } from 'react-native';
+import React from 'react';
+import { View, Text, TouchableOpacity } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 
 const Imagepick = ({ setSelectedImage }) => {
@@ -14,11 +14,11 @@ const Imagepick = ({ setSelectedImage }) => {
       });
 
       if (!result.canceled) {
-        // console.log(result.assets[0].uri)
+        
         setSelectedImage(result.assets[0].uri);
       }
     } catch (error) {
-      console.error('Error picking image:', error);
+     
     }
   };
 

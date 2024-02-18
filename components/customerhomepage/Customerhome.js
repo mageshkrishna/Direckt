@@ -1,43 +1,40 @@
 import {
   View,
   Text,
-  Alert,
-  Button,
-  SafeAreaView,
-  BackHandler,
+
   Dimensions,
   StyleSheet,
   TouchableOpacity,
-  Image
+
 } from "react-native";
-import React, { useEffect } from "react";
+import React  from "react";
 import {
-  useFocusEffect,
+
   useNavigation,
-  useRoute,
+
 } from "@react-navigation/native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Profile from "./Profile";
-import { Ionicons, Feather, Entypo } from "@expo/vector-icons";
+import { Ionicons, Feather} from "@expo/vector-icons";
 import { COLORS } from "../../constants/Theme";
 import Createthread from "./Createthread/Createthread";
 import Threadsavailable from "./Threadsavailable";
-import { TextInput } from "react-native-gesture-handler";
+
 const Width = Dimensions.get("window").width;
-const Height = Dimensions.get("window").height;
-// cuStomer home checking
+
+
 const Customerhome = () => {
   const navigation = useNavigation();
 
-  const route = useRoute();
+
 
   const handleFocus = () => {
 
     navigation.navigate("Customersearchbar");
 
   };
-  const inputRef = React.createRef();
+
 
   const Tab = createBottomTabNavigator();
   return (

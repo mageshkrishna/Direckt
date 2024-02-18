@@ -5,10 +5,10 @@ import {
   TextInput,
   TouchableOpacity,
   ActivityIndicator,
-  Alert,
+
   ToastAndroid,
   Modal,
-  Pressable
+
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import { SafeAreaView, StyleSheet } from "react-native";
@@ -21,7 +21,7 @@ import * as SecureStore from "expo-secure-store";
 import { connect } from "react-redux";
 import { setShopOwnerToken } from "../../redux/shopOwnerAuthActions";
 const Width = Dimensions.get("window").width;
-const Height = Dimensions.get("window").height;
+
 
 
 const UserLogin = ({route,setShopOwnerToken}) => {
@@ -73,7 +73,7 @@ const UserLogin = ({route,setShopOwnerToken}) => {
     setLoading(true);
   
     const formDataLogin = { email, password,devicetoken};
-    console.log(devicetoken);
+  
     try {
       const response = await axios.post(
         "https://direckt-copy1.onrender.com/auth/login",
@@ -84,25 +84,23 @@ const UserLogin = ({route,setShopOwnerToken}) => {
           },
         }
       );
-     console.log (response.data)
+   
       const { status, data, token } = response.data;
     
-         console .log (token)
+     
       if (status) {
-        console.log(status);
-        console.log(JSON.stringify(data));
-  
+      
         // Store user data in AsyncStorage
         try {
           await AsyncStorage.setItem('shopownerdata', JSON.stringify(data));
         } catch (error) {
-          console.error("Error storing data:", error);
+        
         }
         // Store the token securely using react-native-keychain
         SecureStore.setItemAsync('shopownertoken',token)
-        .then(() => console.log('Value stored securely'))
+        .then(() => {})
        
-        .catch(error => console.error('Error storing value:', error));
+        .catch(error => {});
         setShopOwnerToken(token)
         showToast("Login Successful!");
   
@@ -110,7 +108,7 @@ const UserLogin = ({route,setShopOwnerToken}) => {
         navigation.navigate("Shopownernav");
   
       } else {
-        console.log(status);
+       
         showToast("Error", "Invalid login data");
       }
     } catch (error) {
@@ -124,8 +122,7 @@ const UserLogin = ({route,setShopOwnerToken}) => {
           showToast("Network error. Please check your internet connection.");
         }
       } else {
-        // Non-Axios error
-        console.log(error);
+        
         showToast("An error occurred. Please try again.");
       }
     } finally {
@@ -205,7 +202,7 @@ const UserLogin = ({route,setShopOwnerToken}) => {
           <TouchableOpacity
               style={{ padding: 4 }}
               onPress={(e) => {
-                navigation.navigate("Shopownerforgotpassword");
+                navigation.navigate("Shopownerforgotpassword",{email});
               }}
             >
               <Text style={{ color: COLORS.primary, fontSize: 16 }}>

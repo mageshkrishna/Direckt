@@ -1,24 +1,24 @@
-import { StatusBar } from "expo-status-bar";
+
 import {
   SafeAreaView,
   StyleSheet,
   Text,
-  TouchableHighlight,
+
   View,
-  Alert,
+
   Image,
-  Touchable,
+
   TouchableOpacity,
   Dimensions,
   BackHandler
 } from "react-native";
 import image from "../Home/Onboard.png";
-import image1 from '../Home/1-removebg-preview.png'
-import Svg, { Path } from "react-native-svg";
+
+
 import { useFocusEffect, useNavigation, useRoute } from "@react-navigation/native";
-import React, { useEffect } from "react";
+import React from "react";
 const Width = Dimensions.get("window").width;
-const Height = Dimensions.get("window").height;
+
 export default function Home() {
 
   const navigation = useNavigation();

@@ -16,7 +16,7 @@ import axios from "axios";
 
 const Width = Dimensions.get("window").width;
 const Height = Dimensions.get("window").height;
-const CustomerForgetpassword = () => {
+const CustomerForgetpassword = ({route}) => {
   const navigation = useNavigation();
   const [email, setemail] = useState();
   const [indicator, setindicator] = useState(false);
@@ -25,7 +25,12 @@ const CustomerForgetpassword = () => {
   const [otp, setotp] = useState(null);
   const [seconds, setSeconds] = useState(60);
   const [running, setRunning] = useState(false);
-
+  useEffect(() => {
+    if (route && route.params) {
+      setemail(route.params.email || '');
+     
+    }
+  }, [route]);
   const startCountdown = () => {
     setSeconds(60);
     setRunning(true);
@@ -73,7 +78,7 @@ const CustomerForgetpassword = () => {
         // Axios-related error
         if (error.response) {
           // Response received with an error status code
-          console.log(error.response);
+          
           showToast(`Error: ${error.response.data.error}`);
         } else {
           // Network error (no response received)
@@ -81,14 +86,14 @@ const CustomerForgetpassword = () => {
         }
       } else {
         // Non-Axios error
-        console.log(error);
+      
         Alert.alert("An error occurred. Please try again.");
       }
     }
   };
 
   const sendotp = async () => {
-    console.log("started");
+  
     if (!otp) {
       showToast("Fill the otp feild");
       return;
@@ -105,7 +110,7 @@ const CustomerForgetpassword = () => {
       );
       showToast("otp verified succesfully");
       setotpindicator(false);
-      console.log(response.data.token);
+    
       if (response.status === 200) {
         return navigation.navigate("Customerpassword", { email: email, token: response.data.token });
       }
