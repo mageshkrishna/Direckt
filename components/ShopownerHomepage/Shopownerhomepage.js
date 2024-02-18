@@ -75,7 +75,8 @@ const Shopownerhomepage = () => {
 
   useEffect(() => {
     setLoading(true);
-    fetchData();
+    fetchData();     
+    setLoading(false);
   }, [shopOwnerToken, refreshing]);
 
   const onRefresh = React.useCallback(async () => {
@@ -195,7 +196,18 @@ const Shopownerhomepage = () => {
           </TouchableOpacity>
         </View>
       ) : (
-        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', height: 550, width: '100%' }}>
+        <ScrollView
+        style={{
+          flex: 1,
+          height: (height * 85) / 100,
+          paddingHorizontal: 10,
+          backgroundColor: "white",
+        }}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
+      >
+        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', height: (height * 85) / 100, width: '100%' , backgroundColor: "white", }}>
           <Image
             source={
               require('../../assets/Loading-rafiki.png')
@@ -204,6 +216,7 @@ const Shopownerhomepage = () => {
           />
           <Text>No jobs available. Refresh the app</Text>
         </View>
+        </ScrollView>
       )}
     </View>
   );

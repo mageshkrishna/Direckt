@@ -1,4 +1,4 @@
-
+import { StatusBar } from "expo-status-bar";
 import {
   SafeAreaView,
   StyleSheet,
@@ -10,11 +10,12 @@ import {
 
   TouchableOpacity,
   Dimensions,
-  BackHandler
+  BackHandler,
+  ImageBackground
 } from "react-native";
 import image from "../Home/Onboard.png";
-
-
+import image1 from '../Home/1-removebg-preview.png'
+import Svg, { Path } from "react-native-svg";
 import { useFocusEffect, useNavigation, useRoute } from "@react-navigation/native";
 import React from "react";
 const Width = Dimensions.get("window").width;
@@ -23,9 +24,9 @@ export default function Home() {
 
   const navigation = useNavigation();
   const route = useRoute();
- 
 
-  
+
+
   useFocusEffect(
     React.useCallback(() => {
       const handleBackPress = () => {
@@ -45,12 +46,24 @@ export default function Home() {
   );
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      <View style={styles.container}>
+      <ImageBackground style={styles.container}
+        source={
+          { uri: 'https://img.freepik.com/premium-photo/man-stands-front-store-with-bag-chips_973047-2593.jpg' }
+        }
+      >
         <View style={styles.box1}>
-          
-          <View style={{flex:10,justifyContent:"flex-start",}}>
-          <Image source={image} style={{height:"100%",resizeMode: 'cover',width:Width}}></Image>
-          </View>          
+
+          <View style={{ flex: 10, justifyContent: "flex-start", }}>
+            <ImageBackground
+              style={{ height: "100%", resizeMode: 'cover', width: Width, opacity: 1 }}
+              blurRadius={1}
+            >
+              <Image
+                source={require('../../components/Home/1-removebg-preview.png')}
+                style={{height:150,width:150,padding:90}}
+              />
+            </ImageBackground>
+          </View>
         </View>
 
         <View style={styles.box4}>
@@ -61,10 +74,10 @@ export default function Home() {
               justifyContent: "space-evenly",
             }}
           >
-            <Text style={{ fontSize: 30, color: "black", fontWeight: "bold" }}>
+            <Text style={{ fontSize: 30, color: "white", fontWeight: "bold",textShadowColor: 'rgba(0, 0, 0, 0.75)',textShadowOffset: {width: -1, height: 1},textShadowRadius: 10,shadowOpacity:  0.17 }}>
               Get Started
             </Text>
-            <Text style={{ color: "#c1c1c1" }}>Choose one?</Text>
+            <Text style={{ color: "white",textShadowColor: 'rgba(0, 0, 0, 0.75)',textShadowOffset: {width: -1, height: 1},textShadowRadius: 10,shadowOpacity:  0.17  }}>Choose one?</Text>
           </View>
           <View style={{ flex: 2 }}>
             <TouchableOpacity
@@ -89,7 +102,7 @@ export default function Home() {
             </TouchableOpacity>
           </View>
         </View>
-      </View>
+      </ImageBackground>
     </SafeAreaView>
   );
 }
@@ -97,22 +110,22 @@ export default function Home() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    
-    backgroundColor: "#E0E5FF",
+    height: "100%", resizeMode: 'cover', width: Width, opacity: 0.9,
+    backgroundColor:'black',
+    elevation:2,
   },
   box1: {
     flex: 5,
-    backgroundColor: "#E0E5FF",
-    alignItems:"center",
+    alignItems: "center",
   },
   box4: {
     flex: 3,
-    backgroundColor: "white",
     alignItems: "center",
     justifyContent: "center",
-    borderTopLeftRadius:15,
-    borderTopRightRadius:15,
-    elevation:2
+    borderTopLeftRadius: 15,
+    borderTopRightRadius: 15,
+    marginTop: -10,
+    opacity:0.9
   },
   cusbutton: {
     marginBottom: 30,
@@ -125,7 +138,6 @@ const styles = StyleSheet.create({
     marginBottom: 30,
     width: 260,
     alignItems: "center",
-    backgroundColor: "white",
     borderRadius: 20,
     borderWidth: 2,
     borderColor: "#8A57E4",
@@ -138,15 +150,18 @@ const styles = StyleSheet.create({
   ownbuttonText: {
     textAlign: "center",
     padding: 20,
+    color: "white",
+    textShadowColor: 'rgba(0, 0, 0, 0.75)',
+    textShadowOffset: {width: -1, height: 1},
+    textShadowRadius: 10 
+  },
+  box1text: {
+    fontSize: 45,
+    fontWeight: "bold",
     color: "#8A57E4",
   },
-  box1text: { 
-    fontSize: 45, 
-    fontWeight: "bold", 
-    color: "#8A57E4", 
+  box1imag: {
+    height: "50%",
+    width: "80%",
   },
-  box1imag:{
-    height:"50%",
-    width:"80%",
-  },  
 });

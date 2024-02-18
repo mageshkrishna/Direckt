@@ -137,10 +137,10 @@ const EditOwnerProfile = () => {
     return urlPattern.test(url);
   };
   const updateshopowner = async () => {
+    if(gmaplink){
     if (gmaplink.trim() === '') {
-      
+      showToast('Enter a valid Google map Link');
     }
-    else {
       if (!isValidUrl(gmaplink)) {
         showToast('Enter a valid Google map Link');
         return;

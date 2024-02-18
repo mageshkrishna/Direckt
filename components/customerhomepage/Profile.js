@@ -41,33 +41,33 @@ const Profile = () => {
   const data = [
     {
       id: 1,
-      title: "How to create a thread?",
+      title: "What is Direckt?",
       content:
-        "To ensure that only one item expands at a time, you can maintain the index of the currently expanded item ",
+        "Direckt is an app that connects customers with nearby sellers and service providers.",
     },
     {
       id: 2,
-      title: "Why DirecKT?",
+      title: "Do I need to pay any money?",
       content:
-        "To ensure that only one item expands at a time, you can maintain the index of the currently expanded item ",
+        "No, you don't need to pay any money, and don't pay in the name of Direckt.",
     },
     {
       id: 3,
-      title: "How does DirecKT work?",
+      title: "What happens when you create a job?",
       content:
-        "To ensure that only one item expands at a time, you can maintain the index of the currently expanded item ",
+        "When you create a job, it will be sent to sellers matching the category and location you specify. Your name and email are not sent to them.",
     },
     {
       id: 4,
-      title: "is Support Available?",
+      title: "What is deactivate and delete?",
       content:
-        "To ensure that only one item expands at a time, you can maintain the index of the currently expanded item ",
+        "Deactivating means you no longer receive responses to your job, but you can still see the job. Deleting means everything related to the job will be removed.",
     },
     {
       id: 5,
-      title: "is direcKT Commission free?",
+      title: "Is Direckt responsible for the products or services?",
       content:
-        "To ensure that only one item expands at a time, you can maintain the index of the currently expanded item ",
+        "No, Direckt is not responsible for the products or services offered by sellers; it simply connects you with them.",
     },
   ];
 
