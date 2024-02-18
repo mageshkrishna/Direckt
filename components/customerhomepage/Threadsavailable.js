@@ -202,7 +202,7 @@ const AccordionItem = ({ data, token, onRefresh }) => {
       setdeactivateindicator(false)
       ToastAndroid.show('Job Deactivated', ToastAndroid.SHORT);
     }
-    catch(error) {
+    catch (error) {
       setdeactivateindicator(false)
       if (axios.isAxiosError(error)) {
         // Axios-related error
@@ -336,36 +336,43 @@ const AccordionItem = ({ data, token, onRefresh }) => {
             </TouchableOpacity>
             <Pressable style={styles.threaddetails} onPress={toggleExpand}>
               {data.status ? (
-                <TouchableOpacity
+                <View
                   style={{
                     flexDirection: "row",
                     alignItems: "center",
                     justifyContent: "flex-end",
-                  }}
-                  onPress={() =>
-                    Alert.alert(
-                      "Confirm Deactivation",
-                      "You can Deactivate the Job only once. Do you want to deactivate?",
-                      [
-                        {
-                          text: "Cancel",
-                          style: "cancel",
-                        },
-                        {
-                          text: "Deactivate", // Corrected from "deactivated" to "Deactivate"
-                          onPress: async () => {
-                            await deactivatejob();
-                            onRefresh()
+                  }}>
+                  <TouchableOpacity
+                    style={{
+                      flexDirection: "row",
+                      alignItems: "center",
+                      justifyContent: "flex-end",
+                    }}
+                    onPress={() =>
+                      Alert.alert(
+                        "Confirm Deactivation",
+                        "You can Deactivate the Job only once. Do you want to deactivate?",
+                        [
+                          {
+                            text: "Cancel",
+                            style: "cancel",
                           },
-                        },
-                      ],
-                      { cancelable: true }
-                    )
-                  }
-                >
-                  {deactivateindicator && <ActivityIndicator size={18} color="purple" />}
-                  <Text style={styles.deactivate}>Deactivate</Text>
-                </TouchableOpacity>
+                          {
+                            text: "Deactivate", // Corrected from "deactivated" to "Deactivate"
+                            onPress: async () => {
+                              await deactivatejob();
+                              onRefresh()
+                            },
+                          },
+                        ],
+                        { cancelable: true }
+                      )
+                    }
+                  >
+                    {deactivateindicator && <ActivityIndicator size={18} color="purple" />}
+                    <Text style={styles.deactivate}>Deactivate</Text>
+                  </TouchableOpacity>
+                </View>
               ) : (
                 <View
                   style={{
@@ -587,6 +594,7 @@ const Threadsavailable = ({ route }) => {
         style={{
           flex: 1,
           flexDirection: "column",
+          backgroundColor: '#E0E5FF',
         }}
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
@@ -597,33 +605,36 @@ const Threadsavailable = ({ route }) => {
             flexDirection: "column",
             justifyContent: "center",
             alignItems: "center",
-            height:730,
-            padding:10,
-            backgroundColor:'#E0E5FF',
+            height: 690,
+            padding: 15,
+            backgroundColor: '#E0E5FF',
           }}
 
         >
           <Image
-            source={require("../../assets/homepage.png")}
-            style={{ height: "100%", width: "100%" }}
+            source={require("../../assets/final3.png")}
+            style={{ height: "100%", width: "100%",margin:0 }}
           />
-          <TouchableOpacity
+        </View>
+        <View style={{alignItems:'çenter',marginTop:-160,backgroundColor:'#E0E5FF',marginHorizontal:'35%'}}>
+        <TouchableOpacity
             onPress={() => navigation.navigate("Createthread")}
             style={{
               padding: 10,
+              width:120,
               paddingHorizontal: 20,
               backgroundColor: COLORS.primary,
               borderRadius: 5,
               flexDirection: "row",
               justifyContent: "center",
               alignItems: "center",
-              marginBottom:40,
             }}
           >
             <MaterialIcons name="add" size={14} color="white" />
             <Text style={{ color: "white" }}> Create Job</Text>
           </TouchableOpacity>
         </View>
+        
       </ScrollView>
     );
   }
@@ -703,22 +714,22 @@ const styles = StyleSheet.create({
   thread: {
     flex: 1,
     alignItems: "center",
-    height: (height * 22) / 100,
+    justifyContent: 'center',
     backgroundColor: "white",
     elevation: 1,
     marginVertical: "3%",
     marginHorizontal: "3%",
     borderRadius: 5,
     borderWidth: 0.3,
+    paddingVertical: 20,
   },
   threadcardsection: {
     flexDirection: 'row',
     alignItems: 'center',
-    height: (height * 20) / 100,
   },
   threadImage: {
     width: (width * 35) / 100,
-    height: "70%",
+    height: 100,
     justifyContent: "center",
     alignItems: "center",
     padding: 5,

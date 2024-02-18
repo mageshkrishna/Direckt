@@ -17,19 +17,19 @@ const StoreProfile = () => {
 
     const [storedata, setstoredata] = useState();
     const [showPopup, setShowPopup] = useState(false);
-  
+
     const [activeImageIndex, setActiveImageIndex] = useState(null);
     const [token, settoken] = useState(null);
     const navigation = useNavigation();
 
-    useEffect(()=>{
+    useEffect(() => {
         SecureStore.getItemAsync("customertoken")
-        .then((value) => {
-          console.log("Retrieved value:", value);
-          settoken(value);
-        })
-        .catch((error) => console.error("Error retrieving value:", error));
-    },[])
+            .then((value) => {
+                console.log("Retrieved value:", value);
+                settoken(value);
+            })
+            .catch((error) => console.error("Error retrieving value:", error));
+    }, [])
 
     const handleImagePress = (index) => {
         setActiveImageIndex(index);
@@ -44,24 +44,24 @@ const StoreProfile = () => {
     };
 
     useEffect(() => {
-        if(!token||!_id){
-            return ;
+        if (!token || !_id) {
+            return;
         }
         console.log("started")
         try {
             axios.get(`https://direckt-copy1.onrender.com/shopowner/getshopownerprofile?_id=${_id}`,
-            {
-              headers: {
-                Authorization: `Bearer ${token}`,
-                'Content-Type': 'application/json',
-              },
-            }
-          )
-            
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        'Content-Type': 'application/json',
+                    },
+                }
+            )
+
                 .then(response => {
 
                     setstoredata(response.data)
-                    
+
                 })
                 .catch(err => {
                     console.log(err);
@@ -70,20 +70,20 @@ const StoreProfile = () => {
             if (axios.isAxiosError(error)) {
                 // Axios-related error
                 if (error.response) {
-                  // Response received with an error status code
-                  console.log(error.response);
-                  showToast(`Error: ${error.response.data.error}`);
+                    // Response received with an error status code
+                    console.log(error.response);
+                    showToast(`Error: ${error.response.data.error}`);
                 } else {
-                  // Network error (no response received)
-                  showToast("Network error. Please check your internet connection.");
+                    // Network error (no response received)
+                    showToast("Network error. Please check your internet connection.");
                 }
-              } else {
+            } else {
                 // Non-Axios error
                 console.log(error);
                 showToast("An error occurred. Please try again.");
-              }
+            }
         }
-    }, [_id,token]);
+    }, [_id, token]);
     if (!storedata && _id) {
         return (
             <View style={{ height: "100%", width: '100%', justifyContent: "center", alignItems: 'center' }}>
@@ -96,13 +96,7 @@ const StoreProfile = () => {
         <ScrollView
             style={styles.container}
         >
-            <ImageBackground
-                source={
-                    // require('../../assets/icon.png')
-                    {
-                        uri: 'https://static.vecteezy.com/system/resources/previews/008/878/933/non_2x/online-shopping-store-on-smartphone-with-shopping-cart-and-bags-on-purple-background-3d-rendering-free-photo.jpg',
-                      }
-                }
+            <View
                 style={styles.headercontainer}>
                 <TouchableOpacity
                     onPress={() => {
@@ -121,7 +115,7 @@ const StoreProfile = () => {
                             }}
                             style={styles.headerprofileImage}
                         /> : <Image
-                            source={{uri:'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS3u_DGIWouUwuaqQE88-nun_n2h-Pb2yRQXQ&usqp=CAU',}}
+                            source={{ uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS3u_DGIWouUwuaqQE88-nun_n2h-Pb2yRQXQ&usqp=CAU', }}
                             style={styles.headerprofileImage}
                         />
                         }
@@ -133,7 +127,7 @@ const StoreProfile = () => {
                         />
                     )}
                 </View>
-            </ImageBackground>
+            </View>
             <View style={styles.bodycontainer}>
                 <View >
                     <Text style={styles.bodyshopname} numberOfLines={2}>{storedata.businessname}</Text>
@@ -261,21 +255,22 @@ const styles = StyleSheet.create({
     headercontainer: {
         flex: 1,
         justifyContent: "flex-end",
-        height: (height * 30) / 100,
-        padding: 20,
+        height: (height * 24) / 100,
+        padding: 10,
+        backgroundColor: '#fff'
     },
     profilecontainer: {
         flex: 1,
         justifyContent: 'flex-end',
-        alignItems:'center',
+        alignItems: 'center',
         height: (height * 30) / 100,
     },
     headerprofileImage: {
         height: 120,
         width: 120,
         borderRadius: 70,
-        borderWidth: 0.9,
-        borderColor: 'white',
+        borderWidth: 2,
+        borderColor: '#f2f3f5',
     },
     bodycontainer: {
         flex: 1,

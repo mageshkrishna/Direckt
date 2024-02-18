@@ -10,6 +10,7 @@ import {
   ActivityIndicator,
   Image,
   BackHandler,
+  Dimensions,
   ToastAndroid,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -18,7 +19,10 @@ import JobCard from "./Jobcard";
 import * as SecureStore from "expo-secure-store";
 import { useSelector } from "react-redux";
 import { COLORS } from "../../constants/Theme";
-import { useFocusEffect,useRoute } from "@react-navigation/native";
+import { useFocusEffect, useRoute } from "@react-navigation/native";
+import { TouchableOpacity } from "react-native-gesture-handler";
+import { Ionicons } from "@expo/vector-icons";
+const height = Dimensions.get("window").height;
 
 const Shopownerhomepage = () => {
   const route = useRoute();
@@ -45,7 +49,7 @@ const Shopownerhomepage = () => {
   const shopOwnerToken = useSelector(
     (state) => state.shopOwnerAuth.shopOwnerToken
   );
-  
+
 
   const [refreshing, setRefreshing] = useState(false);
   const [token, setToken] = useState(null);
@@ -74,7 +78,7 @@ const Shopownerhomepage = () => {
   useEffect(() => {
     setLoading(true);
     fetchData();
-  }, [shopOwnerToken,refreshing]);
+  }, [shopOwnerToken, refreshing]);
 
   const onRefresh = React.useCallback(async () => {
     setRefreshing(true);
@@ -151,18 +155,48 @@ const Shopownerhomepage = () => {
   }
 
   return (
-    <ScrollView
-      refreshControl={
-        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-      }
-    >
+    <View style={{flex:1,}}>
       {!job && <ActivityIndicator size="medium" color="#0000ff" />}
       {job.length > 0 && ownerdetail ? (
-        job.map((item, index) => (
-          <View key={index}>
-            <JobCard item={item} ownerdetail={ownerdetail} token={token} />
-          </View>
-        ))
+        <View
+          style={{
+            flex: 1,
+            flexDirection: "column",
+            justifyContent: "space-between",
+          }}>
+          <ScrollView
+            style={{
+              flex: 1,
+              height: (height * 85) / 100,
+              paddingHorizontal: 10,
+              backgroundColor: "#E0E5FF",
+            }}
+            refreshControl={
+              <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+            }
+          >
+            {job.map((item, index) => (
+              <View key={index}>
+                <JobCard item={item} ownerdetail={ownerdetail} token={token} />
+              </View>
+            ))}
+          </ScrollView>
+          <TouchableOpacity
+            onPress={() => {
+              onRefresh();
+            }}
+            style={{
+              height: 50,
+              width: "100%",
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <Ionicons name="refresh" size={24} color="black" />
+            <Text style={{ fontSize: 16 }}>Refresh</Text>
+          </TouchableOpacity>
+        </View>
       ) : (
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', height: 550, width: '100%' }}>
           <Image
@@ -174,7 +208,7 @@ const Shopownerhomepage = () => {
           <Text>No jobs available. Refresh the app</Text>
         </View>
       )}
-    </ScrollView>
+    </View>
   );
 };
 

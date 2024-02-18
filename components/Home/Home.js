@@ -12,7 +12,8 @@ import {
   Dimensions,
   BackHandler
 } from "react-native";
-import image from "../Home/homeimage.png";
+import image from "../Home/Onboard.png";
+import image1 from '../Home/1-removebg-preview.png'
 import Svg, { Path } from "react-native-svg";
 import { useFocusEffect, useNavigation, useRoute } from "@react-navigation/native";
 import React, { useEffect } from "react";
@@ -46,16 +47,10 @@ export default function Home() {
     <SafeAreaView style={{ flex: 1 }}>
       <View style={styles.container}>
         <View style={styles.box1}>
-          <View style={{flex:3,justifyContent:"flex-end"}}>
-          <Text style={styles.box1text}>Direc
-                <Text style={{ color: "orange" }}>KT</Text>
-              </Text>
-          </View>
+          
           <View style={{flex:10,justifyContent:"flex-start",}}>
           <Image source={image} style={{height:"100%",resizeMode: 'cover',width:Width}}></Image>
-          </View>
-              
-          
+          </View>          
         </View>
 
         <View style={styles.box4}>
@@ -102,10 +97,12 @@ export default function Home() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    
+    backgroundColor: "#E0E5FF",
   },
   box1: {
     flex: 5,
-    backgroundColor: "white",
+    backgroundColor: "#E0E5FF",
     alignItems:"center",
   },
   box4: {
@@ -113,6 +110,9 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     alignItems: "center",
     justifyContent: "center",
+    borderTopLeftRadius:15,
+    borderTopRightRadius:15,
+    elevation:2
   },
   cusbutton: {
     marginBottom: 30,

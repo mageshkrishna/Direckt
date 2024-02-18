@@ -51,8 +51,16 @@ const Createthread = () => {
       showToast("Enter Job Title");
       return;
     }
+    if(jobtitle.length<10){
+      showToast("Job title should be atleast 10 characters...");
+      return;
+    }
     if (!jobdescription) {
       showToast("Enter Job Description");
+      return;
+    }
+    if(jobdescription.length<15){
+      showToast("Job description should be atleast 15 characters...");
       return;
     }
     if (!location) {
@@ -296,6 +304,7 @@ const Createthread = () => {
           <TextInput
             style={styles.box1input}
             onChangeText={(text) => setjobtitle(text)}
+            placeholder="eg. Need a plumber"
             value={jobtitle}
             maxLength={75}
           />
@@ -305,6 +314,7 @@ const Createthread = () => {
             multiline={true}
             numberOfLines={6}
             textAlignVertical="top"
+            placeholder="eg. Kitchen sink pipe is leaking. Need a plumber to fix it."
             onChangeText={(text) => setjobdescription(text)}
             value={jobdescription}
             maxLength={300}

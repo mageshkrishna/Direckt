@@ -278,7 +278,7 @@ const Profile = () => {
                 <TouchableOpacity
                   onPress={() =>
                     Linking.openURL(
-                      "https://en.wikipedia.org/wiki/Terms_of_service"
+                      "https://mageshkrishna.github.io/DirecktAbout/index"
                     )
                   }
                   style={styles.aboutdetails}
@@ -295,7 +295,7 @@ const Profile = () => {
                 <TouchableOpacity
                   onPress={() =>
                     Linking.openURL(
-                      "https://en.wikipedia.org/wiki/Terms_of_service"
+                      "https://elamparithi07.github.io/Direcktterms/index1.html"
                     )
                   }
                   style={styles.aboutdetails}
@@ -308,7 +308,7 @@ const Profile = () => {
                 <TouchableOpacity
                   onPress={() =>
                     Linking.openURL(
-                      "https://en.wikipedia.org/wiki/Terms_of_service"
+                      "https://elamparithi07.github.io/Direcktterms/index.html"
                     )
                   }
                   style={styles.aboutdetails}

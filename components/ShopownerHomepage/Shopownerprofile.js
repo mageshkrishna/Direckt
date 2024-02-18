@@ -308,12 +308,12 @@ const Shopownerprofile = () => {
  
   return (
     <ScrollView style={styles.container}>
-      <ImageBackground
-        source={
-          {
-            uri: 'https://static.vecteezy.com/system/resources/previews/008/878/933/non_2x/online-shopping-store-on-smartphone-with-shopping-cart-and-bags-on-purple-background-3d-rendering-free-photo.jpg',
-          }
-        }
+      <View
+        // source={
+        //   {
+        //     uri: 'https://static.vecteezy.com/system/resources/previews/008/878/933/non_2x/online-shopping-store-on-smartphone-with-shopping-cart-and-bags-on-purple-background-3d-rendering-free-photo.jpg',
+        //   }
+        // }
         style={styles.headercontainer}>
         <View style={styles.profilecontainer}>
           {profilepic ? <Image
@@ -329,7 +329,7 @@ const Shopownerprofile = () => {
           />
           }
         </View>
-      </ImageBackground>
+      </View>
       <View style={styles.bodycontainer}>
         <View >
           <Text style={styles.bodyshopname}>{businessname}</Text>
@@ -469,7 +469,7 @@ const Shopownerprofile = () => {
         <View style={styles.aboutlist}>
           <View>
             <TouchableOpacity
-              onPress={() => Linking.openURL('https://en.wikipedia.org/wiki/Terms_of_service')}
+              onPress={() => Linking.openURL('https://mageshkrishna.github.io/DirecktAbout/index')}
               style={styles.aboutdetails}
             >
               <AntDesign name="exclamationcircleo" size={24} color="black" />
@@ -478,7 +478,7 @@ const Shopownerprofile = () => {
           </View>
           <View>
             <TouchableOpacity
-              onPress={() => Linking.openURL('https://en.wikipedia.org/wiki/Terms_of_service')}
+              onPress={() => Linking.openURL('https://elamparithi07.github.io/Direcktterms/index1.html')}
               style={styles.aboutdetails}
             >
               <MaterialIcons name="privacy-tip" size={24} color="black" />
@@ -487,7 +487,7 @@ const Shopownerprofile = () => {
           </View>
           <View>
             <TouchableOpacity
-              onPress={() => Linking.openURL('https://en.wikipedia.org/wiki/Terms_of_service')}
+              onPress={() => Linking.openURL('https://elamparithi07.github.io/Direcktterms/index.html')}
               style={styles.aboutdetails}
             >
               <MaterialCommunityIcons name="file-document-multiple-outline" size={24} color="black" />
@@ -557,8 +557,9 @@ const styles = StyleSheet.create({
   headercontainer: {
     flex: 1,
     justifyContent: "flex-end",
-    height: (height * 26) / 100,
+    height: (height * 24) / 100,
     padding: 10,
+    backgroundColor:'#fff'
   },
   profilecontainer: {
     flex: 1,
@@ -570,8 +571,8 @@ const styles = StyleSheet.create({
     height: 120,
     width: 120,
     borderRadius: 70,
-    borderWidth: 0.5,
-    borderColor: 'white',
+    borderWidth: 2,
+    borderColor: '#f2f3f5',
   },
   bodycontainer: {
     flex: 1,
