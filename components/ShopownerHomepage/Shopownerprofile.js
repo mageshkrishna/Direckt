@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, ScrollView ,TouchableOpacity, Dimensions, Image, Linking, Alert, Pressable, ToastAndroid, ActivityIndicator } from 'react-native'
+import { StyleSheet, Text, View, ScrollView, TouchableOpacity, Dimensions, Image, Linking, Alert, Pressable, ToastAndroid, ActivityIndicator } from 'react-native'
 import { FontAwesome5, AntDesign, MaterialCommunityIcons, MaterialIcons, Feather, Entypo } from '@expo/vector-icons';
 import { React, useEffect, useState } from 'react'
 import { useIsFocused, useNavigation } from '@react-navigation/native';
@@ -12,11 +12,12 @@ const width = Dimensions.get("window").width
 import * as SecureStore from "expo-secure-store";
 import { TextInput } from 'react-native-gesture-handler';
 import { COLORS } from '../../constants/Theme';
+import ImagePopup from './Imagepopup';
 const Shopownerprofile = () => {
   const dispatch = useDispatch();
 
   const navigation = useNavigation();
-  const [email,setemail]= useState('');
+  const [email, setemail] = useState('');
   const [businessname, setbusinessname] = useState();
   const [businessabout, setbusinessabout] = useState("Vallioor");
   const [phonenumber, setphonenumber] = useState("");
@@ -34,9 +35,9 @@ const Shopownerprofile = () => {
   const [availabilitystatus, setavailabilitystatus] = useState(Boolean);
   const [deliverystatus, setdeliverystatus] = useState(Boolean)
   const [shopownerId, setshopownerId] = useState(null);
-  const[token,settoken] = useState(null)
-  const[shopindicator,setshopindicator] = useState(false)
-  const[deliveryindicator,setdeliveryindicator] = useState(false)
+  const [token, settoken] = useState(null)
+  const [shopindicator, setshopindicator] = useState(false)
+  const [deliveryindicator, setdeliveryindicator] = useState(false)
   const isFocused = useIsFocused();
   const updatedeliveryStatusInAsyncStorage = async (deliverystatus) => {
     try {
@@ -60,9 +61,9 @@ const Shopownerprofile = () => {
   const [feedbackText, setFeedbackText] = useState('');
   const [feedbackTextIndicator, setFeedbackTextindicator] = useState(false);
   const handleFeedbackSubmit = async () => {
-    if(feedbackText.length===0){
-       showToast('feedback is empty');
-       return;
+    if (feedbackText.length === 0) {
+      showToast('feedback is empty');
+      return;
     }
     try {
       setFeedbackTextindicator(true);
@@ -70,48 +71,48 @@ const Shopownerprofile = () => {
       showToast('Thankyou for your valuable feedback!')
       setFeedbackText('')
       setFeedbackTextindicator(false)
-      
+
     } catch (error) {
-        setFeedbackTextindicator(false)
-        showToast('feedback failed')
-      
+      setFeedbackTextindicator(false)
+      showToast('feedback failed')
+
     }
   };
 
   const removeData = async () => {
- 
-      const formdata ={
-        email:email
-      }
-      try {
-        const response = await axios.post(
-          "https://direckt-copy1.onrender.com/auth/shopownerlogout",
-          formdata,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-              'Content-Type': 'application/json',
-            },
-          }
-        );
+
+    const formdata = {
+      email: email
+    }
+    try {
+      const response = await axios.post(
+        "https://direckt-copy1.onrender.com/auth/shopownerlogout",
+        formdata,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        }
+      );
       dispatch(clearShopOwnerToken());
       await SecureStore.deleteItemAsync('shopownertoken');
-   
+
       await AsyncStorage.removeItem("shopownerdata");
       navigation.reset({
         index: 0,
         routes: [{ name: 'Shopownerhomepage' }],
       });
       navigation.navigate("Home");
- 
+
     } catch (error) {
       if (axios.isAxiosError(error)) {
-       
+
         if (error.response) {
-    
-        
+
+
           await SecureStore.deleteItemAsync('shopownertoken');
-   
+
           await AsyncStorage.removeItem("shopownerdata");
           navigation.reset({
             index: 0,
@@ -119,14 +120,14 @@ const Shopownerprofile = () => {
           });
           navigation.navigate("Home");
         } else {
-          
+
           showToast("Network error. Please check your internet connection.");
         }
       } else {
-          
-    
+
+
         await SecureStore.deleteItemAsync('shopownertoken');
-   
+
         await AsyncStorage.removeItem("shopownerdata");
         navigation.reset({
           index: 0,
@@ -144,34 +145,34 @@ const Shopownerprofile = () => {
       [
         {
           text: 'No',
-          onPress: () => {}, // Do nothing if 'No' is pressed
+          onPress: () => { }, // Do nothing if 'No' is pressed
           style: 'cancel'
         },
         {
           text: 'Yes',
           onPress: async () => {
             setdeliveryindicator(true)
-           
+
 
 
 
             const formdata = {
               shopownerId: shopownerId,
               deliverystatus: !deliverystatus,
-              email:email,
+              email: email,
             };
 
 
             try {
               // Assuming the API request is uncommented
               const response = await axios.put("https://direckt-copy1.onrender.com/shopowner/deliverystatus", formdata,
-              {
-                headers: {
-                  Authorization: `Bearer ${token}`,
-                  'Content-Type': 'application/json',
-                },
-              }
-            );
+                {
+                  headers: {
+                    Authorization: `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                  },
+                }
+              );
               if (response) {
                 updatedeliveryStatusInAsyncStorage(!deliverystatus)
                 setdeliverystatus(!deliverystatus)
@@ -189,7 +190,7 @@ const Shopownerprofile = () => {
                   showToast("Network error. Please check your internet connection.");
                 }
               } else {
-              
+
                 showToast("An error occurred. Please try again.");
               }
             }
@@ -226,31 +227,31 @@ const Shopownerprofile = () => {
       [
         {
           text: 'No',
-          onPress: () => {}, // Do nothing if 'No' is pressed
+          onPress: () => { }, // Do nothing if 'No' is pressed
           style: 'cancel'
         },
         {
           text: 'Yes',
           onPress: async () => {
             setshopindicator(true)
-        
+
 
             const formdata = {
               shopownerId: shopownerId,
               availabilitystatus: !availabilitystatus,
-              email:email,
+              email: email,
             };
 
             try {
               // Assuming the API request is uncommented
               const response = await axios.put("https://direckt-copy1.onrender.com/shopowner/availabilitystatus", formdata,
-              {
-                headers: {
-                  Authorization: `Bearer ${token}`,
-                  'Content-Type': 'application/json',
-                },
-              }
-            );
+                {
+                  headers: {
+                    Authorization: `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                  },
+                }
+              );
               updateavailabilityStatusInAsyncStorage(!availabilitystatus)
               setavailabilitystatus(!availabilitystatus)
               setshopindicator(false)
@@ -266,7 +267,7 @@ const Shopownerprofile = () => {
                   showToast("Network error. Please check your internet connection.");
                 }
               } else {
-               
+
                 showToast("An error occurred. Please try again.");
               }
             }
@@ -286,12 +287,12 @@ const Shopownerprofile = () => {
     const fetchData = async () => {
       try {
         SecureStore.getItemAsync("shopownertoken")
-        .then((value) => {
-          settoken(value);
-        })
-        .catch((error) =>{});
+          .then((value) => {
+            settoken(value);
+          })
+          .catch((error) => { });
         const data = await AsyncStorage.getItem("shopownerdata");
-  
+
         if (data) {
           const parsedData = JSON.parse(data);
           setshopownerId(parsedData._id)
@@ -311,32 +312,48 @@ const Shopownerprofile = () => {
           setdeliverystatus(parsedData.deliverystatus)
         }
       } catch (err) {
-     
+
       }
     };
 
     fetchData();
   }, [isFocused]);
+  const [activeImageIndex, setActiveImageIndex] = useState(null);
+  const [showPopup, setShowPopup] = useState(false);
+  const handleImagePress = (index) => {
+    setActiveImageIndex(index);
+  };
+  const handleClosePopup = () => {
+    setActiveImageIndex(null);
+  };
 
- 
   return (
     <ScrollView style={styles.container}>
       <View
-   
+
         style={styles.headercontainer}>
         <View style={styles.profilecontainer}>
-          {profilepic ? <Image
-            source={{
-              uri: profilepic,
-            }}
-            style={styles.headerprofileImage}
-          /> : <Image
-            source={
-              {uri:'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS3u_DGIWouUwuaqQE88-nun_n2h-Pb2yRQXQ&usqp=CAU',}
-          }
-            style={styles.headerprofileImage}
-          />
-          }
+          <TouchableOpacity
+            onPress={() => setShowPopup(true)}>
+            {profilepic ? <Image
+              source={{
+                uri: profilepic,
+              }}
+              style={styles.headerprofileImage}
+            /> : <Image
+              source={
+                { uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS3u_DGIWouUwuaqQE88-nun_n2h-Pb2yRQXQ&usqp=CAU', }
+              }
+              style={styles.headerprofileImage}
+            />
+            }
+          </TouchableOpacity>
+          {showPopup && (
+            <ImagePopup
+              imageUrl={profilepic}
+              onClose={() => setShowPopup(false)}
+            />
+          )}
         </View>
       </View>
       <View style={styles.bodycontainer}>
@@ -356,25 +373,25 @@ const Shopownerprofile = () => {
       <View style={styles.ctccontainer}>
         <View style={styles.ctccard}>
           <View style={styles.ctcsection}>
-            {shopindicator?<ActivityIndicator size={40} color="green"/>:
-            <Pressable
-              style={availabilitystatus ? [styles.storestatus, styles.ctcicon] : [styles.storestatusoff, styles.ctcicon]}
-              onPress={() => { availability() }}
-            >
-              {availabilitystatus ? <MaterialCommunityIcons name="store-check" size={42} color="white" /> : <MaterialCommunityIcons name="store-remove" size={42} color="white" />}
-            </Pressable>
-}
+            {shopindicator ? <ActivityIndicator size={40} color="green" /> :
+              <Pressable
+                style={availabilitystatus ? [styles.storestatus, styles.ctcicon] : [styles.storestatusoff, styles.ctcicon]}
+                onPress={() => { availability() }}
+              >
+                {availabilitystatus ? <MaterialCommunityIcons name="store-check" size={42} color="white" /> : <MaterialCommunityIcons name="store-remove" size={42} color="white" />}
+              </Pressable>
+            }
             {availabilitystatus ? <Text style={{ fontSize: 10 }}>Store: Open</Text> : <Text style={{ fontSize: 10 }}>Store: Closed</Text>}
           </View>
           <View style={styles.ctcsection}>
-          {deliveryindicator?<ActivityIndicator size={40} color="green"/>:
-            <Pressable
-              onPress={() => { delivery() }}
-              style={deliverystatus ? [styles.ctcdeliverystatus, styles.ctcicon] : [styles.ctcdeliverystatusoff, styles.ctcicon]}
-            >
-              <MaterialIcons name="delivery-dining" size={42} color="white" />
-            </Pressable>
-}
+            {deliveryindicator ? <ActivityIndicator size={40} color="green" /> :
+              <Pressable
+                onPress={() => { delivery() }}
+                style={deliverystatus ? [styles.ctcdeliverystatus, styles.ctcicon] : [styles.ctcdeliverystatusoff, styles.ctcicon]}
+              >
+                <MaterialIcons name="delivery-dining" size={42} color="white" />
+              </Pressable>
+            }
             {deliverystatus ? <Text style={{ fontSize: 10 }}>Delivery: Available</Text> : <Text style={{ fontSize: 10 }}>Delivery: Not Available</Text>}
           </View>
           <View style={styles.ctcsection}>
@@ -386,7 +403,7 @@ const Shopownerprofile = () => {
                   [
                     {
                       text: 'Cancel',
-                      onPress: () => {},
+                      onPress: () => { },
                       style: 'cancel',
                     },
                     { text: 'open', onPress: () => gmaplink ? Linking.openURL(gmaplink) : showToast('Google map is not linked') },
@@ -446,15 +463,25 @@ const Shopownerprofile = () => {
             photos.map((item, index) => {
               return (
                 <View key={index}>
-                  <Image
-                    style={styles.card}
-                    source={{ uri: item }}
-                  />
+                  <TouchableOpacity
+                    onPress={() => handleImagePress(index)}
+                  >
+                    <Image
+                      style={styles.card}
+                      source={{ uri: item }}
+                    />
+                  </TouchableOpacity>
                 </View>
               )
             })
           }
           {photos.length == 0 ? <View style={styles.addimagecard}><Text style={{ textAlign: 'center', fontSize: 10, color: 'grey' }}>No Image Added</Text></View> : <></>}
+          {activeImageIndex !== null && (
+            <ImagePopup
+              imageUrl={photos[activeImageIndex]}
+              onClose={handleClosePopup}
+            />
+          )}
         </ScrollView>
       </View>
       <View style={styles.bodyfooter}>
@@ -462,16 +489,16 @@ const Shopownerprofile = () => {
           <Text style={styles.footertitle}>How to use DirecKT</Text>
         </View>
         <View style={styles.sociallinks}>
-          <TouchableOpacity onPress={() => Linking.openURL('https://instagram.com')}
-            style={styles.iconContainer}>
+          <TouchableOpacity onPress={() => Linking.openURL('https://www.instagram.com/direcktapp?igsh=Nmk1Z2s0dHNnYWo2')}
+          >
             <Entypo name="instagram" size={38} color="red" />
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => Linking.openURL('https://whatsapp.com')}
-            style={styles.iconContainer}>
+          <TouchableOpacity onPress={() => Linking.openURL('https://chat.whatsapp.com/Gglkq3l7ymG9A670a8IN2B')}
+          >
             <FontAwesome5 name="whatsapp" size={40} color="green" />
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => Linking.openURL('https://youtube.com')}
-            style={styles.iconContainer}>
+          <TouchableOpacity onPress={() => Linking.openURL('https://youtube.com/@DirecKT-?si=GuY4KIUIX5rOw3EE')}
+          >
             <Entypo name="youtube" size={38} color="red" />
           </TouchableOpacity>
         </View>
@@ -513,7 +540,7 @@ const Shopownerprofile = () => {
                   [
                     {
                       text: 'Cancel',
-                      onPress: () => {},
+                      onPress: () => { },
                       style: 'cancel',
                     },
                     { text: 'Logout', onPress: () => removeData() },
@@ -530,27 +557,27 @@ const Shopownerprofile = () => {
           </View>
         </View>
         <View
-              style={{ height: 200, width: "100%", flexDirection:'column',alignItems:'flex-start',justifyContent:'center',gap:10,paddingLeft:15,marginTop:20}}
-            >
-              <Text>Your Feedback Matters: Suggestions, Bug Reports Welcome!</Text>
-              <TextInput
-                style={{
-                  flex: 1,
-                  textAlignVertical: "top",
-                  borderWidth: 1,
-                  borderColor: "gray",
-                  padding: 10,
-                  width:'100%',
-                  borderRadius:5
-                }}
-                multiline
-                numberOfLines={4}
-                placeholder="Type your feedback here..."
-                value={feedbackText}
-                onChangeText={setFeedbackText}
-              />
-              <TouchableOpacity style={{backgroundColor:COLORS.primary,paddingHorizontal:12,paddingVertical:8,borderRadius:4,flexDirection:'row',alignItems:'center'}} onPress={handleFeedbackSubmit}><Text style={{fontSize:18,color:'#fff'}}>Submit</Text>{feedbackTextIndicator&&<ActivityIndicator size={18} color={'#fff'}/>}</TouchableOpacity>
-            </View>
+          style={{ height: 200, width: "100%", flexDirection: 'column', alignItems: 'flex-start', justifyContent: 'center', gap: 10, paddingLeft: 15, marginTop: 20 }}
+        >
+          <Text>Your Feedback Matters: Suggestions, Bug Reports Welcome!</Text>
+          <TextInput
+            style={{
+              flex: 1,
+              textAlignVertical: "top",
+              borderWidth: 1,
+              borderColor: "gray",
+              padding: 10,
+              width: '100%',
+              borderRadius: 5
+            }}
+            multiline
+            numberOfLines={4}
+            placeholder="Type your feedback here..."
+            value={feedbackText}
+            onChangeText={setFeedbackText}
+          />
+          <TouchableOpacity style={{ backgroundColor: COLORS.primary, paddingHorizontal: 12, paddingVertical: 8, borderRadius: 4, flexDirection: 'row', alignItems: 'center' }} onPress={handleFeedbackSubmit}><Text style={{ fontSize: 18, color: '#fff' }}>Submit</Text>{feedbackTextIndicator && <ActivityIndicator size={18} color={'#fff'} />}</TouchableOpacity>
+        </View>
       </View>
     </ScrollView>
   )
@@ -568,7 +595,7 @@ const styles = StyleSheet.create({
     justifyContent: "flex-end",
     height: (height * 24) / 100,
     padding: 10,
-    backgroundColor:'#fff'
+    backgroundColor: '#fff'
   },
   profilecontainer: {
     flex: 1,
@@ -625,7 +652,7 @@ const styles = StyleSheet.create({
     height: (height * 16) / 100,
     paddingHorizontal: '4%',
     backgroundColor: "white",
-    marginVertical:3,
+    marginVertical: 3,
   },
   ctccard: {
     flex: 1,
@@ -633,7 +660,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     height: (height * 20) / 100,
-    width:'100%',
+    width: '100%',
     backgroundColor: 'white',
     borderRadius: 30,
     elevation: 3,
@@ -692,7 +719,7 @@ const styles = StyleSheet.create({
       height: 1
     },
     shadowColor: "grey",
-    backgroundColor: "red",
+    backgroundColor: "black",
   },
   addimagecard: {
     flex: 1,

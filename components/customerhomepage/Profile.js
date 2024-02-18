@@ -260,20 +260,20 @@ const Profile = () => {
             </View>
             <View style={styles.sociallinks}>
               <TouchableOpacity
-                onPress={() => Linking.openURL("https://instagram.com")}
-                style={styles.iconContainer}
+                onPress={() => Linking.openURL('https://www.instagram.com/direcktapp?igsh=Nmk1Z2s0dHNnYWo2')}
+                
               >
                 <Entypo name="instagram" size={38} color="red" />
               </TouchableOpacity>
               <TouchableOpacity
-                onPress={() => Linking.openURL("https://whatsapp.com")}
-                style={styles.iconContainer}
+                onPress={() => Linking.openURL('https://chat.whatsapp.com/Gglkq3l7ymG9A670a8IN2B')}
+                
               >
                 <FontAwesome5 name="whatsapp" size={40} color="green" />
               </TouchableOpacity>
               <TouchableOpacity
-                onPress={() => Linking.openURL("https://youtube.com")}
-                style={styles.iconContainer}
+                onPress={() => Linking.openURL('https://youtube.com/@DirecKT-?si=GuY4KIUIX5rOw3EE')}
+                
               >
                 <Entypo name="youtube" size={38} color="red" />
               </TouchableOpacity>

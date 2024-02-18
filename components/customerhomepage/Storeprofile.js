@@ -224,7 +224,7 @@ const StoreProfile = () => {
                             >
                                 <Image
                                     source={{ uri: item }}
-                                    style={{ height: 100, width: 100, backgroundColor: 'red', marginRight: 10, borderRadius: 5 }}
+                                    style={{ height: 100, width: 100, backgroundColor: 'black', marginRight: 10, borderRadius: 5 }}
                                 />
                             </TouchableOpacity>
                         </View>

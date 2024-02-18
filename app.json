@@ -4,7 +4,7 @@
     "slug": "Direckt",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/DirecKT-removebg-preview.png",
+    "icon": "./assets/DireckTlogo.png",
     "userInterfaceStyle": "light",
     "splash": {
       "image": "./assets/splash.png",

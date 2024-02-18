@@ -99,7 +99,7 @@ const Imagepicker = ({ editprofile, addphoto, setprofilepic,setphotos,profilepic
   ) : (
     <Image
       style={styles.editprofileImage}
-      source={require("../../assets/icon.png")}
+      source={require("../../assets/shop.png")}
     />
   )
 )}
