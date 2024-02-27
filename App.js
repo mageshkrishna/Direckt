@@ -23,6 +23,8 @@ import CustomerForgetpassword from "./components/CustomerAuthentication/Customer
 import Customerpassword from "./components/CustomerAuthentication/Customerpassword";
 import Shopownerpassword from "./components/Userauthentication/Shopownerchangepassword";
 import ShopownerForgetpassword from "./components/Userauthentication/Shopownerforgetpassword";
+import UserVerification from "./components/Userauthentication/UserVerification";
+import CustomerVerification from './components/CustomerAuthentication/CustomerVerification';
 import rootReducer  from "./redux/rootReducer"
 import { Provider } from "react-redux";
 import { configureStore } from "@reduxjs/toolkit";
@@ -182,6 +184,16 @@ const App = () => {
           <Stack.Screen
             name="Shopownerforgotpassword"
             component={ShopownerForgetpassword}
+            options={{ headerShown:false }}
+          />
+          <Stack.Screen
+            name="CustomerVerification"
+            component={CustomerVerification}
+            options={{ headerShown:false }}
+          />
+          <Stack.Screen
+            name="UserVerification"
+            component={UserVerification}
             options={{ headerShown:false }}
           />
         </Stack.Navigator>

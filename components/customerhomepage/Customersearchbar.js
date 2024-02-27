@@ -356,7 +356,7 @@ const CustomerSearchBar = () => {
         <View
           style={[
             styles.searchbar,
-            { backgroundColor: colorScheme === "dark" ? "#3C4142" : "white" },
+            { backgroundColor: "white" },
           ]}
         >
           <TouchableOpacity
@@ -435,7 +435,7 @@ const CustomerSearchBar = () => {
       <ScrollView
         style={[
           styles.resultcontainer,
-          { backgroundColor: colorScheme === "dark" ? "#3C4142" : "#F7F9FF" },
+          { backgroundColor: "#F7F9FF" },
         ]}
       >
         {shopowner.length === 0 && <View><Text style={{ textAlign: 'center' }}>

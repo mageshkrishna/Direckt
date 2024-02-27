@@ -30,7 +30,7 @@ const height = Dimensions.get("window").height;
 
 const Profile = () => {
   const [token, settoken] = useState(null);
-
+  const [indicator, setindicator] = useState(false);
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const customertoken = useSelector(
@@ -144,6 +144,7 @@ const Profile = () => {
       email: customerdata.email
     }
     try {
+      setindicator(true);
       const response = await axios.post(
         "https://direckt-copy1.onrender.com/auth/customerlogout",
         formdata,
@@ -158,6 +159,7 @@ const Profile = () => {
       await SecureStore.deleteItemAsync("customertoken");
      
       await AsyncStorage.removeItem("customerdata");
+      setindicator(false);
       navigation.navigate("Home");
       
     } catch (error) {
@@ -218,13 +220,15 @@ const Profile = () => {
               justifyContent: "center",
             }}
           >
-            <TouchableOpacity
+            {indicator?(<View>
+              <ActivityIndicator color={"red"} size={40} />
+            </View>):<TouchableOpacity
               style={{ flexDirection: "row", alignItems: "center" }}
               onPress={handleLogout}
             >
               <Text style={styles.logout}>Log out </Text>
               <MaterialIcons name="logout" size={24} color="red" />
-            </TouchableOpacity>
+            </TouchableOpacity>}
           </View>
           <View style={styles.userdetails}>
             <View>

@@ -7,7 +7,7 @@
     "icon": "./assets/DireckTlogo.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/DireckTlogo.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -27,7 +27,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/DireckTlogo.png",
         "backgroundColor": "#ffffff"
       },
       "supportsRtl": true,
@@ -39,7 +39,7 @@
       ]
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/DireckTlogo.png"
     },
     "extra": {
       "eas": {

@@ -107,14 +107,16 @@ const Userregister = ({route}) => {
         },
       });
 
-      const { status } = response.data;
+      const { success } = response.data;
 
-      if (status) {
-        setModalVisible(!modalVisible);
+      if (success) {
+        showToast("Verification code sent successfully!");
+        setLoading(true);
         setbuinessname(null)
         setemail(null)
         setphonenumber(null)
         setpassword(null)
+        navigation.navigate("UserVerification",{formdata});
       } else {
         showToast('Error', 'Email is already used. Try again');
       }
@@ -143,27 +145,6 @@ const Userregister = ({route}) => {
   };
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      <Modal
-        animationType="fade"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => {
-          setModalVisible(!modalVisible);
-        }}>
-        <View style={styles.centeredView}>
-          <View style={styles.modalView}>
-            <Feather name="check-circle" size={62} color="green" />
-            <Text style={styles.modalText}>Account created Successfully</Text>
-            <Pressable
-              style={[styles.button, styles.buttonClose]}
-              onPress={() => {
-                navigation.navigate("Userlogin");
-              }}>
-              <Text style={styles.textStyle}>Login</Text>
-            </Pressable>
-          </View>
-        </View>
-      </Modal>
       <View style={{ flex: 1 }}>
         <View style={styles.box1}>
           <Text style={styles.box1text}>Create Your{"\n"}Account</Text>

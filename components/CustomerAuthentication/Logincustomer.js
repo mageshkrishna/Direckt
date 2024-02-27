@@ -159,7 +159,7 @@ const handleLogin = async () => {
         <View style={styles.box2}>
           <TextInput
             style={styles.box2input}
-            placeholder="Username (email)"
+            placeholder="Email"
             value={email}
             onChangeText={(text) => setemail(text)}
           />
@@ -198,7 +198,7 @@ const handleLogin = async () => {
               }}
             >
               <Text style={{ color: COLORS.primary, fontSize: 16 }}>
-                sign up
+                Sign up
               </Text>
             </TouchableOpacity>
            

@@ -156,7 +156,7 @@ const UserLogin = ({route,setShopOwnerToken}) => {
         <View style={styles.box2}>
           <TextInput
             style={styles.box2input}
-            placeholder="Username (email)"
+            placeholder="Email"
             value={email}
             onChangeText={(text) => setemail(text)}
           />
@@ -195,7 +195,7 @@ const UserLogin = ({route,setShopOwnerToken}) => {
               }}
             >
               <Text style={{ color: COLORS.primary, fontSize: 16 }}>
-                sign up
+                Sign up
               </Text>
             </TouchableOpacity>
           </View>

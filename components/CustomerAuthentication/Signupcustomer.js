@@ -18,7 +18,7 @@ import axios from 'axios';
 const Width = Dimensions.get("window").width;
 
 const Signupcustomer = ({route}) => {
-  const [modalVisible, setModalVisible] = useState(false);
+
   const navigation = useNavigation();
   const [name, setname] = useState('');
   const [email, setemail] = useState('');
@@ -80,19 +80,21 @@ const Signupcustomer = ({route}) => {
         },
       });
 
-      const { status } = response.data;
+      const { success } = response.data;
 
-      if (status) {
+      if (success) {
         // Alert.alert('Success', 'Account created successfully');
-        setModalVisible(!modalVisible);
+        showToast("Verification code sent successfully!");
+        setLoading(false);
+        navigation.navigate("CustomerVerification",{formData});
       } else {
         showToast('Error', 'Email is already used. Try again');
       }
+      
     } catch (error) {
       if (axios.isAxiosError(error)) {
         // Axios-related error
         if (error.response) {
-        
           showToast(`Error: ${error.response.data.error}`);
         } else {
           // Network error (no response received)
@@ -111,28 +113,6 @@ const Signupcustomer = ({route}) => {
   };
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      <Modal
-        animationType="fade"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => {
-          setModalVisible(!modalVisible);
-        }}>
-        <View style={styles.centeredView}>
-          <View style={styles.modalView}>
-            <Feather name="check-circle" size={62} color="green" />
-            <Text style={styles.modalText}>Account created Successfully</Text>
-            <Pressable
-              style={[styles.button, styles.buttonClose]}
-              onPress={() => {
-                setModalVisible(!modalVisible);
-                navigation.navigate("Logincustomer");
-              }}>
-              <Text style={styles.textStyle}>Login</Text>
-            </Pressable>
-          </View>
-        </View>
-      </Modal>
       <View style={{ flex: 1 }}>
         <View style={styles.box1}>
           <Text style={styles.box1text}>Create Your{"\n"}Account</Text>
@@ -140,7 +120,7 @@ const Signupcustomer = ({route}) => {
         <View style={styles.box2}>
           <TextInput style={styles.box2input} placeholder="Name" value={name}
             onChangeText={(text) => setname(text)} />
-          <TextInput style={styles.box2input} placeholder="Username (email)" value={email}
+          <TextInput style={styles.box2input} placeholder="Email" value={email}
             onChangeText={(text) => setemail(text)} />
           <TextInput style={styles.box2input} placeholder="Password" value={password} secureTextEntry={!isPasswordVisible}
             onChangeText={(text) => setpassword(text)} />
@@ -221,44 +201,5 @@ const styles = StyleSheet.create({
   box3signin: {
     color: "white",
     fontSize: 23,
-  },
-  centeredView: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  modalView: {
-    margin: 20,
-    backgroundColor: 'white',
-    borderRadius: 15,
-    justifyContent: 'space-evenly',
-    padding: 40,
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
-  },
-  button: {
-    borderRadius: 5,
-    padding: 10,
-    paddingHorizontal: 20,
-    elevation: 2,
-  },
-  buttonClose: {
-    backgroundColor: COLORS.primary,
-  },
-  textStyle: {
-    color: 'white',
-    fontWeight: 'medium',
-    textAlign: 'center',
-  },
-  modalText: {
-    paddingVertical: 15,
-    textAlign: 'center',
   },
 });
