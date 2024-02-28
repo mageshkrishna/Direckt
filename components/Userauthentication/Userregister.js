@@ -177,10 +177,10 @@ const Userregister = ({route}) => {
               justifyContent: "space-evenly",
             }}
           >
-            <TextInput style={styles.box2input} placeholder="BusinessName" value={businessname} onChangeText={(val) => setbuinessname(val)} />
+            <TextInput style={styles.box2input} placeholder="BusinessName" value={businessname} onChangeText={(val) => setbuinessname(val)}   autoCapitalize="none" />
             <TextInput style={styles.box2input} placeholder="Phonenumber" value={phonenumber} onChangeText={(val) => setphonenumber(val)} keyboardType="numeric" />
-            <TextInput style={styles.box2input} placeholder="email" value={email} onChangeText={(val) => setemail(val)} />
-            <TextInput style={styles.box2input} placeholder="password" value={password} onChangeText={(val) => setpassword(val)}  secureTextEntry={!isPasswordVisible}/>
+            <TextInput style={styles.box2input} placeholder="email" value={email} onChangeText={(val) => setemail(val)}  autoCapitalize="none" />
+            <TextInput style={styles.box2input} placeholder="password" value={password} onChangeText={(val) => setpassword(val)}  autoCapitalize="none" secureTextEntry={!isPasswordVisible}/>
             <TouchableOpacity onPress={togglePasswordVisibility} >
               <Text style={{ color: "grey" }} >{isPasswordVisible ? <FontAwesome name="eye-slash" size={13} color="grey" /> : <FontAwesome name="eye" size={13} color="grey" />} {isPasswordVisible ? 'Hide Password' : 'Show Password'}</Text>
             </TouchableOpacity>

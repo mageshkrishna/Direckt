@@ -135,7 +135,7 @@ const StoreProfile = () => {
                 </View>
 
                 <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-                    {storedata.deliveryStatus ? (
+                    {storedata.deliverystatus ? (
                         <Text>Delivery:<Text style={{ color: 'green' }}> YES</Text></Text>
                     ) : (
                         <Text>Delivery:<Text style={{ color: 'red' }}> NO</Text></Text>
@@ -147,10 +147,10 @@ const StoreProfile = () => {
             <View style={styles.ctccontainer}>
                 <View style={styles.ctccard}>
                     <View style={styles.ctcsection}>
-                        <View style={storedata ? [styles.storestatus, styles.ctcicon] : [styles.storestatusoff, styles.ctcicon]}>
-                            {storedata ? <MaterialCommunityIcons name="store-check" size={42} color="white" /> : <MaterialCommunityIcons name="store-remove" size={42} color="white" />}
+                        <View style={storedata.availabilitystatus  ? [styles.storestatus, styles.ctcicon] : [styles.storestatusoff, styles.ctcicon]}>
+                            {storedata.availabilitystatus ? <MaterialCommunityIcons name="store-check" size={42} color="white" /> : <MaterialCommunityIcons name="store-remove" size={42} color="white" />}
                         </View>
-                        {storedata ? <Text style={{ fontSize: 10 }}>Store: Open</Text> : <Text style={{ fontSize: 10 }}>Store: Closed</Text>}
+                        {storedata.availabilitystatus ? <Text style={{ fontSize: 10 }}>Store: Open</Text> : <Text style={{ fontSize: 10 }}>Store: Closed</Text>}
                     </View>
                     <View style={styles.ctcsection}>
                         <TouchableOpacity onPress={() => { Linking.openURL(`tel:${storedata.phonenumber}`) }}

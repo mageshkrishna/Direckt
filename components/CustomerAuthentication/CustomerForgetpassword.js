@@ -132,6 +132,7 @@ const CustomerForgetpassword = ({route}) => {
             style={styles.box2input}
             placeholder="xyz@gmail.com"
             value={email}
+            autoCapitalize="none"
             onChangeText={(val) => {
               setemail(val);
             }}

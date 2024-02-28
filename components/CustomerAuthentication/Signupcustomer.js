@@ -138,11 +138,11 @@ const Signupcustomer = ({route}) => {
           <Text style={styles.box1text}>Create Your{"\n"}Account</Text>
         </View>
         <View style={styles.box2}>
-          <TextInput style={styles.box2input} placeholder="Name" value={name}
+          <TextInput style={styles.box2input} placeholder="Name" value={name}  autoCapitalize="none"
             onChangeText={(text) => setname(text)} />
-          <TextInput style={styles.box2input} placeholder="Username (email)" value={email}
+          <TextInput style={styles.box2input} placeholder="Username (email)" value={email}  autoCapitalize="none"
             onChangeText={(text) => setemail(text)} />
-          <TextInput style={styles.box2input} placeholder="Password" value={password} secureTextEntry={!isPasswordVisible}
+          <TextInput style={styles.box2input} placeholder="Password" value={password} secureTextEntry={!isPasswordVisible}  autoCapitalize="none"
             onChangeText={(text) => setpassword(text)} />
           <TouchableOpacity onPress={togglePasswordVisibility} >
             <Text style={{ color: "grey" }} >{isPasswordVisible ? <FontAwesome name="eye-slash" size={13} color="grey" /> : <FontAwesome name="eye" size={13} color="grey" />} {isPasswordVisible ? 'Hide Password' : 'Show Password'}</Text>

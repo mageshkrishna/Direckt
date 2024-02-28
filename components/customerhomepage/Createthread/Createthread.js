@@ -51,30 +51,37 @@ const Createthread = () => {
   };
   const handleSubmit = async (firebaseImageUrl) => {
     if (!jobtitle) {
+      setindicator(false);
       showToast("Enter Job Title");
       return;
     }
     if(jobtitle.length<10){
+      setindicator(false);
       showToast("Job title should be atleast 10 characters...");
       return;
     }
     if (!jobdescription) {
+      setindicator(false);
       showToast("Enter Job Description");
       return;
     }
     if(jobdescription.length<15){
+      setindicator(false);
       showToast("Job description should be atleast 15 characters...");
       return;
     }
     if (!location) {
+      setindicator(false);
       showToast("Select Location");
       return;
     }
     if (!category) {
+      setindicator(false);
       showToast("Select Category");
       return;
     }
     if (!email) {
+      setindicator(false);
       showToast('Something Went Wrong! refresh the app');
       return;
     }
@@ -131,22 +138,37 @@ const Createthread = () => {
   const handlesubmitimage = async () => {
 
     if (!jobtitle) {
+      setindicator(false);
       showToast("Enter Job Title")
       return;
     }
+    if(jobtitle.length<10){
+      setindicator(false);
+      showToast("Job title should be atleast 10 characters...");
+      return;
+    }
     if (!jobdescription) {
-      showToast("Enter Job Description")
+      setindicator(false);
+      showToast("Enter Job Description");
+      return;
+    }
+    if(jobdescription.length<15){
+      setindicator(false);
+      showToast("Job description should be atleast 15 characters...");
       return;
     }
     if (!location) {
+      setindicator(false);
       showToast("Select Location")
       return;
     }
     if (!category) {
+      setindicator(false);
       showToast("Select Category")
       return;
     }
     if (!email) {
+      setindicator(false);
       showToast('Something Went Wrong! refresh the app')
       return;
     }

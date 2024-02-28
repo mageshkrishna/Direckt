@@ -1,13 +1,13 @@
 {
   "expo": {
     "name": "Direckt",
-    "slug": "Direckt",
+    "slug": "direckt",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/DireckTlogo.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/DireckTlogo.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -26,25 +26,31 @@
       "supportsTablet": true
     },
     "android": {
+
+     
+        "googleServicesFile": "./google-services.json",
+  
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/DireckTlogo.png",
         "backgroundColor": "#ffffff"
       },
-      "supportsRtl": true,
+     
       "permissions": [
         "android.permission.CAMERA_ROLL",
         "android.permission.READ_EXTERNAL_STORAGE",
         "android.permission.WRITE_EXTERNAL_STORAGE",
         "android.permission.RECORD_AUDIO"
-      ]
+      ],
+      "package": "com.direcktapp.direckt"
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/DireckTlogo.png"
     },
     "extra": {
       "eas": {
-        "projectId": "dcc0fdf0-ff35-46ae-900a-05d59fffd88c"
+        "projectId": "0c12957b-d59b-4237-9a10-5ef2a34ecd3c"
       }
-    }
+    },
+    "owner": "direcktapp"
   }
 }

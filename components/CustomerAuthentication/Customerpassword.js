@@ -67,6 +67,7 @@ const Customerpassword = ({route}) => {
             value={newPassword}
             onChangeText={(val) => {
               setnewPassword(val);
+              autoCapitalize="none"
             }}
           />
           <TouchableOpacity

@@ -41,6 +41,7 @@ const UserLogin = ({route,setShopOwnerToken}) => {
   useEffect(()=>{
     const fecthdevicetoken = async()=>{
     const value = await SecureStore.getItemAsync("devicetoken");
+    console.log(value+"userlogin")
     setdeviceToken(value);
     }
     fecthdevicetoken();
@@ -159,6 +160,7 @@ const UserLogin = ({route,setShopOwnerToken}) => {
             placeholder="Username (email)"
             value={email}
             onChangeText={(text) => setemail(text)}
+            autoCapitalize="none"
           />
           <TextInput
             style={styles.box2input}
@@ -166,6 +168,7 @@ const UserLogin = ({route,setShopOwnerToken}) => {
             value={password}
             onChangeText={(text) => setpassword(text)}
             secureTextEntry={!isPasswordVisible}
+            autoCapitalize="none"
           />
           <TouchableOpacity onPress={togglePasswordVisibility} >
             <Text style={{color:"grey"}} >{isPasswordVisible ?<FontAwesome name="eye-slash" size={13} color="grey" />:<FontAwesome name="eye" size={13} color="grey" />} {isPasswordVisible ? 'Hide Password' : 'Show Password'}</Text>
@@ -248,6 +251,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     paddingLeft: 10,
     fontSize: 18,
+   
   },
   box3opacity: {
     width: (Width * 75) / 100,

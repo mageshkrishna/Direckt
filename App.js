@@ -1,8 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
-import {  Platform } from 'react-native';
-import * as Device from 'expo-device';
-import * as Notifications from 'expo-notifications';
-import Constants from 'expo-constants';
+import React, { useEffect, useRef, useState } from 'react';
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import Home from "./components/Home/Home";
@@ -26,7 +22,14 @@ import ShopownerForgetpassword from "./components/Userauthentication/Shopownerfo
 import rootReducer  from "./redux/rootReducer"
 import { Provider } from "react-redux";
 import { configureStore } from "@reduxjs/toolkit";
+import * as Device from 'expo-device';
+import * as Notifications from 'expo-notifications';
+import Constants from 'expo-constants';
 import * as SecureStore from 'expo-secure-store';
+const Stack = createStackNavigator();
+const store = configureStore({reducer: rootReducer});
+
+
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
     shouldShowAlert: true,
@@ -34,7 +37,6 @@ Notifications.setNotificationHandler({
     shouldSetBadge: false,
   }),
 });
-
 
 async function registerForPushNotificationsAsync() {
   let token;
@@ -61,11 +63,20 @@ async function registerForPushNotificationsAsync() {
     }
     const { expoConfig } = Constants;
     const { extra } = expoConfig;
-    token = (await Notifications.getExpoPushTokenAsync({
-      projectId: extra.projectId,
-    })).data;
-   
-    await SecureStore.setItemAsync('devicetoken', token);
+    Notifications.getExpoPushTokenAsync({
+      projectId: "0c12957b-d59b-4237-9a10-5ef2a34ecd3c",
+    }).then(response => {
+      token = response.data;
+      SecureStore.setItemAsync('devicetoken', token)
+        .then(() => {
+          console.log('Expo Push Token:', token);
+        })
+        .catch(error => {
+          console.error('Error storing token:', error);
+        });
+    }).catch(error => {
+      console.error('Error getting push token:', error);
+    });
   } else {
     alert('Must use physical device for Push Notifications');
   }
@@ -73,15 +84,12 @@ async function registerForPushNotificationsAsync() {
   return token;
 }
 
-const Stack = createStackNavigator();
-const store = configureStore({reducer:rootReducer});
-
-const App = () => {
+export default function App() {
   const [expoPushToken, setExpoPushToken] = useState('');
   const [notification, setNotification] = useState(false);
   const notificationListener = useRef();
   const responseListener = useRef();
-
+  console.log("Yourexpotoken:   "+expoPushToken);
   useEffect(() => {
     registerForPushNotificationsAsync().then(token => setExpoPushToken(token));
 
@@ -90,7 +98,7 @@ const App = () => {
     });
 
     responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
-    
+      console.log(response);
     });
 
     return () => {
@@ -101,93 +109,92 @@ const App = () => {
 
   return (
     <Provider store={store}>
-      <NavigationContainer>
-        <StatusBar hidden={false} backgroundColor={COLORS.primary}/>
-        <Stack.Navigator initialRouteName="Direcktsvg">
-          <Stack.Screen
-            name="Home"
-            component={Home}
-            options={{ headerShown: false }}
-          />
-          <Stack.Screen
-            name="Logincustomer"
-            component={Logincustomer}
-            options={{ headerTransparent: true, title: "" }}
-          />
-          <Stack.Screen
-            name="Signupcustomer"
-            component={Signupcustomer}
-            options={{ headerTransparent: true, title: "" }}
-          />
-          <Stack.Screen
-            name="Userlogin"
-            component={UserLogin}
-            options={{ headerTransparent: true, title: "" }}
-          />
-          <Stack.Screen
-            name="Userregister"
-            component={Userregister}
-            options={{ headerTransparent: true, title: "" }}
-          />
-          <Stack.Screen
-            name="CustomerForgetpassword"
-            component={CustomerForgetpassword}
-            options={{ headerTransparent: true, title: "" }}
-          />
-          <Stack.Screen
-            name="Customerhome"
-            component={Customerhome}
-            options={{ headerShown:false }}
-          />
-          <Stack.Screen
-            name="Shopownerhomepage"
-            component={Shopownerhomepage}
-            options={{ headerShown:false }}
-          />
-          <Stack.Screen
-            name="Direcktsvg"
-            component={Direcktsvg}
-            options={{ headerShown:false }}
-          />
-          <Stack.Screen
-            name="Customersearchbar"
-            component={CustomerSearchBar}
-            options={{ headerShown:false }}
-          />
-          <Stack.Screen
-            name="Shopownernav"
-            component={Shopownernav}
-            options={{ headerShown:false }}
-          />
-          <Stack.Screen
-            name="EditOwnerProfile"
-            component={EditOwnerProfile}
-            options={{ headerShown:false }}
-          />
-          <Stack.Screen
-            name="storeprofile"
-            component={StoreProfile}
-            options={{ headerShown:false }}
-          />
-          <Stack.Screen
-            name="Customerpassword"
-            component={Customerpassword}
-            options={{ headerShown:false }}
-          />
-          <Stack.Screen
-            name="Shopownerchangepassword"
-            component={Shopownerpassword}
-            options={{ headerShown:false }}
-          />
-          <Stack.Screen
-            name="Shopownerforgotpassword"
-            component={ShopownerForgetpassword}
-            options={{ headerShown:false }}
-          />
-        </Stack.Navigator>
-      </NavigationContainer>
-    </Provider>
+    <NavigationContainer>
+      <StatusBar hidden={false} backgroundColor={COLORS.primary}/>
+      <Stack.Navigator initialRouteName="Direcktsvg">
+        <Stack.Screen
+          name="Home"
+          component={Home}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="Logincustomer"
+          component={Logincustomer}
+          options={{ headerTransparent: true, title: "" }}
+        />
+        <Stack.Screen
+          name="Signupcustomer"
+          component={Signupcustomer}
+          options={{ headerTransparent: true, title: "" }}
+        />
+        <Stack.Screen
+          name="Userlogin"
+          component={UserLogin}
+          options={{ headerTransparent: true, title: "" }}
+        />
+        <Stack.Screen
+          name="Userregister"
+          component={Userregister}
+          options={{ headerTransparent: true, title: "" }}
+        />
+        <Stack.Screen
+          name="CustomerForgetpassword"
+          component={CustomerForgetpassword}
+          options={{ headerTransparent: true, title: "" }}
+        />
+        <Stack.Screen
+          name="Customerhome"
+          component={Customerhome}
+          options={{ headerShown:false }}
+        />
+        <Stack.Screen
+          name="Shopownerhomepage"
+          component={Shopownerhomepage}
+          options={{ headerShown:false }}
+        />
+        <Stack.Screen
+          name="Direcktsvg"
+          component={Direcktsvg}
+          options={{ headerShown:false }}
+        />
+        <Stack.Screen
+          name="Customersearchbar"
+          component={CustomerSearchBar}
+          options={{ headerShown:false }}
+        />
+        <Stack.Screen
+          name="Shopownernav"
+          component={Shopownernav}
+          options={{ headerShown:false }}
+        />
+        <Stack.Screen
+          name="EditOwnerProfile"
+          component={EditOwnerProfile}
+          options={{ headerShown:false }}
+        />
+        <Stack.Screen
+          name="storeprofile"
+          component={StoreProfile}
+          options={{ headerShown:false }}
+        />
+        <Stack.Screen
+          name="Customerpassword"
+          component={Customerpassword}
+          options={{ headerShown:false }}
+        />
+        <Stack.Screen
+          name="Shopownerchangepassword"
+          component={Shopownerpassword}
+          options={{ headerShown:false }}
+        />
+        <Stack.Screen
+          name="Shopownerforgotpassword"
+          component={ShopownerForgetpassword}
+          options={{ headerShown:false }}
+        />
+      </Stack.Navigator>
+    </NavigationContainer>
+  </Provider>
   );
-};
+}
 
-export default App;

@@ -51,12 +51,13 @@ const Logincustomer = ({route,setCustomerToken}) => {
   useEffect(()=>{
     const fecthdevicetoken = async()=>{
     const value = await SecureStore.getItemAsync("devicetoken");
+ 
     setdeviceToken(value);
     }
     fecthdevicetoken();
   },[])
 
-
+  
 const handleLogin = async () => {
   if (!email) {
     showToast('Please enter your email!');
@@ -162,6 +163,7 @@ const handleLogin = async () => {
             placeholder="Username (email)"
             value={email}
             onChangeText={(text) => setemail(text)}
+            autoCapitalize="none"
           />
           <TextInput
             style={styles.box2input}
@@ -169,6 +171,7 @@ const handleLogin = async () => {
             value={password}
             onChangeText={(text) => setpassword(text)}
             secureTextEntry={!isPasswordVisible}
+            autoCapitalize="none"
           />
           <TouchableOpacity onPress={togglePasswordVisibility} >
             <Text style={{color:"grey"}} >{isPasswordVisible ?<FontAwesome name="eye-slash" size={13} color="grey" />:<FontAwesome name="eye" size={13} color="grey" />} {isPasswordVisible ? 'Hide Password' : 'Show Password'}</Text>

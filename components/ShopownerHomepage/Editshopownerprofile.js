@@ -415,7 +415,7 @@ const EditOwnerProfile = () => {
         </View>
       </View>
       <View style={styles.shopImages}>
-        <Text style={styles.heading}>Photos</Text>
+        <Text style={styles.heading}>Photos ( You can only upload 5 photos )</Text>
         <ScrollView style={styles.imagecontainer} horizontal={true}>
           {photos.map((item, index) => {
             return (

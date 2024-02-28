@@ -181,7 +181,7 @@ const Shopcard = ({ data, index }) => {
 const CustomerSearchBar = () => {
   const navigation = useNavigation();
   const colorScheme = useColorScheme();
-  const [businessname, setbusinessname] = useState(null);
+  const [businessname, setbusinessname] = useState("");
   const [category, setcategory] = useState(null);
   const [availabilitystatus, setavailabilitystatus] = useState(false);
   const [shopowner, setshopowner] = useState([]);
@@ -260,7 +260,7 @@ const CustomerSearchBar = () => {
 
       setProgress(0.15);
       let formdata = {
-        businessname: businessname,
+        businessname: businessname.trim(),
         location:jobselection
       };
 
