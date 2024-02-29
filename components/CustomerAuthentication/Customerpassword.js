@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Dimensions, TouchableOpacity, ToastAndroid } from 'react-native'
+import { View, Text, StyleSheet, Dimensions, TouchableOpacity, ToastAndroid, ActivityIndicator } from 'react-native'
 import React, { useState } from 'react'
 import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
@@ -10,26 +10,29 @@ const Customerpassword = ({route}) => {
     const email = route.params?.email;
     const token = route.params?.token;
     const navigation = useNavigation();
+    const [indicator, setindicator] = useState(false);
   const [newPassword, setnewPassword] = useState();
 
   const validatePassword = (password) => {
-   
-    const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$/;
+    // Password should be between 8 and 15 characters long and contain both letters and numbers
+    const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,15}$/;
     return passwordRegex.test(password);
-  };
+};
+
   const sendnewPassword =async()=>{
   
     if (!validatePassword(newPassword)) {
-      showToast('Password must be at least 6 characters long and contain both letters and numbers');
+      showToast('Password should be between 8 and 15 characters long and contain both letters and numbers');
       return;
     }
 
    else{
     try{
-        
+        setindicator(true)
       const response = await axios.post('https://direckt-copy1.onrender.com/auth/customerupdatepassword'
       ,{email:email,newPassword:newPassword,token:token}
       )
+      setindicator(false)
       if(response.status===200){
         showToast('password changed successfully')
       }
@@ -37,7 +40,7 @@ const Customerpassword = ({route}) => {
       return navigation.navigate('Logincustomer',{email,password});
     }
     catch(error){
-     
+     setindicator(false);
       if (axios.isAxiosError(error)) {
        
         if (error.response) {
@@ -77,6 +80,7 @@ const Customerpassword = ({route}) => {
             }}
           >
             <View style={styles.box1opacity}>
+            {indicator && <ActivityIndicator color={"white"} size={20} />}
               <Text
                 style={{ color: "white", fontSize: 18, fontWeight: "bold" }}
               >
@@ -88,7 +92,6 @@ const Customerpassword = ({route}) => {
             <Text style={{color:'grey',fontSize:15}}>Don't go back from this page. Enter the password and submit. This pages only available for the next 5 minutes</Text>
           </View>
         </View>
-    
   )
 }
 
@@ -113,11 +116,14 @@ const styles = StyleSheet.create({
     },
 
     box1opacity: {
+      flexDirection:'row',
       width: (Width * 25) / 100,
       backgroundColor: COLORS.primary,
       paddingVertical: 17,
       borderRadius: 5,
       alignItems: "center",
+      justifyContent:'center',
+      gap:5,
     },
    
   });

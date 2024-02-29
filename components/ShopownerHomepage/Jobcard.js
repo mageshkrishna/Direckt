@@ -164,10 +164,10 @@ const JobCard = ({ item, ownerdetail, token }) => {
               </View>
             </TouchableOpacity>
             <Pressable style={styles.jobdetails} onPress={toggleExpand}>
-              <Text style={styles.jobtitle} numberOfLines={2}>
+              <Text style={styles.jobtitle} numberOfLines={1}>
                 {item.jobtitle}
               </Text>
-              <Text style={styles.jobdes} numberOfLines={3}>
+              <Text style={styles.jobdes} numberOfLines={2}>
                 {item.jobdescription}
               </Text>
               <View

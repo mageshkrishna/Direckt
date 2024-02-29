@@ -15,7 +15,7 @@ import { useNavigation } from "@react-navigation/native";
 import axios from "axios";
 
 const Width = Dimensions.get("window").width;
-const Height = Dimensions.get("window").height;
+
 const CustomerForgetpassword = ({route}) => {
   const navigation = useNavigation();
   const [email, setemail] = useState();
@@ -247,6 +247,7 @@ const styles = StyleSheet.create({
     paddingVertical: 17,
     borderRadius: 5,
     alignItems: "center",
+    gap:5,
   },
   box1opacity: {
     width: (Width * 30) / 100,
@@ -256,6 +257,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent:'center',
     flexDirection:'row',
+    gap:5,
   },
   box3signin: {
     color: "white",

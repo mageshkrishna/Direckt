@@ -348,7 +348,14 @@ const CustomerSearchBar = () => {
     }
   };
   
-  
+  const [isNavigating, setIsNavigating] = useState(false);
+
+  const handleNavigateBack = () => {
+    if (!isNavigating) {
+      setIsNavigating(true);
+      navigation.goBack();
+    }
+  };
   
   return (
     <View style={styles.container}>
@@ -356,12 +363,12 @@ const CustomerSearchBar = () => {
         <View
           style={[
             styles.searchbar,
-            { backgroundColor: colorScheme === "dark" ? "#3C4142" : "white" },
+            { backgroundColor: "white" },
           ]}
         >
           <TouchableOpacity
             onPress={() => {
-              navigation.goBack();
+             handleNavigateBack();
             }}
           >
             <Ionicons name="arrow-back" size={24} color="#8A57E4" />
@@ -435,7 +442,7 @@ const CustomerSearchBar = () => {
       <ScrollView
         style={[
           styles.resultcontainer,
-          { backgroundColor: colorScheme === "dark" ? "#3C4142" : "#F7F9FF" },
+          { backgroundColor: "#F7F9FF" },
         ]}
       >
         {shopowner.length === 0 && <View><Text style={{ textAlign: 'center' }}>

@@ -160,7 +160,7 @@ const handleLogin = async () => {
         <View style={styles.box2}>
           <TextInput
             style={styles.box2input}
-            placeholder="Username (email)"
+            placeholder="Gmail"
             value={email}
             onChangeText={(text) => setemail(text)}
             autoCapitalize="none"
@@ -180,7 +180,7 @@ const handleLogin = async () => {
         <View style={styles.box3}>
           {loading && (
             <View style={styles.activityIndicatorContainer}>
-              <ActivityIndicator size="large" color="#0000ff" />
+              <ActivityIndicator size="large" color={COLORS.primary} />
             </View>
           )}
           <TouchableOpacity underlayColor="white" onPress={handleLogin}>
@@ -201,7 +201,7 @@ const handleLogin = async () => {
               }}
             >
               <Text style={{ color: COLORS.primary, fontSize: 16 }}>
-                sign up
+                Sign up
               </Text>
             </TouchableOpacity>
            

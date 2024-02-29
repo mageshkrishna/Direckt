@@ -38,6 +38,7 @@ const Shopownerprofile = () => {
   const [token, settoken] = useState(null)
   const [shopindicator, setshopindicator] = useState(false)
   const [deliveryindicator, setdeliveryindicator] = useState(false)
+  const [logoutindicator,setLogoutindicator] =useState(false);
   const isFocused = useIsFocused();
   const updatedeliveryStatusInAsyncStorage = async (deliverystatus) => {
     try {
@@ -85,6 +86,7 @@ const Shopownerprofile = () => {
       email: email
     }
     try {
+      setLogoutindicator(true);
       const response = await axios.post(
         "https://direckt-copy1.onrender.com/auth/shopownerlogout",
         formdata,
@@ -103,6 +105,7 @@ const Shopownerprofile = () => {
         index: 0,
         routes: [{ name: 'Shopownerhomepage' }],
       });
+      setLogoutindicator(false);
       navigation.navigate("Home");
 
     } catch (error) {
@@ -549,7 +552,7 @@ const Shopownerprofile = () => {
                 )
               }}
             >
-              <MaterialIcons name="logout" size={27} color="red" />
+              {logoutindicator?<ActivityIndicator color={"red"} size={30} />:<MaterialIcons name="logout" size={27} color="red" />}
 
               <Text style={[{ color: 'red' }, styles.tc]}>Log out</Text>
 

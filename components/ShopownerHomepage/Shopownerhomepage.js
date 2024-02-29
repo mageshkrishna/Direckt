@@ -99,6 +99,7 @@ const Shopownerhomepage = () => {
       const email = shopownerdata.email;
 
       try {
+        setLoading(true);
         const response1 = await axios.get(
           `https://direckt-copy1.onrender.com/shopowner/getjobs?location=${location}&category=${category}&email=${email}`,
           {
@@ -192,14 +193,14 @@ const Shopownerhomepage = () => {
             }}
           >
             <Ionicons name="refresh" size={24} color="black" />
-            <Text style={{ fontSize: 16 }}>Refresh</Text>
+            <Text style={{ fontSize: 16 }}>Refresh for new jobs</Text>
           </TouchableOpacity>
         </View>
       ) : (
         <ScrollView
         style={{
           flex: 1,
-          height: (height * 85) / 100,
+          height: (height * 80) / 100,
           paddingHorizontal: 10,
           backgroundColor: "white",
         }}
@@ -207,7 +208,7 @@ const Shopownerhomepage = () => {
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
       >
-        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', height: (height * 85) / 100, width: '100%' , backgroundColor: "white", }}>
+        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', height: (height * 75) / 100, width: '100%' , backgroundColor: "white", }}>
           <Image
             source={
               require('../../assets/Loading-rafiki.png')
@@ -216,6 +217,21 @@ const Shopownerhomepage = () => {
           />
           <Text>No jobs available. Refresh the app</Text>
         </View>
+        <TouchableOpacity
+            onPress={() => {
+              onRefresh();
+            }}
+            style={{
+              height: 50,
+              width: "100%",
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <Ionicons name="refresh" size={24} color="black" />
+            <Text style={{ fontSize: 16 }}>Refresh for new jobs</Text>
+          </TouchableOpacity>
         </ScrollView>
       )}
     </View>

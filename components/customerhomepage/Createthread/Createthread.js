@@ -55,9 +55,9 @@ const Createthread = () => {
       showToast("Enter Job Title");
       return;
     }
-    if(jobtitle.length<10){
+    if(jobtitle.length<8){
       setindicator(false);
-      showToast("Job title should be atleast 10 characters...");
+      showToast("Job title should be atleast 8 characters...");
       return;
     }
     if (!jobdescription) {
@@ -65,9 +65,9 @@ const Createthread = () => {
       showToast("Enter Job Description");
       return;
     }
-    if(jobdescription.length<15){
+    if(jobdescription.length<8){
       setindicator(false);
-      showToast("Job description should be atleast 15 characters...");
+      showToast("Job description should be atleast 8 characters...");
       return;
     }
     if (!location) {
@@ -142,9 +142,9 @@ const Createthread = () => {
       showToast("Enter Job Title")
       return;
     }
-    if(jobtitle.length<10){
+    if(jobtitle.length<8){
       setindicator(false);
-      showToast("Job title should be atleast 10 characters...");
+      showToast("Job title should be atleast 8 characters...");
       return;
     }
     if (!jobdescription) {
@@ -152,9 +152,9 @@ const Createthread = () => {
       showToast("Enter Job Description");
       return;
     }
-    if(jobdescription.length<15){
+    if(jobdescription.length<8){
       setindicator(false);
-      showToast("Job description should be atleast 15 characters...");
+      showToast("Job description should be atleast 8 characters...");
       return;
     }
     if (!location) {
@@ -337,7 +337,7 @@ const Createthread = () => {
             multiline={true}
             numberOfLines={6}
             textAlignVertical="top"
-            placeholder="eg. Kitchen sink pipe is leaking. Need a plumber to fix it."
+            placeholder="eg.Kitchen sink pipe is leaking. Need a plumber to fix it.(specify your landmark)"
             onChangeText={(text) => setjobdescription(text)}
             value={jobdescription}
             maxLength={300}

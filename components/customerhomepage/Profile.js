@@ -30,7 +30,7 @@ const height = Dimensions.get("window").height;
 
 const Profile = () => {
   const [token, settoken] = useState(null);
-
+  const [indicator, setindicator] = useState(false);
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const customertoken = useSelector(
@@ -144,6 +144,7 @@ const Profile = () => {
       email: customerdata.email
     }
     try {
+      setindicator(true);
       const response = await axios.post(
         "https://direckt-copy1.onrender.com/auth/customerlogout",
         formdata,
@@ -158,6 +159,7 @@ const Profile = () => {
       await SecureStore.deleteItemAsync("customertoken");
      
       await AsyncStorage.removeItem("customerdata");
+      setindicator(false);
       navigation.navigate("Home");
       
     } catch (error) {
@@ -218,13 +220,15 @@ const Profile = () => {
               justifyContent: "center",
             }}
           >
-            <TouchableOpacity
+            {indicator?(<View>
+              <ActivityIndicator color={"red"} size={40} />
+            </View>):<TouchableOpacity
               style={{ flexDirection: "row", alignItems: "center" }}
               onPress={handleLogout}
             >
               <Text style={styles.logout}>Log out </Text>
               <MaterialIcons name="logout" size={24} color="red" />
-            </TouchableOpacity>
+            </TouchableOpacity>}
           </View>
           <View style={styles.userdetails}>
             <View>
@@ -255,29 +259,7 @@ const Profile = () => {
             </ScrollView>
           </View>
           <View style={styles.bodyfooter}>
-            <View>
-              <Text style={styles.footertitle}>How to use DirecKT</Text>
-            </View>
-            <View style={styles.sociallinks}>
-              <TouchableOpacity
-                onPress={() => Linking.openURL('https://www.instagram.com/direcktapp?igsh=Nmk1Z2s0dHNnYWo2')}
-                
-              >
-                <Entypo name="instagram" size={38} color="red" />
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => Linking.openURL('https://chat.whatsapp.com/Gglkq3l7ymG9A670a8IN2B')}
-                
-              >
-                <FontAwesome5 name="whatsapp" size={40} color="green" />
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => Linking.openURL('https://youtube.com/@DirecKT-?si=GuY4KIUIX5rOw3EE')}
-                
-              >
-                <Entypo name="youtube" size={38} color="red" />
-              </TouchableOpacity>
-            </View>
+           
 
             <View style={styles.aboutlist}>
               <View>
@@ -371,7 +353,7 @@ const AccordionItem = ({ title, content, index, currentIndex, toggleItem }) => {
       </TouchableOpacity>
       {isExpanded && (
         <View style={styles.faqAnswer}>
-          <Text style={{ color: colorScheme === "dark" ? "white" : "#3C4142" }}>
+          <Text style={{ color: "black" }}>
             {content}
           </Text>
         </View>
@@ -440,7 +422,8 @@ const styles = StyleSheet.create({
     paddingVertical: "1%",
   },
   bodyfooter: {
-    height: (height * 50) / 100,
+    height: (height * 30) / 100,
+    marginBottom:20
   },
   footertitle: {
     fontSize: 18,

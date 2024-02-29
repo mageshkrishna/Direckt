@@ -43,10 +43,11 @@ const Userregister = ({route}) => {
   };
 
   const validatePassword = (password) => {
-    // Password should be at least 6 characters long and contain both letters and numbers
-    const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$/;
+    // Password should be between 8 and 15 characters long and contain both letters and numbers
+    const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,15}$/;
     return passwordRegex.test(password);
-  };
+};
+
 
   const validatePhone = (phone) => {
     const phoneNumberRegex = /^\d{10}$/;
@@ -88,7 +89,7 @@ const Userregister = ({route}) => {
       return;
     }
     if (!validatePassword(password)) {
-      showToast('Password must be at least 6 characters long and contain both letters and numbers');
+      showToast(' Password should be between 8 to 15 characters long and contain both letters and numbers');
       return;
     }
 
@@ -107,14 +108,16 @@ const Userregister = ({route}) => {
         },
       });
 
-      const { status } = response.data;
+      const { success } = response.data;
 
-      if (status) {
-        setModalVisible(!modalVisible);
+      if (success) {
+        showToast("Verification code sent successfully!");
+        setLoading(true);
         setbuinessname(null)
         setemail(null)
         setphonenumber(null)
         setpassword(null)
+        navigation.navigate("UserVerification",{formdata});
       } else {
         showToast('Error', 'Email is already used. Try again');
       }
@@ -130,7 +133,7 @@ const Userregister = ({route}) => {
         }
       } else {
    
-        Alert.alert("An error occurred. Please try again.");
+        showToast("An error occurred. Please try again.");
       }
     } finally {
       setLoading(false);
@@ -143,27 +146,6 @@ const Userregister = ({route}) => {
   };
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      <Modal
-        animationType="fade"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => {
-          setModalVisible(!modalVisible);
-        }}>
-        <View style={styles.centeredView}>
-          <View style={styles.modalView}>
-            <Feather name="check-circle" size={62} color="green" />
-            <Text style={styles.modalText}>Account created Successfully</Text>
-            <Pressable
-              style={[styles.button, styles.buttonClose]}
-              onPress={() => {
-                navigation.navigate("Userlogin");
-              }}>
-              <Text style={styles.textStyle}>Login</Text>
-            </Pressable>
-          </View>
-        </View>
-      </Modal>
       <View style={{ flex: 1 }}>
         <View style={styles.box1}>
           <Text style={styles.box1text}>Create Your{"\n"}Account</Text>
@@ -178,8 +160,8 @@ const Userregister = ({route}) => {
             }}
           >
             <TextInput style={styles.box2input} placeholder="BusinessName" value={businessname} onChangeText={(val) => setbuinessname(val)}   autoCapitalize="none" />
-            <TextInput style={styles.box2input} placeholder="Phonenumber" value={phonenumber} onChangeText={(val) => setphonenumber(val)} keyboardType="numeric" />
-            <TextInput style={styles.box2input} placeholder="email" value={email} onChangeText={(val) => setemail(val)}  autoCapitalize="none" />
+            <TextInput style={styles.box2input} placeholder="Phonenumber" value={phonenumber} maxLength={10} onChangeText={(val) => setphonenumber(val)} keyboardType="numeric" />
+            <TextInput style={styles.box2input} placeholder="gmail" value={email} onChangeText={(val) => setemail(val)}  autoCapitalize="none" />
             <TextInput style={styles.box2input} placeholder="password" value={password} onChangeText={(val) => setpassword(val)}  autoCapitalize="none" secureTextEntry={!isPasswordVisible}/>
             <TouchableOpacity onPress={togglePasswordVisibility} >
               <Text style={{ color: "grey" }} >{isPasswordVisible ? <FontAwesome name="eye-slash" size={13} color="grey" /> : <FontAwesome name="eye" size={13} color="grey" />} {isPasswordVisible ? 'Hide Password' : 'Show Password'}</Text>
@@ -190,14 +172,14 @@ const Userregister = ({route}) => {
             >
               {loading && (
                 <View style={styles.activityIndicatorContainer}>
-                  <ActivityIndicator size="large" color="#0000ff" />
+                  <ActivityIndicator size="large" color={COLORS.primary} />
                 </View>
               )}
               <View style={styles.box3opacity}>
                 <Text
                   style={{ color: "white", fontSize: 18, fontWeight: "bold" }}
                 >
-                  Register
+                  Verify gmail
                 </Text>
               </View>
             </TouchableOpacity>

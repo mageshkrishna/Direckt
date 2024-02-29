@@ -267,6 +267,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     justifyContent:'center',
     alignItems: "center",
+    gap:5,
   },
   box3signin: {
     color: "white",

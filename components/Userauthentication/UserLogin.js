@@ -41,7 +41,7 @@ const UserLogin = ({route,setShopOwnerToken}) => {
   useEffect(()=>{
     const fecthdevicetoken = async()=>{
     const value = await SecureStore.getItemAsync("devicetoken");
-    console.log(value+"userlogin")
+
     setdeviceToken(value);
     }
     fecthdevicetoken();
@@ -157,7 +157,7 @@ const UserLogin = ({route,setShopOwnerToken}) => {
         <View style={styles.box2}>
           <TextInput
             style={styles.box2input}
-            placeholder="Username (email)"
+            placeholder="gmail"
             value={email}
             onChangeText={(text) => setemail(text)}
             autoCapitalize="none"
@@ -177,7 +177,7 @@ const UserLogin = ({route,setShopOwnerToken}) => {
         <View style={styles.box3}>
           {loading && (
             <View style={styles.activityIndicatorContainer}>
-              <ActivityIndicator size="large" color="#0000ff" />
+              <ActivityIndicator size="large" color={COLORS.primary} />
             </View>
           )}
           <TouchableOpacity underlayColor="white" onPress={handleLogin}>
@@ -198,7 +198,7 @@ const UserLogin = ({route,setShopOwnerToken}) => {
               }}
             >
               <Text style={{ color: COLORS.primary, fontSize: 16 }}>
-                sign up
+                Sign up
               </Text>
             </TouchableOpacity>
           </View>

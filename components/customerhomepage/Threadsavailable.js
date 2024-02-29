@@ -8,7 +8,6 @@ import {
   LayoutAnimation,
   UIManager,
   Image,
-
   Pressable,
   Linking,
   Alert,
@@ -29,7 +28,11 @@ const height = Dimensions.get("window").height;
 const width = Dimensions.get("window").width;
 import { COLORS } from "../../constants/Theme";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useFocusEffect, useNavigation, useRoute } from "@react-navigation/native";
+import {
+  useFocusEffect,
+  useNavigation,
+  useRoute,
+} from "@react-navigation/native";
 import ImagePopup from "../ShopownerHomepage/Imagepopup";
 import moment from "moment";
 import { useSelector } from "react-redux";
@@ -56,29 +59,34 @@ const InsideAccorditon = ({ data }) => {
         elevation: 2.5,
       }}
     >
-      <View style={{ width: "30%", height: "100%", }}>
+      <View style={{ width: "30%", height: "100%" }}>
         <TouchableOpacity
           style={{ height: 100, width: "100%" }}
           onPress={() => setShowPopup(true)}
         >
-          {data.shopowner_id.profilepic ? <Image
-            source={{
-              uri: data.shopowner_id.profilepic,
-            }}
-            style={{
-              height: 95,
-              width: "100%",
-              borderRadius: 4,
-            }}
-          /> : <Image
-            source={{ uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS3u_DGIWouUwuaqQE88-nun_n2h-Pb2yRQXQ&usqp=CAU', }}
-            style={{
-              height: 95,
-              width: "100%",
-              borderRadius: 4,
-            }}
-          />
-          }
+          {data.shopowner_id.profilepic ? (
+            <Image
+              source={{
+                uri: data.shopowner_id.profilepic,
+              }}
+              style={{
+                height: 95,
+                width: "100%",
+                borderRadius: 4,
+              }}
+            />
+          ) : (
+            <Image
+              source={{
+                uri: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS3u_DGIWouUwuaqQE88-nun_n2h-Pb2yRQXQ&usqp=CAU",
+              }}
+              style={{
+                height: 95,
+                width: "100%",
+                borderRadius: 4,
+              }}
+            />
+          )}
         </TouchableOpacity>
         {showPopup && (
           <ImagePopup
@@ -90,7 +98,7 @@ const InsideAccorditon = ({ data }) => {
           onPress={() => {
             navigation.navigate("storeprofile", { _id: data.shopowner_id._id });
           }}
-          style={{ height: 50, justifyContent: 'space-evenly', }}
+          style={{ height: 50, justifyContent: "space-evenly" }}
         >
           <View
             style={{ justifyContent: "space-evenly", alignItems: "center" }}
@@ -165,7 +173,9 @@ const InsideAccorditon = ({ data }) => {
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => {
-                data.shopowner_id.gmaplink ? Linking.openURL(data.shopowner_id.gmaplink) : showToast('Google map is not linked')
+                data.shopowner_id.gmaplink
+                  ? Linking.openURL(data.shopowner_id.gmaplink)
+                  : showToast("Google map is not linked");
               }}
               style={styles.storedirection}
             >
@@ -183,27 +193,31 @@ const AccordionItem = ({ data, token, onRefresh }) => {
   const [jobIdToDelete, setjobIdToDelete] = useState(data._id);
   const [showPopup, setShowPopup] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
-  const [deleteindicator, setdeleteindicator] = useState(false)
-  const [deactivateindicator, setdeactivateindicator] = useState(false)
+  const [deleteindicator, setdeleteindicator] = useState(false);
+  const [deactivateindicator, setdeactivateindicator] = useState(false);
 
   const timestamp = data.expiryAt;
-  const localDateTime = moment(timestamp).utcOffset('+00:00').format('DD-MM-YYYY h:mm:ss A');
-
+  const localDateTime = moment(timestamp)
+    .utcOffset("+00:00")
+    .format("DD-MM-YYYY h:mm:ss A");
 
   const deactivatejob = async () => {
     try {
-      setdeactivateindicator(true)
-      const response = await axios.post('https://direckt-copy1.onrender.com/Customerdata/changeactivestate', { _id: jobIdToDelete }, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      })
-      setdeactivateindicator(false)
-      ToastAndroid.show('Job Deactivated', ToastAndroid.SHORT);
-    }
-    catch (error) {
-      setdeactivateindicator(false)
+      setdeactivateindicator(true);
+      const response = await axios.post(
+        "https://direckt-copy1.onrender.com/Customerdata/changeactivestate",
+        { _id: jobIdToDelete },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      setdeactivateindicator(false);
+      ToastAndroid.show("Job Deactivated", ToastAndroid.SHORT);
+    } catch (error) {
+      setdeactivateindicator(false);
       if (axios.isAxiosError(error)) {
         // Axios-related error
         if (error.response) {
@@ -214,15 +228,13 @@ const AccordionItem = ({ data, token, onRefresh }) => {
           showToast("Network error. Please check your internet connection.");
         }
       } else {
-        
         showToast("An error occurred. Please try again.");
       }
     }
-  }
+  };
   const handleDeleteJob = async () => {
-  
     try {
-      setdeleteindicator(true)
+      setdeleteindicator(true);
       const response = await axios.delete(
         "https://direckt-copy1.onrender.com/Customerdata/deletejob",
         {
@@ -237,7 +249,7 @@ const AccordionItem = ({ data, token, onRefresh }) => {
       if (response.status === 200) {
         setModalVisible(!modalVisible);
       }
-      setdeleteindicator(false)
+      setdeleteindicator(false);
     } catch (error) {
       setdeleteindicator(false);
 
@@ -251,7 +263,6 @@ const AccordionItem = ({ data, token, onRefresh }) => {
           showToast("Network error. Please check your internet connection.");
         }
       } else {
-   
         showToast("An error occurred. Please try again.");
       }
     }
@@ -274,7 +285,8 @@ const AccordionItem = ({ data, token, onRefresh }) => {
           visible={modalVisible}
           onRequestClose={() => {
             setModalVisible(!modalVisible);
-          }}>
+          }}
+        >
           <View style={styles.centeredView}>
             <View style={styles.modalView}>
               <Feather name="check-circle" size={62} color="green" />
@@ -284,47 +296,60 @@ const AccordionItem = ({ data, token, onRefresh }) => {
                 onPress={() => {
                   setModalVisible(!modalVisible);
                   onRefresh();
-                }}>
+                }}
+              >
                 <Text style={styles.textStyle}>Okay</Text>
               </Pressable>
             </View>
           </View>
         </Modal>
 
-
         <View style={styles.thread}>
-          {data.status ? <View style={styles.expirationtitle}>
-            <Text style={styles.expireText}>Job expire at {localDateTime}</Text>
-          </View> : <></>}
+          {data.status ? (
+            <View style={styles.expirationtitle}>
+              <Text style={styles.expireText}>
+                Job expire at {localDateTime}
+              </Text>
+            </View>
+          ) : (
+            <></>
+          )}
           <View style={styles.threadcardsection}>
             <TouchableOpacity
               style={styles.threadImage}
               onPress={() => setShowPopup(true)}
             >
-              {data.image_url ? <Image
-                source={{
-                  uri: data.image_url,
-                }}
-                style={{
-                  height: "100%",
-                  width: "100%",
-                  backgroundColor: "white",
-                }}
-              /> : <Image
-                source={{ uri: 'https://img.freepik.com/premium-vector/default-image-icon-vector-missing-picture-page-website-design-mobile-app-no-photo-available_87543-11093.jpg', }}
-                style={{
-                  height: "100%",
-                  width: "100%",
-                  backgroundColor: "white",
-                }}
-              />
-              }
+              {data.image_url ? (
+                <Image
+                  source={{
+                    uri: data.image_url,
+                  }}
+                  style={{
+                    height: "100%",
+                    width: "100%",
+                    backgroundColor: "white",
+                  }}
+                />
+              ) : (
+                <Image
+                  source={{
+                    uri: "https://img.freepik.com/premium-vector/default-image-icon-vector-missing-picture-page-website-design-mobile-app-no-photo-available_87543-11093.jpg",
+                  }}
+                  style={{
+                    height: "100%",
+                    width: "100%",
+                    backgroundColor: "white",
+                  }}
+                />
+              )}
               {showPopup && data.image_url ? (
                 <ImagePopup
                   imageUrl={data.image_url}
                   onClose={() => setShowPopup(false)}
                 />
-              ) : <></>}
+              ) : (
+                <></>
+              )}
               <View style={{ flexDirection: "row", alignItems: "center" }}>
                 <MaterialIcons name="category" size={17} color="black" />
                 <Text style={styles.threadcategory} numberOfLines={1}>
@@ -339,7 +364,8 @@ const AccordionItem = ({ data, token, onRefresh }) => {
                     flexDirection: "row",
                     alignItems: "center",
                     justifyContent: "flex-end",
-                  }}>
+                  }}
+                >
                   <TouchableOpacity
                     style={{
                       flexDirection: "row",
@@ -359,7 +385,7 @@ const AccordionItem = ({ data, token, onRefresh }) => {
                             text: "Deactivate", // Corrected from "deactivated" to "Deactivate"
                             onPress: async () => {
                               await deactivatejob();
-                              onRefresh()
+                              onRefresh();
                             },
                           },
                         ],
@@ -367,7 +393,9 @@ const AccordionItem = ({ data, token, onRefresh }) => {
                       )
                     }
                   >
-                    {deactivateindicator && <ActivityIndicator size={18} color="purple" />}
+                    {deactivateindicator && (
+                      <ActivityIndicator size={18} color={COLORS.primary}/>
+                    )}
                     <Text style={styles.deactivate}>Deactivate</Text>
                   </TouchableOpacity>
                 </View>
@@ -422,7 +450,11 @@ const AccordionItem = ({ data, token, onRefresh }) => {
                     )
                   }
                 >
-                  {deleteindicator ? <ActivityIndicator size={18} color="purple" /> : <AntDesign name="delete" size={12} color="red" />}
+                  {deleteindicator ? (
+                    <ActivityIndicator size={18} color="red" />
+                  ) : (
+                    <AntDesign name="delete" size={12} color="red" />
+                  )}
 
                   <Text style={styles.threadowner}> Delete</Text>
                 </TouchableOpacity>
@@ -436,7 +468,10 @@ const AccordionItem = ({ data, token, onRefresh }) => {
                   ) : (
                     <TouchableOpacity
                       onPress={() => {
-                        ToastAndroid.show('No responses come back after some minutes', ToastAndroid.SHORT);
+                        ToastAndroid.show(
+                          "No responses come back after some minutes",
+                          ToastAndroid.SHORT
+                        );
                       }}
                     >
                       <Text>no response</Text>
@@ -472,7 +507,7 @@ const Threadsavailable = ({ route }) => {
   const [email, setemail] = useState();
   const [indicator, setindicator] = useState(false);
   const [token, settoken] = useState(null);
-  const router = useRoute()
+  const router = useRoute();
   const v = false;
   useFocusEffect(
     React.useCallback(() => {
@@ -499,10 +534,8 @@ const Threadsavailable = ({ route }) => {
       onRefresh();
     }
   }, [route.params]);
-  const custoken = useSelector(
-    (state) => state.customerAuth.customertoken
-  );
- 
+  const custoken = useSelector((state) => state.customerAuth.customertoken);
+
   useEffect(() => {
     setindicator(true);
     const fetchData = async () => {
@@ -513,14 +546,12 @@ const Threadsavailable = ({ route }) => {
           })
           .catch((error) => {});
         const data = await AsyncStorage.getItem("customerdata");
-      
-        
-          const parsedData = JSON.parse(data);
-          setemail(parsedData.email);
-          setindicator(false);
+
+        const parsedData = JSON.parse(data);
+        setemail(parsedData.email);
+        setindicator(false);
       } catch (err) {
         setindicator(false);
-     
       }
     };
 
@@ -528,26 +559,26 @@ const Threadsavailable = ({ route }) => {
   }, [custoken]);
 
   useEffect(() => {
-    if (refreshing ) {
+    if (refreshing) {
       return;
     }
     const fetchjob = async () => {
-      if(!email || !token){
+      if (!email || !token) {
         return;
       }
-  
+
       try {
-        setindicator(true)
+        setindicator(true);
         const response = await axios.get(
           `https://direckt-copy1.onrender.com/Customerdata/getreplydata?email=${email}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
-              'Content-Type': 'application/json',
+              "Content-Type": "application/json",
             },
           }
         );
-        
+
         setdata(response.data.result);
         setindicator(false);
       } catch (error) {
@@ -563,14 +594,13 @@ const Threadsavailable = ({ route }) => {
             showToast("Network error. Please check your internet connection.");
           }
         } else {
-       
           showToast("An error occurred. Please try again.");
         }
       }
     };
 
     fetchjob();
-  }, [email,refreshing,token]);
+  }, [email, refreshing, token]);
 
   const onRefresh = React.useCallback(async () => {
     setRefreshing(true); // Set refreshing to true before fetching data
@@ -601,11 +631,12 @@ const Threadsavailable = ({ route }) => {
         style={{
           flex: 1,
           flexDirection: "column",
-          backgroundColor: '#E0E5FF',
+          backgroundColor: "#E0E5FF",
         }}
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-        }>
+        }
+      >
         <View
           style={{
             flex: 1,
@@ -614,21 +645,27 @@ const Threadsavailable = ({ route }) => {
             alignItems: "center",
             height: 690,
             padding: 15,
-            backgroundColor: '#E0E5FF',
+            backgroundColor: "#E0E5FF",
           }}
-
         >
           <Image
             source={require("../../assets/final3.png")}
-            style={{ height: "100%", width: "100%",margin:0 }}
+            style={{ height: "100%", width: "100%", margin: 0 }}
           />
         </View>
-        <View style={{alignItems:'çenter',marginTop:-160,backgroundColor:'#E0E5FF',marginHorizontal:'35%'}}>
-        <TouchableOpacity
+        <View
+          style={{
+            alignItems: "çenter",
+            marginTop: -160,
+            backgroundColor: "#E0E5FF",
+            marginHorizontal: "35%",
+          }}
+        >
+          <TouchableOpacity
             onPress={() => navigation.navigate("Createthread")}
             style={{
               padding: 10,
-              width:120,
+              width: 120,
               paddingHorizontal: 20,
               backgroundColor: COLORS.primary,
               borderRadius: 5,
@@ -641,7 +678,6 @@ const Threadsavailable = ({ route }) => {
             <Text style={{ color: "white" }}> Create Job</Text>
           </TouchableOpacity>
         </View>
-        
       </ScrollView>
     );
   }
@@ -664,10 +700,16 @@ const Threadsavailable = ({ route }) => {
         </Text>
         <View>
           {data.map((item, index) => (
-            <AccordionItem key={index} data={item} token={token} onRefresh={onRefresh} />
+            <AccordionItem
+              key={index}
+              data={item}
+              token={token}
+              onRefresh={onRefresh}
+            />
           ))}
         </View>
         <Text style={{ textAlign: "center" }}>
+          Your jobs will automatically deactivate after 24 hours.{"\n"}
           Delete the jobs you don't need.
         </Text>
       </ScrollView>
@@ -701,16 +743,16 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   expirationtitle: {
-    alignItems: 'center',
+    alignItems: "center",
     paddingVertical: 5,
     borderBottomWidth: 0.5,
-    borderColor: '#f4f5fb',
-    justifyContent: 'center',
+    borderColor: "#f4f5fb",
+    justifyContent: "center",
   },
   expireText: {
-    color: 'grey',
+    color: "grey",
     fontSize: 14,
-    color: COLORS.gray
+    color: COLORS.gray,
   },
   threadcontainer: {
     flex: 1,
@@ -721,7 +763,7 @@ const styles = StyleSheet.create({
   thread: {
     flex: 1,
     alignItems: "center",
-    justifyContent: 'center',
+    justifyContent: "center",
     backgroundColor: "white",
     elevation: 1,
     marginVertical: "3%",
@@ -731,8 +773,8 @@ const styles = StyleSheet.create({
     paddingVertical: 20,
   },
   threadcardsection: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
   },
   threadImage: {
     width: (width * 35) / 100,
@@ -790,7 +832,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     marginHorizontal: 5,
     fontSize: 12,
-    color: 'red'
+    color: "red",
   },
   responsecontainer: {
     backgroundColor: "white",
@@ -801,17 +843,17 @@ const styles = StyleSheet.create({
   },
   centeredView: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   modalView: {
     margin: 20,
-    backgroundColor: 'white',
+    backgroundColor: "white",
     borderRadius: 15,
-    justifyContent: 'space-evenly',
+    justifyContent: "space-evenly",
     padding: 40,
-    alignItems: 'center',
-    shadowColor: '#000',
+    alignItems: "center",
+    shadowColor: "#000",
     shadowOffset: {
       width: 0,
       height: 2,
@@ -830,12 +872,12 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.primary,
   },
   textStyle: {
-    color: 'white',
-    fontWeight: 'medium',
-    textAlign: 'center',
+    color: "white",
+    fontWeight: "medium",
+    textAlign: "center",
   },
   modalText: {
     paddingVertical: 15,
-    textAlign: 'center',
+    textAlign: "center",
   },
 });

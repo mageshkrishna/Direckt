@@ -6,11 +6,7 @@
     "orientation": "portrait",
     "icon": "./assets/DireckTlogo.png",
     "userInterfaceStyle": "light",
-    "splash": {
-      "image": "./assets/DireckTlogo.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
-    },
+    
     "plugins": [
       [
         "expo-image-picker",
