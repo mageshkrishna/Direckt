@@ -123,17 +123,16 @@ const ReportShop = ({ route }) => {
       <View style={{ alignItems: 'center', gap: 10, marginVertical: 10, }}>
         <Text style={styles.title} numberOfLines={1}>Report {shopname}</Text>
         <Text style={{ color: 'grey' }}>(Describe your reason as clearly as possible)</Text>
-        <Text>Report {customerid}</Text>
       </View>
       <TextInput
         style={styles.input}
         onChangeText={setreportmsg}
         value={reportmsg}
-        placeholder="Enter your message"
+        placeholder="describe your reason"
       />
       <TouchableOpacity style={styles.verifybutton} onPress={handlereport}>
-        {reportindicator && <ActivityIndicator color={"white"} size={20} />}
         <Text style={styles.buttonText}>Submit</Text>
+        {reportindicator && <ActivityIndicator color={"white"} size={20} />}
       </TouchableOpacity>
     </View>
   )

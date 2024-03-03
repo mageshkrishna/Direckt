@@ -193,7 +193,7 @@ const Shopownerhomepage = () => {
             }}
           >
             <Ionicons name="refresh" size={24} color="black" />
-            <Text style={{ fontSize: 16 }}>Refresh for new jobs</Text>
+            <Text style={{ fontSize: 16 }}>Click to Refresh</Text>
           </TouchableOpacity>
         </View>
       ) : (

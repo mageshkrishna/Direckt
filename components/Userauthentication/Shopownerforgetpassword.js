@@ -57,7 +57,7 @@ const ShopownerForgetpassword = ({route}) => {
 
   const sendemail = async () => {
     if (!email) {
-      showToast("Fill the email feild");
+      showToast("Fill the email field");
       return;
     }
 
@@ -94,11 +94,11 @@ const ShopownerForgetpassword = ({route}) => {
   const sendotp = async () => {
    
     if (!otp) {
-      showToast("Fill the otp feild");
+      showToast("Fill the otp field");
       return;
     }
     if (!email) {
-      showToast("Fill the email feild");
+      showToast("Fill the email field");
       return;
     }
     try {

@@ -140,10 +140,10 @@ const CustomerVerification = ({ route }) => {
         maxLength={4}
         keyboardType="number-pad"
       />
-      {running ? <Text style={{ color: 'grey' }}>Otp will be Invalid in {`${Math.floor(seconds / 60)}:${seconds % 60 < 10 ? '0' : ''}${seconds % 60}`}</Text> : <Text style={{ color: 'grey' }}> OTP Expired! Signup again.</Text>}
+      {running ? <Text style={{ color: 'grey' }}>Code will be Invalid in {`${Math.floor(seconds / 60)}:${seconds % 60 < 10 ? '0' : ''}${seconds % 60}`}</Text> : <Text style={{ color: 'grey' }}> OTP Expired! Signup again.</Text>}
       <TouchableOpacity style={styles.verifybutton} onPress={handleVerification}>
         {otpindicator && <ActivityIndicator color={"white"} size={20} />}
-        <Text style={styles.buttonText}>Verify Gmail</Text>
+        <Text style={styles.buttonText}>Verify</Text>
       </TouchableOpacity>
     </View>
   )
