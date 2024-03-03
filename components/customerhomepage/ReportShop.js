@@ -16,6 +16,7 @@ import { COLORS } from "../../constants/Theme";
 import { useNavigation } from "@react-navigation/native";
 import { FontAwesome, Feather } from '@expo/vector-icons';
 import axios from "axios";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Width = Dimensions.get("window").width;
 const Height = Dimensions.get("window").height;
@@ -33,24 +34,27 @@ const ReportShop = ({ route }) => {
     const fetchData = async () => {
       try {
         const data = await AsyncStorage.getItem("customerdata");
-        console.log('useeffect')
+        console.log("AsyncStorage Data:", data);
         if (data) {
           const parsedData = JSON.parse(data);
-          console.log(parsedData);
+          console.log("Parsed Customer Data:", parsedData);
           setcustomerid(parsedData._id);
         }
-      
+
       } catch (err) {
-      
+        console.error("AsyncStorage Error:", err);
       }
     };
+  
     fetchData();
+  }, []); // Ensure to include necessary dependencies if any
+  useEffect(() => {
+  if (route.params) {
+    setShopname(route.params.shopname || '');
+    setshopownerid(route.params.shopownerid || '');
+  }
+}, [route.params]); 
 
-    if (route.params) {
-      setShopname(route.params.shopname || '');
-      setshopownerid(route.params.shopownerid || '');
-    }
-  }, [route.params]);
   const handlereport = async () => {
     if (!reportmsg) {
       showToast("Type your reason for the report");
@@ -58,17 +62,19 @@ const ReportShop = ({ route }) => {
     }
     try {
       setreportindicator(true);
+      console.log(  customerid, shopownerid,reportmsg)
       const response = await axios.post(
         "https://direckt-copy1.onrender.com/auth/reportShopOwner",
-        { customerid: customerid, shopownerid:shopownerid, reportmsg:reportmsg}
+        { customerId: customerid, shopOwnerId:shopownerid, reason:reportmsg}
       );
+      console.log(  customerid, shopownerid,reportmsg)
       if (response.status === 200) {
         setreportindicator(false);
         setModalVisible(true);
       }
       else {
         setreportindicator(false);
-        showToast("Error: " + response.data.error);
+        showToast( response.data.error);
       }
 
     } catch (error) {

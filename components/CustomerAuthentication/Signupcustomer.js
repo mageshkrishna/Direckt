@@ -139,7 +139,7 @@ const Signupcustomer = ({route}) => {
               <Text
                 style={{ color: "white", fontSize: 18, fontWeight: "medium" }}
               >
-                Sign up
+              Verify gmail
               </Text>
             </View>
           </TouchableOpacity>

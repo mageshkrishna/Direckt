@@ -83,25 +83,23 @@ const CustomerAccountDelete = ({ route }) => {
                 }
             );
 
-            const { status, data, } = response.data;
 
 
-            if (status) {
+         
                 dispatch(clearCustomerToken());
                 await SecureStore.deleteItemAsync("customertoken");
                 await AsyncStorage.removeItem("customerdata");
-                setindicator(false);
+               
                 showToast("Account Deleted Permanenlty!");
                 navigation.navigate("Home");
-            } else {
-                showToast("Error", "Invalid data");
-            }
+        
         } catch (error) {
+           
             if (axios.isAxiosError(error)) {
                 // Axios-related error
                 if (error.response) {
                     // Response received with an error status code
-                    showToast(`Error: ${error.response.data.error}`);
+                    showToast(`${error.response.data.error}`);
                 } else {
                     // Network error (no response received)
                     showToast("Network error. Please check your internet connection.");

@@ -163,6 +163,7 @@ const Profile = () => {
       navigation.navigate("Home");
       
     } catch (error) {
+      setindicator(false);
       if (axios.isAxiosError(error)) {
         // Axios-related error
         if (error.response) {

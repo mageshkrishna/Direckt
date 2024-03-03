@@ -29,12 +29,12 @@ const Height = Dimensions.get("window").height;
 
 const ShopOwnerAccountDelete = ({ route }) => {
     const navigation = useNavigation();
-    const [modalVisible, setModalVisible] = useState(false);
+
     const [email, setemail] = useState("");
     const [password, setpassword] = useState("");
     const [loading, setLoading] = useState(false);
     const [isPasswordVisible, setIsPasswordVisible] = useState(false);
-    const [devicetoken, setdeviceToken] = useState(null)
+ 
     const dispatch = useDispatch();
     useEffect(() => {
         if (route.params) {
@@ -83,20 +83,18 @@ const ShopOwnerAccountDelete = ({ route }) => {
                 }
             );
 
-            const { status, data, } = response.data;
+   
 
 
-            if (status) {
                 dispatch(clearCustomerToken());
                 await SecureStore.deleteItemAsync("customertoken");
                 await AsyncStorage.removeItem("customerdata");
-                setindicator(false);
+             
                 showToast("Account Deleted Permanenlty!");
                 navigation.navigate("Home");
-            } else {
-                showToast("Error", "Invalid data");
-            }
+         
         } catch (error) {
+           
             if (axios.isAxiosError(error)) {
                 // Axios-related error
                 if (error.response) {
