@@ -28,6 +28,9 @@ import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
 
 import * as SecureStore from 'expo-secure-store';
+import CustomerAccountDelete from './components/customerhomepage/CustomerAccountDelete';
+import ShopOwnerAccountDelete from './components/ShopownerHomepage/ShopOwnerAccountDelete';
+import ReportShop from './components/customerhomepage/ReportShop';
 const Stack = createStackNavigator();
 const store = configureStore({reducer: rootReducer});
 
@@ -202,6 +205,21 @@ export default function App() {
           <Stack.Screen
             name="UserVerification"
             component={UserVerification}
+            options={{ headerShown:false }}
+          />
+          <Stack.Screen
+            name="ShopOwnerAccountDelete"
+            component={ShopOwnerAccountDelete}
+            options={{ headerShown:false }}
+          />
+          <Stack.Screen
+            name="CustomerAccountDelete"
+            component={CustomerAccountDelete}
+            options={{ headerShown:false }}
+          />
+          <Stack.Screen
+            name="ReportShop"
+            component={ReportShop}
             options={{ headerShown:false }}
           />
         </Stack.Navigator>

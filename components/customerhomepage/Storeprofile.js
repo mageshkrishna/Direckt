@@ -239,6 +239,15 @@ const StoreProfile = () => {
                     )}
                 </ScrollView>
             </View>
+            <TouchableOpacity 
+            style={{flexDirection:'row',paddingHorizontal:40,paddingVertical:30,alignItems:'center',gap:10,borderBottomWidth: 0.5,borderColor: 'gray',}}
+            onPress={()=>{
+                navigation.navigate('ReportShop',{shopownerid:_id,shopname:storedata.businessname});
+            }}
+            >
+                <MaterialIcons name="report" size={35} color="black" />
+                <Text style={{fontSize:15}}>Report Shopowner</Text>
+            </TouchableOpacity>
         </ScrollView>
     )
 }
@@ -383,14 +392,15 @@ const styles = StyleSheet.create({
         shadowColor: "grey",
     },
     shopImages: {
-        height: (height * 30) / 100,
+        height: (height * 25) / 100,
         paddingHorizontal: 30,
         paddingVertical: 20,
     },
     heading: {
         padding: 10,
         fontWeight: 'medium',
-    }, otherdetails: {
+    }, 
+    otherdetails: {
         flex: 1,
         paddingHorizontal: 30,
         paddingVertical: 10,

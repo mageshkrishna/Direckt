@@ -309,6 +309,34 @@ const Profile = () => {
                   <Text style={styles.tc}>Terms & Conditions</Text>
                 </TouchableOpacity>
               </View>
+              <View>
+                <TouchableOpacity
+                  onPress={() =>{
+                      Alert.alert(
+                      "Delete Account",
+                      "Are you sure you want to delete this account? (Account cannot be recovered once deleted)",
+                      [
+                        {
+                          text: "Cancel",
+                          style: "cancel",
+                        },
+                        {
+                          text: "delete",
+                          onPress: () => {
+                            navigation.navigate("CustomerAccountDelete",{email:customerdata.email});
+                          },
+                        },
+                      ],
+                      { cancelable: false }
+                    );
+                  }
+                  }
+                  style={styles.aboutdetailslast}
+                >
+                  <AntDesign name="delete" size={24} color="red" />
+                  <Text style={styles.deletaccount}>Delete account</Text>
+                </TouchableOpacity>
+              </View>
             </View>
 
           </View>
@@ -463,4 +491,8 @@ const styles = StyleSheet.create({
     color: "red",
     fontSize: 18,
   },
+  deletaccount:{
+    color: "red",
+    paddingHorizontal: 20,
+  }
 });

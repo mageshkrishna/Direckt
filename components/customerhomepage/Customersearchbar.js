@@ -27,7 +27,6 @@ import ImagePopup from "../ShopownerHomepage/Imagepopup";
 import * as SecureStore from "expo-secure-store";
 const height = Dimensions.get("window").height;
 
-
 const Shopcard = ({ data, index }) => {
   const colorScheme = useColorScheme();
   const [showPopup, setShowPopup] = useState(false);
@@ -84,7 +83,7 @@ const Shopcard = ({ data, index }) => {
           <TouchableOpacity
             style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
             onPress={() => {
-              navigation.navigate("storeprofile", { _id: data._id });
+              navigation.navigate("storeprofile", { _id: data._id});
             }}
           >
             <View
@@ -180,6 +179,7 @@ const Shopcard = ({ data, index }) => {
 };
 const CustomerSearchBar = () => {
   const navigation = useNavigation();
+
   const colorScheme = useColorScheme();
   const [businessname, setbusinessname] = useState("");
   const [category, setcategory] = useState(null);

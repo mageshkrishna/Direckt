@@ -27,7 +27,6 @@ const Height = Dimensions.get("window").height;
 
 const Logincustomer = ({route,setCustomerToken}) => {
   const navigation = useNavigation();
-  const [modalVisible, setModalVisible] = useState(false);
   const [email, setemail] = useState("");
   const [password, setpassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -139,20 +138,6 @@ const handleLogin = async () => {
 };
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      <Modal
-        animationType="fade"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => {
-          setModalVisible(!modalVisible);
-        }}> 
-        <View style={styles.centeredView}>
-          <View style={styles.modalView}>
-          <Feather name="check-circle" size={62} color="green" />
-            <Text style={styles.modalText}>LogIn Successfull</Text>
-          </View>
-        </View>
-      </Modal>
       <View style={{ flex: 1 }}>
         <View style={styles.box1}>
           <Text style={styles.box1text}>Login Your{"\n"}Account</Text>

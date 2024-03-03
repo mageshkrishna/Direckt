@@ -535,6 +535,35 @@ const Shopownerprofile = () => {
           </View>
           <View>
             <TouchableOpacity
+              style={styles.aboutdetails}
+              onPress={() =>{
+                Alert.alert(
+                "Delete Account",
+                "Are you sure you want to delete this account? (Account cannot be recovered once deleted)",
+                [
+                  {
+                    text: "Cancel",
+                    style: "cancel",
+                  },
+                  {
+                    text: "delete",
+                    onPress: () => {
+                      navigation.navigate("ShopOwnerAccountDelete",{email:email});
+                    },
+                  },
+                ],
+                { cancelable: false }
+              );
+            }
+            }
+            >
+              <AntDesign name="delete" size={24} color="red" />
+              <Text style={[{ color: 'red' }, styles.tc]}>Delete account</Text>
+
+            </TouchableOpacity>
+          </View>
+          <View>
+            <TouchableOpacity
               style={styles.aboutdetailslast}
               onPress={() => {
                 Alert.alert(
@@ -803,15 +832,15 @@ const styles = StyleSheet.create({
     justifyContent: "space-evenly",
   },
   aboutlist: {
-    height: (height * 30) / 100,
+    height: (height * 36) / 100,
     justifyContent: 'space-evenly',
   },
   aboutdetails: {
     flexDirection: 'row',
     padding: 20,
     alignItems: 'center',
-    borderBottomWidth: 1,
-    borderColor: 'grey',
+    borderBottomWidth: 0.5,
+    borderColor: 'gray',
   },
   aboutdetailslast: {
     flexDirection: 'row',
