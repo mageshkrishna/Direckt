@@ -4,14 +4,21 @@
     "slug": "direckt",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/DireckTlogo.png",
+    "icon": "./assets/Direcktlogo.png",
     "userInterfaceStyle": "light",
-    
     "plugins": [
       [
         "expo-image-picker",
         {
-          "photosPermission": "The app accesses your photos to let you share them with your friends."
+          "photosPermission": "The app accesses your photos to let you share."
+        }
+      ],
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "enableProguardInReleaseBuilds": true
+          }
         }
       ]
     ],
@@ -22,15 +29,11 @@
       "supportsTablet": true
     },
     "android": {
-
-     
-        "googleServicesFile": "./google-services.json",
-  
+      "googleServicesFile": "./google-services.json",
       "adaptiveIcon": {
-        "foregroundImage": "./assets/DireckTlogo.png",
+        "foregroundImage": "./assets/Direcktlogo.png",
         "backgroundColor": "#ffffff"
       },
-     
       "permissions": [
         "android.permission.CAMERA_ROLL",
         "android.permission.READ_EXTERNAL_STORAGE",
@@ -40,7 +43,7 @@
       "package": "com.direcktapp.direckt"
     },
     "web": {
-      "favicon": "./assets/DireckTlogo.png"
+      "favicon": "./assets/Direcktlogo.png"
     },
     "extra": {
       "eas": {

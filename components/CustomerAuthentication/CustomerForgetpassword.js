@@ -55,10 +55,17 @@ const CustomerForgetpassword = ({route}) => {
       return prevSeconds - 1;
     });
   };
-
+  const validateEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
   const sendemail = async () => {
     if (!email) {
       showToast("Fill the email field");
+      return;
+    }
+    if (!validateEmail(email)) {
+      showToast('Please enter a valid email address');
       return;
     }
 

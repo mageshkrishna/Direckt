@@ -157,7 +157,7 @@ const UserLogin = ({route,setShopOwnerToken}) => {
         <View style={styles.box2}>
           <TextInput
             style={styles.box2input}
-            placeholder="gmail"
+            placeholder="Email"
             value={email}
             onChangeText={(text) => setemail(text)}
             autoCapitalize="none"

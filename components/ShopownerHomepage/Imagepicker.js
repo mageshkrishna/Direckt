@@ -67,7 +67,7 @@ const Imagepicker = ({ editprofile, addphoto, setprofilepic,setphotos,profilepic
         mediaTypes: ImagePicker.MediaTypeOptions.Images,
         allowsEditing: false,
         aspect: [4, 3],
-        quality: 0.1,
+        quality: 0.3,
       });
 
       if (!result.canceled) {

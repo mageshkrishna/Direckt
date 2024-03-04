@@ -161,7 +161,7 @@ const Userregister = ({route}) => {
           >
             <TextInput style={styles.box2input} placeholder="BusinessName" value={businessname} onChangeText={(val) => setbuinessname(val)}   autoCapitalize="none" />
             <TextInput style={styles.box2input} placeholder="Phonenumber" value={phonenumber} maxLength={10} onChangeText={(val) => setphonenumber(val)} keyboardType="numeric" />
-            <TextInput style={styles.box2input} placeholder="gmail" value={email} onChangeText={(val) => setemail(val)}  autoCapitalize="none" />
+            <TextInput style={styles.box2input} placeholder="Email" value={email} onChangeText={(val) => setemail(val)}  autoCapitalize="none" />
             <TextInput style={styles.box2input} placeholder="password" value={password} onChangeText={(val) => setpassword(val)}  autoCapitalize="none" secureTextEntry={!isPasswordVisible}/>
             <TouchableOpacity onPress={togglePasswordVisibility} >
               <Text style={{ color: "grey" }} >{isPasswordVisible ? <FontAwesome name="eye-slash" size={13} color="grey" /> : <FontAwesome name="eye" size={13} color="grey" />} {isPasswordVisible ? 'Hide Password' : 'Show Password'}</Text>
@@ -179,7 +179,7 @@ const Userregister = ({route}) => {
                 <Text
                   style={{ color: "white", fontSize: 18, fontWeight: "bold" }}
                 >
-                  Verify gmail
+                  Verify Email
                 </Text>
               </View>
             </TouchableOpacity>

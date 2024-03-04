@@ -34,15 +34,15 @@ const ReportShop = ({ route }) => {
     const fetchData = async () => {
       try {
         const data = await AsyncStorage.getItem("customerdata");
-        console.log("AsyncStorage Data:", data);
+    
         if (data) {
           const parsedData = JSON.parse(data);
-          console.log("Parsed Customer Data:", parsedData);
+     
           setcustomerid(parsedData._id);
         }
 
       } catch (err) {
-        console.error("AsyncStorage Error:", err);
+       
       }
     };
   
@@ -62,12 +62,12 @@ const ReportShop = ({ route }) => {
     }
     try {
       setreportindicator(true);
-      console.log(  customerid, shopownerid,reportmsg)
+   
       const response = await axios.post(
         "https://direckt-copy1.onrender.com/auth/reportShopOwner",
         { customerId: customerid, shopOwnerId:shopownerid, reason:reportmsg}
       );
-      console.log(  customerid, shopownerid,reportmsg)
+   
       if (response.status === 200) {
         setreportindicator(false);
         setModalVisible(true);

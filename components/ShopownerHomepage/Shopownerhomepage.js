@@ -10,6 +10,7 @@ import {
   BackHandler,
   Dimensions,
   ToastAndroid,
+  Alert,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
@@ -118,13 +119,18 @@ const Shopownerhomepage = () => {
           // Axios-related error
           if (error.response) {
             // Response received with an error status code
-            showToast(`Error: ${error.response.data.error}`);
+            if (error.response.status === 403) {
+              // Status code is 403, show error message in alert
+              Alert.alert(`Error: ${error.response.data.error}`);
+            } else {
+              // Status code is not 403, show error message in toast
+              showToast(`Error: ${error.response.data.error}`);
+            }
           } else {
             // Network error (no response received)
             showToast("Network error. Please check your internet connection.");
           }
         } else {
-        
           showToast("An error occurred. Please try again.");
         }
       }

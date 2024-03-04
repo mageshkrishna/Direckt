@@ -127,7 +127,7 @@ const ShopOwnerAccountDelete = ({ route }) => {
                 <View style={styles.box2}>
                     <TextInput
                         style={styles.box2input}
-                        placeholder="Gmail"
+                        placeholder="Email"
                         value={email}
                         onChangeText={(text) => setemail(text)}
                         autoCapitalize="none"

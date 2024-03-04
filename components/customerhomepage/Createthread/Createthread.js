@@ -37,7 +37,7 @@ const Createthread = () => {
   const [location, setjoblocation] = useState(null);
   const [category, setjobcategory] = useState(null);
   const [email, setemail] = useState(null);
-
+ 
 
   const [indicator, setindicator] = useState(false);
   const [token, settoken] = useState(null);
@@ -190,6 +190,7 @@ const Createthread = () => {
     
     }
   };
+ 
   useEffect(() => {
     const fetchData = async () => {
       try {

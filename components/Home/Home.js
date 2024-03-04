@@ -45,9 +45,7 @@ export default function Home() {
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <ImageBackground style={styles.container}
-        source={
-          { uri: 'https://img.freepik.com/premium-photo/man-stands-front-store-with-bag-chips_973047-2593.jpg' }
-        }
+         source={require('../../components/Home/man-stands-front-store.jpeg')}
       >
         <View style={styles.box1}>
 

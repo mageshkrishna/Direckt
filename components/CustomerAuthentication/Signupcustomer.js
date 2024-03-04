@@ -120,7 +120,7 @@ const Signupcustomer = ({route}) => {
         <View style={styles.box2}>
           <TextInput style={styles.box2input} placeholder="Name" value={name}  autoCapitalize="none"
             onChangeText={(text) => setname(text)} />
-          <TextInput style={styles.box2input} placeholder="gmail" value={email}
+          <TextInput style={styles.box2input} placeholder="Email" value={email}
             onChangeText={(text) => setemail(text)} />
           <TextInput style={styles.box2input} placeholder="Password" value={password} secureTextEntry={!isPasswordVisible}  autoCapitalize="none"
             onChangeText={(text) => setpassword(text)} />
@@ -139,7 +139,7 @@ const Signupcustomer = ({route}) => {
               <Text
                 style={{ color: "white", fontSize: 18, fontWeight: "medium" }}
               >
-              Verify gmail
+              Verify Email
               </Text>
             </View>
           </TouchableOpacity>
