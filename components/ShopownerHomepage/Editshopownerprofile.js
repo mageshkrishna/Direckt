@@ -360,7 +360,7 @@ const EditOwnerProfile = () => {
             data={chooselocation}
             save="value"
             style={styles.storelocationselect}
-            defaultOption={{ key: '2', value: 'Vallioor' }}
+          
           />
 
 

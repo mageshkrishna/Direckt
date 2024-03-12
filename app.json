@@ -40,7 +40,8 @@
         "android.permission.WRITE_EXTERNAL_STORAGE",
         "android.permission.RECORD_AUDIO"
       ],
-      "package": "com.direcktapp.direckt"
+      "package": "com.direcktapp.direckt",
+      "versionCode": 2
     },
     "web": {
       "favicon": "./assets/Direcktlogo.png"
