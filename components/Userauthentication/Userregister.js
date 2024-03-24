@@ -43,10 +43,10 @@ const Userregister = ({route}) => {
   };
 
   const validatePassword = (password) => {
-    // Password should be between 8 and 15 characters long and contain both letters and numbers
-    const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,15}$/;
-    return passwordRegex.test(password);
+    // Password should be greater than or equal to 8 characters long
+    return password.length >= 8;
 };
+
 
 
   const validatePhone = (phone) => {
@@ -89,7 +89,7 @@ const Userregister = ({route}) => {
       return;
     }
     if (!validatePassword(password)) {
-      showToast(' Password should be between 8 to 15 characters long and contain both letters and numbers');
+      showToast(' Password should be between 8 to 15 characters long');
       return;
     }
 
@@ -162,7 +162,7 @@ const Userregister = ({route}) => {
             <TextInput style={styles.box2input} placeholder="BusinessName" value={businessname} onChangeText={(val) => setbuinessname(val)}   autoCapitalize="none" />
             <TextInput style={styles.box2input} placeholder="Phonenumber" value={phonenumber} maxLength={10} onChangeText={(val) => setphonenumber(val)} keyboardType="numeric" />
             <TextInput style={styles.box2input} placeholder="Email" value={email} onChangeText={(val) => setemail(val)}  autoCapitalize="none" />
-            <TextInput style={styles.box2input} placeholder="password" value={password} onChangeText={(val) => setpassword(val)}  autoCapitalize="none" secureTextEntry={!isPasswordVisible}/>
+            <TextInput style={styles.box2input} placeholder="password" maxLength={15} value={password} onChangeText={(val) => setpassword(val)}  autoCapitalize="none" secureTextEntry={!isPasswordVisible}/>
             <TouchableOpacity onPress={togglePasswordVisibility} >
               <Text style={{ color: "grey" }} >{isPasswordVisible ? <FontAwesome name="eye-slash" size={13} color="grey" /> : <FontAwesome name="eye" size={13} color="grey" />} {isPasswordVisible ? 'Hide Password' : 'Show Password'}</Text>
             </TouchableOpacity>

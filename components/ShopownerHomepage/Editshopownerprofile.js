@@ -13,7 +13,7 @@ import {
   ToastAndroid
 } from "react-native";
 import * as SecureStore from "expo-secure-store";
-import { Ionicons } from "@expo/vector-icons";
+import { AntDesign, Ionicons } from "@expo/vector-icons";
 import {
   SelectList,
   MultipleSelectList,
@@ -31,12 +31,12 @@ const width = Dimensions.get("window").width;
 const EditOwnerProfile = () => {
   const navigation = useNavigation();
   const [businessname, setbusinessname] = useState("Anbu Stores");
-  const [businessabout, setbusinessabout] = useState("Vallioor");
+  const [businessabout, setbusinessabout] = useState("");
   const [phonenumber, setphonenumber] = useState("");
   const [profilepic, setprofilepic] = useState("");
   const [photos, setphotos] = useState([]);
   const [gmaplink, setgmaplink] = useState('');
-  const [address, setaddress] = useState('');
+  const [address, setaddress] = useState('address');
   const [deliverylocation, setdeliverylocation] = useState();
   const [location, setlocation] = useState("");
   const [category, setcategory] = useState([]);
@@ -136,6 +136,10 @@ const EditOwnerProfile = () => {
     const urlPattern = /^(ftp|http|https):\/\/[^ "]+$/;
     return urlPattern.test(url);
   };
+  const validatePhone = (phone) => {
+    const phoneNumberRegex = /^\d{10}$/;
+    return phoneNumberRegex.test(phone);
+  }
   const updateshopowner = async () => {
     if(gmaplink){
     if (gmaplink.trim() === '') {
@@ -145,6 +149,11 @@ const EditOwnerProfile = () => {
         showToast('Enter a valid Google map Link');
         return;
       }
+    }
+   
+    if (!validatePhone(phonenumber)) {
+      showToast('Please enter a valid phone number');
+      return;
     }
     setuploading(true)
     const formdata = {
@@ -343,6 +352,7 @@ const EditOwnerProfile = () => {
             style={styles.editstorenameinput}
             onChangeText={(e) => setbusinessname(e)}
             value={businessname}
+            placeholder="businessname"
           />
         </View>
         <View style={styles.editfield}>
@@ -351,6 +361,7 @@ const EditOwnerProfile = () => {
             style={styles.editstorenameinput}
             onChangeText={(e) => setbusinessabout(e)}
             value={businessabout}
+            placeholder="Tell about your business"
           />
         </View>
         <View style={styles.editfield}>
@@ -360,6 +371,7 @@ const EditOwnerProfile = () => {
             data={chooselocation}
             save="value"
             style={styles.storelocationselect}
+            closeicon={<AntDesign name="close" size={30} color="black" />}
           
           />
 
@@ -371,6 +383,8 @@ const EditOwnerProfile = () => {
             style={styles.editstorenameinput}
             onChangeText={(e) => setaddress(e)}
             value={address}
+            placeholder="your shop address"
+            
           />
         </View>
 
@@ -381,8 +395,8 @@ const EditOwnerProfile = () => {
             setSelected={(val) => setcategory(val)}
             data={choosedata}
             save="value"
-
-
+             
+            closeicon={<AntDesign name="close" size={30} color="black" />}
           />
         </View>
         <View style={styles.editfield}>
@@ -390,7 +404,7 @@ const EditOwnerProfile = () => {
             Delivery locations or Servicable location{" "}
           </Text>
           <TextInput
-
+            placeholder="give place names you can able to deliver"
             style={styles.editstorenameinput}
             onChangeText={(e) => setdeliverylocation(e)}
             value={deliverylocation}
@@ -403,6 +417,8 @@ const EditOwnerProfile = () => {
             onChangeText={(text) => setphonenumber(text)}
             value={phonenumber.toString()}
             keyboardType="numeric"
+            maxLength={10}
+            
           />
         </View>
         <View style={styles.editfield}>
@@ -411,6 +427,7 @@ const EditOwnerProfile = () => {
             style={styles.editstorenameinput}
             onChangeText={(e) => setgmaplink(e)}
             value={gmaplink}
+            placeholder="Your shop google maps  location link"
           />
         </View>
       </View>

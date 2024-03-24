@@ -157,7 +157,7 @@ const JobCard = ({ item, ownerdetail, token }) => {
               />
               }
               <View style={{ flexDirection: "row", alignItems: "center" }}>
-                <MaterialIcons name="category" size={17} color="black" />
+               
                 <Text style={styles.jobcategory} numberOfLines={1}>
                   {item.category}
                 </Text>
@@ -219,7 +219,7 @@ const JobCard = ({ item, ownerdetail, token }) => {
             >
               <View>
                 <Text style={{ color: "grey", paddingBottom: 10 }}>
-                  Write a Reply Message (optional)
+                  Write a Reply Message
                 </Text>
                 <TextInput
                   style={styles.replyinput}
@@ -227,9 +227,11 @@ const JobCard = ({ item, ownerdetail, token }) => {
                   maxLength={125}
                   textAlignVertical="top"
                   numberOfLines={5}
+                  value={replymessage}
                   onChangeText={(val) => {
                     setreplymessage(val);
                   }}
+                  placeholder="Describe about the product or service or cost"
                 />
               </View>
               <View
@@ -249,6 +251,7 @@ const JobCard = ({ item, ownerdetail, token }) => {
                     value={deliverystatus}
                     onValueChange={() => setdeliverystatus(!deliverystatus)}
                     color={deliverystatus ? "#4630EB" : undefined}
+                    style={{height:25,width:25}}
                   />
                 </View>
                 <TouchableOpacity

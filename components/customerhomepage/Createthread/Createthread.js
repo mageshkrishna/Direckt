@@ -19,7 +19,7 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 import * as SecureStore from "expo-secure-store";
 import { SelectList } from "react-native-dropdown-select-list";
 import { TouchableOpacity } from "react-native-gesture-handler";
-import { Feather } from '@expo/vector-icons';
+import { AntDesign, Feather } from '@expo/vector-icons';
 import { useNavigation } from "@react-navigation/native";
 import Imagepick from "./Imagepick";
 import { COLORS } from "../../../constants/Theme";
@@ -48,7 +48,7 @@ const Createthread = () => {
   );
   const showToast = (e) => {
     ToastAndroid.show(e, ToastAndroid.SHORT);
-  };
+  }; 
   const handleSubmit = async (firebaseImageUrl) => {
     if (!jobtitle) {
       setindicator(false);
@@ -356,6 +356,7 @@ const Createthread = () => {
               borderColor: "white",
             }}
             dropdownItemStyles={{ width: "80%" }}
+            closeicon={<AntDesign name="close" size={30} color="black" />}
           />
           <Text style={styles.box1text}>Choose Location</Text>
           <SelectList
@@ -370,6 +371,7 @@ const Createthread = () => {
               borderColor: "white",
             }}
             dropdownItemStyles={{ width: "80%" }}
+            closeicon={<AntDesign name="close" size={30} color="black" />}
           />
 
           <View style={styles.box1send}>

@@ -151,6 +151,7 @@ const handleLogin = async () => {
             autoCapitalize="none"
           />
           <TextInput
+          maxLength={15}
             style={styles.box2input}
             placeholder="Password"
             value={password}

@@ -13,15 +13,14 @@ const Shopownerpassword = ({route}) => {
     const [indicator, setindicator] = useState(false);
   const [newPassword, setnewPassword] = useState();
   const validatePassword = (password) => {
-    // Password should be between 8 and 15 characters long and contain both letters and numbers
-    const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,15}$/;
-    return passwordRegex.test(password);
+    // Password should be greater than or equal to 8 characters long
+    return password.length >= 8;
 };
 
   const sendnewPassword =async()=>{
   
     if (!validatePassword(newPassword)) {
-      showToast('Password should be between 8 and 15 characters long and contain both letters and numbers');
+      showToast('Password should be between 8 and 15 characters');
       return;
     } 
    else{
@@ -65,6 +64,7 @@ const Shopownerpassword = ({route}) => {
      <View style={styles.box0}>
           <Text style={{ fontSize: 30, fontWeight: "600" }}>Enter New password</Text>
           <TextInput
+          maxLength={15}
             style={styles.box2input}
             placeholder="password"
             value={newPassword}

@@ -44,9 +44,8 @@ const Signupcustomer = ({route}) => {
   };
 
   const validatePassword = (password) => {
-    // Password should be between 8 and 15 characters long and contain both letters and numbers
-    const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,15}$/;
-    return passwordRegex.test(password);
+    // Password should be greater than or equal to 8 characters long
+    return password.length >= 8;
 };
 
 
@@ -61,7 +60,7 @@ const Signupcustomer = ({route}) => {
     }
 
     if (!validatePassword(password)) {
-      showToast(' Password should be between 8 and 15 characters long and contain both letters and numbers');
+      showToast(' Password should be between 8 and 15 characters long');
       return;
     }
 
@@ -122,7 +121,7 @@ const Signupcustomer = ({route}) => {
             onChangeText={(text) => setname(text)} />
           <TextInput style={styles.box2input} placeholder="Email" value={email}
             onChangeText={(text) => setemail(text)} />
-          <TextInput style={styles.box2input} placeholder="Password" value={password} secureTextEntry={!isPasswordVisible}  autoCapitalize="none"
+          <TextInput style={styles.box2input} placeholder="Password" maxLength={15} value={password} secureTextEntry={!isPasswordVisible}  autoCapitalize="none"
             onChangeText={(text) => setpassword(text)} />
           <TouchableOpacity onPress={togglePasswordVisibility} >
             <Text style={{ color: "grey" }} >{isPasswordVisible ? <FontAwesome name="eye-slash" size={13} color="grey" /> : <FontAwesome name="eye" size={13} color="grey" />} {isPasswordVisible ? 'Hide Password' : 'Show Password'}</Text>

@@ -1,3 +1,4 @@
+import React, { useState, useEffect } from "react";
 import {
   ScrollView,
   StyleSheet,
@@ -11,31 +12,48 @@ import {
   Pressable,
   Linking,
   Alert,
-  useColorScheme,
   RefreshControl,
   ActivityIndicator,
   ToastAndroid,
   Modal,
   BackHandler,
+  useColorScheme,
 } from "react-native";
+import {
+  Feather,
+  AntDesign,
+  Entypo,
+  MaterialCommunityIcons,
+  MaterialIcons,
+  Ionicons,
+  FontAwesome5,
+} from "@expo/vector-icons";
+import { PanGestureHandler } from "react-native-gesture-handler";
+import Animated, {
+  useSharedValue,
+  useAnimatedGestureHandler,
+  useAnimatedStyle,
+  withSpring,
+  clamp,
+} from "react-native-reanimated";
 import * as SecureStore from "expo-secure-store";
-import { useState, useEffect } from "react";
-import { MaterialIcons, AntDesign, Ionicons } from "@expo/vector-icons";
-import React from "react";
-import axios from "axios";
-import { Entypo, Feather } from "@expo/vector-icons";
-const height = Dimensions.get("window").height;
-const width = Dimensions.get("window").width;
-import { COLORS } from "../../constants/Theme";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import axios from "axios";
+import ImagePopup from "../ShopownerHomepage/Imagepopup";
+import moment from "moment";
 import {
   useFocusEffect,
   useNavigation,
   useRoute,
 } from "@react-navigation/native";
-import ImagePopup from "../ShopownerHomepage/Imagepopup";
-import moment from "moment";
 import { useSelector } from "react-redux";
+import { COLORS } from "../../constants/Theme";
+
+const height = Dimensions.get("window").height;
+const width = Dimensions.get("window").width;
+
+// Now you can use these variables and components without any conflicts
+
 const showToast = (e) => {
   ToastAndroid.show(e, ToastAndroid.SHORT);
 };
@@ -195,7 +213,7 @@ const AccordionItem = ({ data, token, onRefresh }) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [deleteindicator, setdeleteindicator] = useState(false);
   const [deactivateindicator, setdeactivateindicator] = useState(false);
-
+const navigation = useNavigation();
   const timestamp = data.expiryAt;
   const localDateTime = moment(timestamp)
     .utcOffset("+00:00")
@@ -273,9 +291,27 @@ const AccordionItem = ({ data, token, onRefresh }) => {
   }, [data]);
   const toggleExpand = () => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+    console.log("toggele expanded")
     setExpanded(!expanded);
   };
+  const translationX = useSharedValue(0);
+  const [isImage, setIsImage] = useState(true);
 
+  const animatedStyle = useAnimatedStyle(() => {
+    return {
+      transform: [{ translateX: translationX.value }],
+    };
+  });
+
+  const handleDragBtnPress = () => {
+    // Slide the card to the right
+    translationX.value = withSpring(150);
+  };
+
+  const handleBackIconPress = () => {
+    // Reset the card's position
+    translationX.value = withSpring(0);
+  };
   return (
     <View>
       <Pressable onPress={toggleExpand}>
@@ -305,7 +341,184 @@ const AccordionItem = ({ data, token, onRefresh }) => {
         </Modal>
 
         <View style={styles.thread}>
-          {data.status ? (
+          <Animated.View style={styles.backLayer}>
+            <View style={styles.backLayercontainer}>
+              <View style={{ height: "16%", alignItems: "flex-start" }}>
+                <TouchableOpacity onPress={handleBackIconPress}>
+                  <Entypo
+                    name="chevron-with-circle-left"
+                    size={22}
+                    color="white"
+                  />
+                </TouchableOpacity>
+              </View>
+              <View
+                style={{
+                  height: "84%",
+                  alignItems: "flex-start",
+                  justifyContent: "space-evenly",
+                }}
+              >
+                {deleteindicator ? (
+                  <ActivityIndicator color={"white"} size={22} />
+                ) : (
+                  <View style={{ marginLeft: 35 }}>
+                    <TouchableOpacity
+                      style={{ alignItems: "center", gap: 5 }}
+                      onPress={() =>
+                        Alert.alert(
+                          "Confirm Deletion",
+                          "Do you want to delete?",
+                          [
+                            {
+                              text: "Cancel",
+                              style: "cancel",
+                            },
+                            {
+                              text: "delete",
+                              onPress: () => {
+                                handleDeleteJob();
+                              },
+                            },
+                          ],
+                          { cancelable: true }
+                        )
+                      }
+                    >
+                      <AntDesign name="delete" size={19} color="white" />
+                      <Text style={{ color: "white" }}>Delete</Text>
+                    </TouchableOpacity>
+                  </View>
+                )}
+                {data.status && (
+                  <View style={{ marginLeft: 20 }}>
+                    {deactivateindicator ? (
+                      <ActivityIndicator color={"white"} size={22} />
+                    ) : (
+                      <TouchableOpacity
+                        style={{ alignItems: "center", gap: 5 }}
+                        onPress={() =>
+                          Alert.alert(
+                            "Confirm Deactivation",
+                            "You can Deactivate the Job only once. Do you want to deactivate?",
+                            [
+                              {
+                                text: "Cancel",
+                                style: "cancel",
+                              },
+                              {
+                                text: "Deactivate", // Corrected from "deactivated" to "Deactivate"
+                                onPress: async () => {
+                                  await deactivatejob();
+                                  onRefresh();
+                                },
+                              },
+                            ],
+                            { cancelable: true }
+                          )
+                        }
+                      >
+                        <MaterialCommunityIcons
+                          name="file-cancel-outline"
+                          size={20}
+                          color="white"
+                        />
+                        <Text style={{ color: "white" }}>Deactivate</Text>
+                      </TouchableOpacity>
+                    )}
+                  </View>
+                )}
+              </View>
+            </View>
+            <Animated.View style={[styles.jobCard, animatedStyle]}>
+              <View style={{ width: "98%" }}>
+                <View style={styles.jobCardTop}>
+                  <View
+                    style={[styles.jobDetails, data.image_url ? { width: "65%" } : {}]}
+                  >
+                    <Text style={styles.jobTitle} numberOfLines={1}>
+                      {data.jobtitle}
+                    </Text>
+                    <Text style={styles.jobDescription} numberOfLines={2}>
+                      {data.jobdescription}
+                    </Text>
+                    {data.status ? (
+                      <Text style={styles.expireTime}>
+                        <Feather name="calendar" size={11} color="#444444" />{" "}
+                        expire on {localDateTime}
+                      </Text>
+                    ) : (
+                      <View
+                        style={{ flexDirection: "row", alignItems: "center" }}
+                      >
+                        <Text style={{ fontSize: 12, color: "red" }}>
+                          Deactivated
+                        </Text>
+                      </View>
+                    )}
+                  </View>
+                  {data.image_url &&
+                    <TouchableOpacity style={[styles.jobImage]}
+                    onPress={() => setShowPopup(true)}
+                    >c
+                      <Image
+                        style={styles.image}
+                        source={{
+                          uri: data.image_url,
+                        }}
+                      />
+                    </TouchableOpacity>
+                  }
+                  {showPopup && data.image_url ? (
+                    <ImagePopup
+                      imageUrl={data.image_url}
+                      onClose={() => setShowPopup(false)}
+                    />
+                  ) : (
+                    <></>
+                  )}
+                </View>
+                <View style={styles.jobCardBottom}>
+                  <TouchableOpacity style={styles.editJob} onPress={()=>{navigation.navigate('Editjob',{token:token})}}>
+                    <Text style={{ color: "white" }}>
+                      <AntDesign name="edit" size={12} color="white" /> Edit Job
+                    </Text>
+                  </TouchableOpacity>
+                  <View style={styles.viewResponse}>
+                  {jobreply.length > 0 ? (
+                    <>
+                      <Text style={{ color: "green" }}>
+                        {jobreply.length} response
+                      </Text>
+                    </>
+                  ) : (
+                    <TouchableOpacity
+                      onPress={() => {
+                        ToastAndroid.show(
+                          "No responses come back after some minutes",
+                          ToastAndroid.SHORT
+                        );
+                      }}
+                    >
+                      <Text style={{color:COLORS.primary}}>no response</Text>
+                    </TouchableOpacity>
+                  )}
+                </View>
+          
+                </View>
+              </View>
+              <View style={{ width: 20, justifyContent: "center" }}>
+                <TouchableOpacity
+                  style={styles.dragBtn}
+                  onPress={handleDragBtnPress}
+                >
+                  <AntDesign name="delete" size={15} color="black" />
+                </TouchableOpacity>
+              </View>
+            </Animated.View>
+          </Animated.View>
+
+          {/* {data.status ? (
             <View style={styles.expirationtitle}>
               <Text style={styles.expireText}>
                 Job expire at {localDateTime}
@@ -480,7 +693,7 @@ const AccordionItem = ({ data, token, onRefresh }) => {
                 </View>
               </View>
             </Pressable>
-          </View>
+          </View> */}
         </View>
       </Pressable>
       {expanded && jobreply && jobreply.length > 0 && (
@@ -764,13 +977,10 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "white",
-    elevation: 1,
+
     marginVertical: "3%",
-    marginHorizontal: "3%",
+    marginHorizontal: "5%",
     borderRadius: 5,
-    borderWidth: 0.3,
-    paddingVertical: 20,
   },
   threadcardsection: {
     flexDirection: "row",
@@ -879,5 +1089,91 @@ const styles = StyleSheet.create({
   modalText: {
     paddingVertical: 15,
     textAlign: "center",
+  },
+  backLayer: {
+    flexDirection: "row",
+    height: 180,
+    width: "100%",
+    borderRadius: 8, // Ensure child view doesn't overflow
+  },
+  backLayercontainer: {
+    width: "60%",
+    height: "100%",
+    padding: 20,
+    backgroundColor: "red",
+    borderRadius: 8,
+  },
+  jobCard: {
+    flex: 1,
+    flexDirection: "row",
+    height: "100%",
+    width: "100%",
+    backgroundColor: "white",
+    borderWidth: 0.5,
+    borderColor: "#D0D0D0",
+    borderRadius: 8,
+    position: "absolute",
+  },
+  jobCardTop: {
+    flexDirection: "row",
+    height: "70%",
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+  },
+  jobDetails: {
+    justifyContent: "space-evenly",
+  },
+  jobTitle: {
+    fontSize: 20,
+    color: "#8C52FF",
+  },
+  jobDescription: {
+    fontSize: 14,
+  },
+  expireTime: {
+    color: "#444444",
+    fontSize: 11,
+  },
+  jobImage: {
+    width: "35%",
+    padding: 5,
+  },
+  image: {
+    height: "100%",
+    width: "100%",
+    borderRadius: 3,
+  },
+  jobCardBottom: {
+    flexDirection: "row",
+    height: "30%",
+    width: "100%",
+    alignItems: "flex-start",
+    justifyContent: "space-evenly",
+  },
+  editJob: {
+    backgroundColor: "#8C52FF",
+    padding: 8,
+    width: "40%",
+    borderRadius: 5,
+    alignItems: "center",
+    borderWidth: 2,
+    borderColor: "#8C52FF",
+  },
+  viewResponse: {
+    backgroundColor: "white",
+    padding: 8,
+    width: "40%",
+    borderWidth: 2,
+    borderColor: "#8C52FF",
+    borderRadius: 5,
+    alignItems: "center",
+  },
+  dragBtn: {
+    borderWidth: 0.5,
+    borderColor: "#D0D0D0",
+    borderRadius: 8,
+    padding: 2,
+    marginBottom: 15,
+    backgroundColor: "white",
   },
 });

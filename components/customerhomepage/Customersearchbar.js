@@ -11,7 +11,7 @@ import {
   ToastAndroid,
 } from "react-native";
 import React, { useEffect, useState } from "react";
-import { FontAwesome5} from "@expo/vector-icons";
+import { AntDesign, FontAwesome5} from "@expo/vector-icons";
 import { MaterialIcons } from "@expo/vector-icons";
 import { ScrollView } from "react-native";
 import { TextInput } from "react-native";
@@ -403,7 +403,7 @@ const CustomerSearchBar = () => {
               value={availabilitystatus}
               onValueChange={setavailabilitystatus}
               color={availabilitystatus ? "#3C4142" : undefined}
-              style={{height:25,width:25}}
+              style={{height:30,width:30}}
             />
           </View> 
         <View style={styles.filtercontainer}>
@@ -416,6 +416,7 @@ const CustomerSearchBar = () => {
               placeholder="Location"
               dropdownTextStyles={{ color: "grey" }}
               inputStyles={{ color: "grey" }}
+              closeicon={<AntDesign name="close" size={30} color="black" />}
             />
           </View>
           <View style={{ width: "45%" }}>
@@ -426,6 +427,7 @@ const CustomerSearchBar = () => {
               placeholder="category"
               dropdownTextStyles={{ color: "grey" }}
               inputStyles={{ color: "grey" }}
+              closeicon={<AntDesign name="close" size={30} color="black" />}
             />
           </View>
           

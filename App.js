@@ -31,6 +31,7 @@ import * as SecureStore from 'expo-secure-store';
 import CustomerAccountDelete from './components/customerhomepage/CustomerAccountDelete';
 import ShopOwnerAccountDelete from './components/ShopownerHomepage/ShopOwnerAccountDelete';
 import ReportShop from './components/customerhomepage/ReportShop';
+import Editjob from './components/customerhomepage/Editjob';
 const Stack = createStackNavigator();
 const store = configureStore({reducer: rootReducer});
 
@@ -63,7 +64,7 @@ async function registerForPushNotificationsAsync() {
       finalStatus = status;
     }
     if (finalStatus !== 'granted') {
-      alert('Failed to get push token for push notification!');
+     
       return;
     }
   
@@ -83,7 +84,7 @@ async function registerForPushNotificationsAsync() {
       
     });
   } else {
-    alert('Must use physical device for Push Notifications');
+    return;
   }
 
   return token;
@@ -220,6 +221,11 @@ export default function App() {
           <Stack.Screen
             name="ReportShop"
             component={ReportShop}
+            options={{ headerShown:false }}
+          />
+            <Stack.Screen
+            name="Editjob"
+            component={Editjob}
             options={{ headerShown:false }}
           />
         </Stack.Navigator>

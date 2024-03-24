@@ -395,7 +395,7 @@ const Shopownerprofile = () => {
                 <MaterialIcons name="delivery-dining" size={42} color="white" />
               </Pressable>
             }
-            {deliverystatus ? <Text style={{ fontSize: 10 }}>Delivery: Available</Text> : <Text style={{ fontSize: 10 }}>Delivery: Not Available</Text>}
+            {deliverystatus ? <Text style={{ fontSize: 10 }}>Delivery: Available</Text> : <Text style={{ fontSize: 10 }}>Delivery: Not</Text>}
           </View>
           <View style={styles.ctcsection}>
             <Pressable
