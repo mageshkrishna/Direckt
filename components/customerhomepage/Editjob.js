@@ -2,21 +2,33 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet, ActivityIndicator,
 import React, { useState } from 'react';
 import axios from 'axios';
 import { COLORS } from '../../constants/Theme';
+import { useNavigation, useRoute } from '@react-navigation/native';
 
-const Editjob = ({token}) => {
+const Editjob = () => {
+  const navigation = useNavigation(); // Extract navigation object here
+  const route = useRoute();
+  const { token, job_id } = route.params;
   const [jobtitle, setJobTitle] = useState('');
   const [jobdescription, setJobDescription] = useState('');
   const [loading, setLoading] = useState(false);
-  const showToast = (e) => {
-    ToastAndroid.show(e, ToastAndroid.SHORT);
+  const showToast = (message) => {
+    ToastAndroid.show(message, ToastAndroid.SHORT);
   };
   const handleSaveChanges = async () => {
+    if (!jobtitle || jobtitle.length < 8) {
+      showToast("Job title should be at least 8 characters...");
+      return;
+    }
+    if (!jobdescription || jobdescription.length < 8) {
+      showToast("Job description should be at least 8 characters...");
+      return;
+    }
+
     try {
       setLoading(true);
-      const token = token; // Replace with your token
-      const formdata = { jobtitle, jobdescription };
+      const formdata = { jobtitle: jobtitle, job_id: job_id, jobdescription: jobdescription };
       const response = await axios.post(
-        "https://direckt-copy1.onrender.com/shopowner/editjobs",
+        "https://direckt-copy1.onrender.com/Customerdata/editjobs",
         formdata,
         {
           headers: {
@@ -25,13 +37,21 @@ const Editjob = ({token}) => {
           },
         }
       );
-      console.log('Response:', response.data);
-      // Handle response as needed
-    } catch (error) {
-      console.error('Error:', error);
-      // Handle error
-    } finally {
       setLoading(false);
+      showToast("Job updated successfully");
+    
+      navigation.navigate("homeCustomer");
+    } catch (error) {
+      setLoading(false);
+      if (axios.isAxiosError(error)) {
+        if (error.response) {
+          showToast(`Error: ${error.response.data.error}`);
+        } else {
+          showToast("Network error. Please check your internet connection.");
+        }
+      } else {
+        showToast("An error occurred. Please try again.");
+      }
     }
   };
 
@@ -53,7 +73,7 @@ const Editjob = ({token}) => {
         multiline
       />
       <TouchableOpacity
-        style={[styles.button, { backgroundColor: COLORS.primary }]} // Purple color
+        style={[styles.button, { backgroundColor: COLORS.primary }]}
         onPress={handleSaveChanges}
         disabled={loading}
       >
@@ -72,7 +92,6 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 20,
     justifyContent: 'center',
-// Light purple background
   },
   label: {
     fontSize: 18,
@@ -86,7 +105,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   button: {
-    backgroundColor: COLORS.primary, // Default purple color
+    backgroundColor: COLORS.primary,
     borderRadius: 5,
     padding: 10,
     alignItems: 'center',

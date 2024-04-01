@@ -460,7 +460,7 @@ const navigation = useNavigation();
                   {data.image_url &&
                     <TouchableOpacity style={[styles.jobImage]}
                     onPress={() => setShowPopup(true)}
-                    >c
+                    >
                       <Image
                         style={styles.image}
                         source={{
@@ -479,7 +479,7 @@ const navigation = useNavigation();
                   )}
                 </View>
                 <View style={styles.jobCardBottom}>
-                  <TouchableOpacity style={styles.editJob} onPress={()=>{navigation.navigate('Editjob',{token:token})}}>
+                  <TouchableOpacity style={styles.editJob} onPress={()=>{navigation.navigate('Editjob',{token:token,job_id:data._id,onRefresh})}}>
                     <Text style={{ color: "white" }}>
                       <AntDesign name="edit" size={12} color="white" /> Edit Job
                     </Text>
@@ -494,10 +494,7 @@ const navigation = useNavigation();
                   ) : (
                     <TouchableOpacity
                       onPress={() => {
-                        ToastAndroid.show(
-                          "No responses come back after some minutes",
-                          ToastAndroid.SHORT
-                        );
+                        ToastAndroid.show("No responses come back after some minutes", ToastAndroid.SHORT);
                       }}
                     >
                       <Text style={{color:COLORS.primary}}>no response</Text>

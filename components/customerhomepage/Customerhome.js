@@ -84,6 +84,7 @@ const Customerhome = () => {
               borderTopColor: "gray",
               paddingBottom: 8,
               height: 60,
+              
             },
           })}
         >
