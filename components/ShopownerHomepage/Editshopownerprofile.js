@@ -155,20 +155,24 @@ const EditOwnerProfile = () => {
       showToast('Please enter a valid phone number');
       return;
     }
+    if (businessname===null) {
+      showToast('Please enter your business name');
+      return;
+    }
     setuploading(true)
     const formdata = {
       shopownerId: shopownerId,
       updateFields: {
         businessname: businessname,
         phonenumber: phonenumber,
-        businessabout: businessabout,
+        businessabout: businessabout.trim(),
         profilepic: profilepic,
         photos: photos,
         location: location,
         category: category.length === 0 ? category2 : category,
         gmaplink: gmaplink,
-        address: address,
-        deliverylocation: deliverylocation,
+        address: address.trim(),
+        deliverylocation: deliverylocation.trim(),
       },
       email: email
     };
