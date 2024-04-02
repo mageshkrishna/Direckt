@@ -479,7 +479,7 @@ const navigation = useNavigation();
                   )}
                 </View>
                 <View style={styles.jobCardBottom}>
-                  <TouchableOpacity style={styles.editJob} onPress={()=>{navigation.navigate('Editjob',{token:token,job_id:data._id,onRefresh})}}>
+                  <TouchableOpacity style={styles.editJob} onPress={()=>{navigation.navigate('Editjob',{token:token,job_id:data._id})}}>
                     <Text style={{ color: "white" }}>
                       <AntDesign name="edit" size={12} color="white" /> Edit Job
                     </Text>
