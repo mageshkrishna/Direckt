@@ -234,11 +234,11 @@ const Profile = () => {
           <View style={styles.userdetails}>
             <View>
               <Text style={styles.bodyusername}>
-                {customerdata ? "@" + customerdata.name : null}
+                {customerdata ? "@ " + customerdata.name : null}
               </Text>
             </View>
             <View style={{ flexDirection: "row" }}>
-              <MaterialIcons name="email" size={20} color="black" />
+              <MaterialIcons name="email" size={25} color="black" />
               <Text style={styles.bodyemail}>
                 {customerdata ? customerdata.email : null}
               </Text>

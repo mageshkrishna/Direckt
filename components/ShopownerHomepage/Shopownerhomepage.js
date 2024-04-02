@@ -19,7 +19,7 @@ import * as SecureStore from "expo-secure-store";
 import { useSelector } from "react-redux";
 import { COLORS } from "../../constants/Theme";
 import { useFocusEffect, useRoute } from "@react-navigation/native";
-import { TouchableOpacity } from "react-native-gesture-handler";
+import { FlatList, TouchableOpacity } from "react-native-gesture-handler";
 import { Ionicons } from "@expo/vector-icons";
 const height = Dimensions.get("window").height;
 
@@ -116,18 +116,18 @@ const Shopownerhomepage = () => {
       } catch (error) {
         setLoading(false);
         if (axios.isAxiosError(error)) {
-          // Axios-related error
+         
           if (error.response) {
-            // Response received with an error status code
+          
             if (error.response.status === 403) {
-              // Status code is 403, show error message in alert
+            
               Alert.alert(`Error: ${error.response.data.error}`);
             } else {
-              // Status code is not 403, show error message in toast
+             
               showToast(`Error: ${error.response.data.error}`);
             }
           } else {
-            // Network error (no response received)
+          
             showToast("Network error. Please check your internet connection.");
           }
         } else {
@@ -137,7 +137,7 @@ const Shopownerhomepage = () => {
     };
 
     if (refreshing) {
-      return; // Avoid calling getJob if refreshing
+      return;
     }
 
     getJob();
@@ -163,45 +163,45 @@ const Shopownerhomepage = () => {
     <View style={{flex:1,}}>
       {!job && <ActivityIndicator size="medium" color="#0000ff" />}
       {job.length > 0 && ownerdetail ? (
-        <View
-          style={{
-            flex: 1,
-            flexDirection: "column",
-            justifyContent: "space-between",
-          }}>
-          <ScrollView
-            style={{
-              flex: 1,
-              height: (height * 85) / 100,
-              paddingHorizontal: 10,
-              backgroundColor: "#E0E5FF",
-            }}
-            refreshControl={
-              <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-            }
-          >
-            {job.map((item, index) => (
-              <View key={index}>
-                <JobCard item={item} ownerdetail={ownerdetail} token={token} />
-              </View>
-            ))}
-          </ScrollView>
-          <TouchableOpacity
-            onPress={() => {
-              onRefresh();
-            }}
-            style={{
-              height: 50,
-              width: "100%",
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <Ionicons name="refresh" size={24} color="black" />
-            <Text style={{ fontSize: 16 }}>Click to Refresh</Text>
-          </TouchableOpacity>
-        </View>
+       <View
+       style={{
+         flex: 1,
+         flexDirection: "column",
+         justifyContent: "space-between",
+       }}>
+       <ScrollView
+         style={{
+           flex: 1,
+           height: (height * 85) / 100,
+           paddingHorizontal: 10,
+           backgroundColor: "#E0E5FF",
+         }}
+         refreshControl={
+           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+         }
+       >
+         {job.slice().reverse().map((item, index) => (
+           <View key={index}>
+             <JobCard item={item} ownerdetail={ownerdetail} token={token} />
+           </View>
+         ))}
+       </ScrollView>
+       <TouchableOpacity
+         onPress={() => {
+           onRefresh();
+         }}
+         style={{
+           height: 50,
+           width: "100%",
+           flexDirection: "row",
+           alignItems: "center",
+           justifyContent: "center",
+         }}
+       >
+         <Ionicons name="refresh" size={24} color="black" />
+         <Text style={{ fontSize: 16 }}>Click to Refresh</Text>
+       </TouchableOpacity>
+     </View>
       ) : (
         <ScrollView
         style={{

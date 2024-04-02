@@ -328,7 +328,7 @@ const Createthread = () => {
           <TextInput
             style={styles.box1input}
             onChangeText={(text) => setjobtitle(text)}
-            placeholder="eg. Need a plumber"
+            placeholder="Give a title."
             value={jobtitle}
             maxLength={75}
           />
@@ -338,7 +338,7 @@ const Createthread = () => {
             multiline={true}
             numberOfLines={6}
             textAlignVertical="top"
-            placeholder="eg.Kitchen sink pipe is leaking. Need a plumber to fix it.(specify your landmark)"
+            placeholder="Describe your problem clearly."
             onChangeText={(text) => setjobdescription(text)}
             value={jobdescription}
             maxLength={300}
@@ -356,7 +356,7 @@ const Createthread = () => {
               borderColor: "white",
             }}
             dropdownItemStyles={{ width: "80%" }}
-            closeicon={<AntDesign name="close" size={30} color="black" />}
+            closeicon={<AntDesign name="close" size={30} color={COLORS.gray} />}
           />
           <Text style={styles.box1text}>Choose Location</Text>
           <SelectList
@@ -371,7 +371,7 @@ const Createthread = () => {
               borderColor: "white",
             }}
             dropdownItemStyles={{ width: "80%" }}
-            closeicon={<AntDesign name="close" size={30} color="black" />}
+            closeicon={<AntDesign name="close" size={30} color={COLORS.gray} />}
           />
 
           <View style={styles.box1send}>

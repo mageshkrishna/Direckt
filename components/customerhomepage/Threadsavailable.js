@@ -28,7 +28,7 @@ import {
   Ionicons,
   FontAwesome5,
 } from "@expo/vector-icons";
-import { PanGestureHandler } from "react-native-gesture-handler";
+import { FlatList, PanGestureHandler } from "react-native-gesture-handler";
 import Animated, {
   useSharedValue,
   useAnimatedGestureHandler,
@@ -64,22 +64,11 @@ const InsideAccorditon = ({ data }) => {
   const navigation = useNavigation();
 
   return (
-    <View
-      style={{
-        flexDirection: "row",
-        width: "100%",
-        borderBottomWidth: 1,
-        borderColor: COLORS.gray,
-        padding: 2,
-        borderRadius: 5,
-        marginBottom: 20,
-        backgroundColor: "white",
-        elevation: 2.5,
-      }}
-    >
-      <View style={{ width: "30%", height: "100%" }}>
+    <View style={styles.resultcard}>
+    <View style={styles.resultcardtop}>
+      <View style={styles.storeprofileImage}>
         <TouchableOpacity
-          style={{ height: 100, width: "100%" }}
+          style={{ height: "100%", width: "80%", borderRadius: 5 }}
           onPress={() => setShowPopup(true)}
         >
           {data.shopowner_id.profilepic ? (
@@ -87,123 +76,119 @@ const InsideAccorditon = ({ data }) => {
               source={{
                 uri: data.shopowner_id.profilepic,
               }}
-              style={{
-                height: 95,
-                width: "100%",
-                borderRadius: 4,
-              }}
+              style={{ height: "100%", width: "100%", borderRadius: 5 }}
             />
           ) : (
             <Image
-              source={{
-                uri: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS3u_DGIWouUwuaqQE88-nun_n2h-Pb2yRQXQ&usqp=CAU",
-              }}
-              style={{
-                height: 95,
-                width: "100%",
-                borderRadius: 4,
-              }}
+              source={require('../../assets/shop.png')}
+              style={{ height: "100%", width: "100%", borderRadius: 5 }}
             />
           )}
         </TouchableOpacity>
-        {showPopup && (
+      </View>
+
+      {showPopup && (
+        data.profilepic ? (
           <ImagePopup
             imageUrl={data.shopowner_id.profilepic}
             onClose={() => setShowPopup(false)}
           />
-        )}
+        ) : null
+      )}
+
+      <View style={styles.resultcardtopdetails}>
+        <View style={{ flex: 1, justifyContent: "center" }}>
+          <Text
+            style={[styles.storename]}
+            numberOfLines={1}
+          >
+            {data.shopowner_id.businessname}
+          </Text>
+          {data.deliverystatus ? (
+            <Text style={{ fontSize: 12 }}>
+              Delivery:<Text style={{ color: "green" }}> Yes</Text>
+            </Text>
+          ) : (
+            <Text style={{ fontSize: 12 }}>
+              Delivery:<Text style={{ color: "red" }}> NO</Text>
+            </Text>
+          )}
+        </View>
         <TouchableOpacity
+          style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
           onPress={() => {
             navigation.navigate("storeprofile", { _id: data.shopowner_id._id });
           }}
-          style={{ height: 50, justifyContent: "space-evenly" }}
         >
           <View
-            style={{ justifyContent: "space-evenly", alignItems: "center" }}
+            style={{
+              flexDirection: "row",
+              paddingHorizontal: 10,
+              paddingVertical: 5,
+              borderWidth: 2,
+              borderColor: "#5271FF",
+              color: "#5271FF",
+              borderRadius: 5,
+
+            }}
           >
-            <Text style={{ fontSize: 14 }}>
-              {data.shopowner_id.businessname}
+            <Text style={{ color: "#5271FF", fontSize: 12 }}>
+              View Profile{" "}
             </Text>
-            <Text style={{ color: COLORS.primary, fontSize: 12 }}>
-              View Profile
-            </Text>
+            <Feather name="send" size={14} color="#5271FF" />
           </View>
         </TouchableOpacity>
       </View>
-      <View
+    </View>
+    <View style={styles.resultcardmiddle}>
+      <Text style={{ color: COLORS.primary, marginTop: 3, fontSize: 13 }}>
+        Reply message:
+      </Text>
+      <Text
+        style={{ color: "grey", fontSize: 13, marginVertical: 5 }}
+        numberOfLines={2}
+      >
+        {data.replymessage}
+      </Text>
+    </View>
+    <View style={styles.resultcardctc}>
+      <TouchableOpacity
         style={{
-          paddingHorizontal: 10,
-          paddingVertical: 5,
-          width: "70%",
-          height: "100%",
-          rowGap: 5,
+          flexDirection: "row",
+          paddingHorizontal: 26,
+          paddingVertical: 7,
+          borderWidth: 2,
+          borderColor: "#5271FF",
+          color: "white",
+          borderRadius: 5,
+          backgroundColor: "#5271FF",
+        }}
+        onPress={() => { Linking.openURL(`tel:${data.shopowner_id.phonenumber}`) }}
+      >
+        <Text style={{ color: "white" }}>Call Now </Text>
+        <MaterialIcons name="phone-in-talk" size={13} color="white" />
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={{
+          flexDirection: "row",
+          paddingHorizontal: 26,
+          paddingVertical: 7,
+          borderWidth: 2,
+          borderColor: "#5271FF",
+          color: "white",
+          borderRadius: 5,
+          backgroundColor: "#5271FF",
+        }}
+        onPress={() => {
+          data.gmaplink ? Linking.openURL(data.shopowner_id.gmaplink) : showToast()
         }}
       >
-        <Text style={{ color: COLORS.primary, marginTop: 3, fontSize: 14 }}>
-          Reply message:
-        </Text>
-        <View style={{}}>
-          <ScrollView style={{ borderRadius: 0.5, borderWidth: 0.05 }}>
-            <Text style={{ padding: 5, color: "#3C4142" }}>
-              {data.replymessage}
-            </Text>
-          </ScrollView>
-        </View>
-        <View
-          style={{
-            height: 50,
-            flexDirection: "row",
-          }}
-        >
-          <View
-            style={{
-              width: "50%",
-              justifyContent: "center",
-              alignItems: "flex-start",
-            }}
-          >
-            {data.deliverystatus ? (
-              <Text>
-                Delivery:<Text style={{ color: "green" }}> Yes</Text>
-              </Text>
-            ) : (
-              <Text>
-                Delivery:<Text style={{ color: "red" }}> NO</Text>
-              </Text>
-            )}
-          </View>
-          <View
-            style={{
-              width: "50%",
-              flexDirection: "row",
-              justifyContent: "space-evenly",
-              alignItems: "center",
-              gap: 10,
-            }}
-          >
-            <TouchableOpacity
-              onPress={() => {
-                Linking.openURL(`tel:${data.shopowner_id.phonenumber}`);
-              }}
-              style={styles.storecall}
-            >
-              <MaterialIcons name="phone-in-talk" size={33} color="#5271FF" />
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => {
-                data.shopowner_id.gmaplink
-                  ? Linking.openURL(data.shopowner_id.gmaplink)
-                  : showToast("Google map is not linked");
-              }}
-              style={styles.storedirection}
-            >
-              <Entypo name="location" size={30} color="#5271FF" />
-            </TouchableOpacity>
-          </View>
-        </View>
-      </View>
+        <Text style={{ color: "white" }}>Direction </Text>
+        <FontAwesome5 name="directions" size={13} color="white" />
+      </TouchableOpacity>
     </View>
-  );
+  </View>
+  )
 };
 const AccordionItem = ({ data, token, onRefresh }) => {
   const [expanded, setExpanded] = useState(false);
@@ -217,7 +202,7 @@ const navigation = useNavigation();
   const timestamp = data.expiryAt;
   const localDateTime = moment(timestamp)
     .utcOffset("+00:00")
-    .format("DD-MM-YYYY h:mm:ss A");
+    .format("DD-MM-YYYY h:mm A");
 
   const deactivatejob = async () => {
     try {
@@ -250,6 +235,11 @@ const navigation = useNavigation();
       }
     }
   };
+  const deactivatedToast = () =>{
+    
+    showToast("you can't edit deactivated jobs")
+ 
+  }
   const handleDeleteJob = async () => {
     try {
       setdeleteindicator(true);
@@ -343,18 +333,18 @@ const navigation = useNavigation();
         <View style={styles.thread}>
           <Animated.View style={styles.backLayer}>
             <View style={styles.backLayercontainer}>
-              <View style={{ height: "17%", alignItems: "flex-start" }}>
+              <View style={{ height: "20%", alignItems: "flex-start" }}>
                 <TouchableOpacity onPress={handleBackIconPress}>
                   <Entypo
                     name="chevron-with-circle-left"
-                    size={22}
+                    size={30}
                     color="white"
                   />
                 </TouchableOpacity>
               </View>
               <View
                 style={{
-                  height: "84%",
+                  height: "80%",
                   alignItems: "flex-start",
                   justifyContent: "space-evenly",
                 }}
@@ -387,15 +377,17 @@ const navigation = useNavigation();
                         )
                       }
                     >
-                      <AntDesign name="delete" size={19} color="white" />
-                      <Text style={{ color: "white" }}>Delete</Text>
+                      <AntDesign name="delete" size={17} color="white" />
+                      <Text style={{ color: "white",fontSize:13 }}>Delete</Text>
                     </TouchableOpacity>
                   </View>
                 )}
                 {data.status && (
-                  <View style={{ marginLeft: 20 }}>
+                  <View style={{ marginLeft: 30 }}>
                     {deactivateindicator ? (
-                      <ActivityIndicator color={"white"} size={22} />
+                      <View style={{ marginLeft: 30 }}>
+                        <ActivityIndicator color={"white"} size={22} />
+                      </View>
                     ) : (
                       <TouchableOpacity
                         style={{ alignItems: "center", gap: 5 }}
@@ -425,7 +417,7 @@ const navigation = useNavigation();
                           size={20}
                           color="white"
                         />
-                        <Text style={{ color: "white" }}>Deactivate</Text>
+                        <Text style={{ color: "white",fontSize:13 }}>Deactivate</Text>
                       </TouchableOpacity>
                     )}
                   </View>
@@ -481,15 +473,23 @@ const navigation = useNavigation();
                   )}
                 </View>
                 <View style={styles.jobCardBottom}>
+                  {data.status ? 
                   <TouchableOpacity style={styles.editJob} onPress={()=>{navigation.navigate('Editjob',{token:token,job_id:data._id})}}>
                     <Text style={{ color: "white" }}>
                       <AntDesign name="edit" size={12} color="white" /> Edit Job
                     </Text>
                   </TouchableOpacity>
+                  :
+                  <TouchableOpacity style={styles.editJob} onPress={()=>{deactivatedToast()}}>
+                  <Text style={{ color: "white" }}>
+                    <AntDesign name="edit" size={12} color="white" /> Edit Job
+                  </Text>
+                </TouchableOpacity>
+}
                   <View style={styles.viewResponse}>
                   {jobreply.length > 0 ? (
                     <>
-                      <Text style={{ color: "green" }}>
+                      <Text style={{ color: COLORS.primary }}>
                         {jobreply.length} response
                       </Text>
                     </>
@@ -894,7 +894,7 @@ const Threadsavailable = ({ route }) => {
     );
   }
   return (
-    <View
+   <View
       style={{
         flex: 1,
         flexDirection: "column",
@@ -920,26 +920,9 @@ const Threadsavailable = ({ route }) => {
             />
           ))}
         </View>
-        <Text style={{ textAlign: "center" }}>
-          Your jobs will automatically deactivate after 24 hours.{"\n"}
-          Delete the jobs you don't need.
-        </Text>
+       
       </ScrollView>
-      <TouchableOpacity
-        onPress={() => {
-          onRefresh();
-        }}
-        style={{
-          height: 50,
-          width: "100%",
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        <Ionicons name="refresh" size={24} color="black" />
-        <Text style={{ fontSize: 16 }}>Refresh</Text>
-      </TouchableOpacity>
+     
     </View>
   );
 };
@@ -1046,9 +1029,8 @@ const styles = StyleSheet.create({
   responsecontainer: {
     backgroundColor: "white",
     borderRadius: 5,
-    paddingHorizontal: 10,
-    paddingVertical: 10,
-    marginHorizontal: 5,
+  
+    marginHorizontal: "5%",
   },
   centeredView: {
     flex: 1,
@@ -1091,7 +1073,7 @@ const styles = StyleSheet.create({
   },
   backLayer: {
     flexDirection: "row",
-    height: 150,
+    height: 165,
     width: "100%",
     borderRadius: 8, // Ensure child view doesn't overflow
   },
@@ -1115,7 +1097,7 @@ const styles = StyleSheet.create({
   },
   jobCardTop: {
     flexDirection: "row",
-    height: "70%",
+    height: "65%",
     paddingVertical: 10,
     paddingHorizontal: 20,
   },
@@ -1144,7 +1126,7 @@ const styles = StyleSheet.create({
   },
   jobCardBottom: {
     flexDirection: "row",
-    height: "30%",
+    height: "35%",
     width: "100%",
     alignItems: "flex-start",
     justifyContent: "space-evenly",
@@ -1174,5 +1156,57 @@ const styles = StyleSheet.create({
     padding: 2,
     marginBottom: 15,
     backgroundColor: "white",
+  },resultcardtop: {
+    flexDirection: "row",
+    height: 65,
+  },
+  resultcard: {
+    flex: 1,
+    backgroundColor: "white",
+    borderRadius: 5,
+    elevation: 3,
+    margin:10,
+  },
+  storeprofileImage: {
+    padding: 5,
+    width: "25%",
+    alignItems: "center",
+  },
+  resultcardtopdetails: {
+    flexDirection: "row",
+    padding: 5,
+    width: "70%",
+  },
+  resultcardmiddle: {
+    paddingHorizontal: 20,
+    paddingVertical: 3,
+    justifyContent: "space-evenly",
+    height: 60,
+    borderBottomWidth: 0.19,
+    borderColor: "gray",
+  },
+  resultcardctc: {
+    flexDirection: "row",
+    marginVertical: 10,
+    justifyContent: "space-evenly",
+  },
+  storename: {
+    fontSize: 21,
+    fontWeight: "medium",
+  },
+  storeavailable: {
+    padding: 4,
+    borderRadius: 5,
+    fontSize: 12,
+    color: "#00BF63",
+  },
+  storenotavailable: {
+    padding: 4,
+    borderRadius: 5,
+    fontSize: 12,
+    color: "red",
+  },
+  dropdownItemStyles: {
+    color: "red",
   },
 });

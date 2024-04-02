@@ -57,14 +57,17 @@ const Editjob = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.label}>Job Title:</Text>
+      <Text style={styles.pagetitle}>Edit Job</Text>
+      <View style={{width:'85%'}}>
+      
+      <Text style={styles.label}>Job Title</Text>
       <TextInput
         style={styles.input}
         value={jobtitle}
         onChangeText={text => setJobTitle(text)}
         placeholder="Enter job title"
       />
-      <Text style={styles.label}>Job Description:</Text>
+      <Text style={styles.label}>Job Description</Text>
       <TextInput
         style={[styles.input, { height: 100 }]}
         value={jobdescription}
@@ -83,6 +86,8 @@ const Editjob = () => {
           <Text style={styles.buttonText}>Save Changes</Text>
         )}
       </TouchableOpacity>
+      <Text style={{textAlign:"center"}}>Once you updated refresh the jobs</Text>
+      </View>
     </View>
   );
 };
@@ -90,8 +95,13 @@ const Editjob = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
     justifyContent: 'center',
+    alignItems:'center'
+  },
+  pagetitle:{
+    fontSize:25,
+    marginBottom:50,
+    fontWeight:'bold'
   },
   label: {
     fontSize: 18,
@@ -103,12 +113,14 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     padding: 10,
     marginBottom: 20,
+    // width:'90%'
   },
   button: {
     backgroundColor: COLORS.primary,
     borderRadius: 5,
     padding: 10,
     alignItems: 'center',
+    marginBottom:30
   },
   buttonText: {
     color: '#FFFFFF',

@@ -25,6 +25,7 @@ import { LinearProgress } from "@rneui/base";
 import { COLORS } from "../../constants/Theme";
 import ImagePopup from "../ShopownerHomepage/Imagepopup";
 import * as SecureStore from "expo-secure-store";
+import { FlatList } from "react-native-gesture-handler";
 const height = Dimensions.get("window").height;
 
 const Shopcard = ({ data, index }) => {
@@ -416,7 +417,7 @@ const CustomerSearchBar = () => {
               placeholder="Location"
               dropdownTextStyles={{ color: "grey" }}
               inputStyles={{ color: "grey" }}
-              closeicon={<AntDesign name="close" size={30} color="black" />}
+              closeicon={<AntDesign name="close" size={30}color={COLORS.gray} />}
             />
           </View>
           <View style={{ width: "45%" }}>
@@ -427,7 +428,7 @@ const CustomerSearchBar = () => {
               placeholder="category"
               dropdownTextStyles={{ color: "grey" }}
               inputStyles={{ color: "grey" }}
-              closeicon={<AntDesign name="close" size={30} color="black" />}
+              closeicon={<AntDesign name="close" size={30} color={COLORS.gray} />}
             />
           </View>
           
@@ -441,23 +442,24 @@ const CustomerSearchBar = () => {
         )}
       </View>
 
-      <ScrollView
-        style={[
-          styles.resultcontainer,
-          { backgroundColor: "#F7F9FF" },
-        ]}
-      >
-        {shopowner.length === 0 && <View><Text style={{ textAlign: 'center' }}>
-          {resultmessage + "..."}
-        </Text>
+      <FlatList
+      style={[
+        styles.resultcontainer,
+        { backgroundColor: "#F7F9FF" },
+      ]}
+      data={shopowner}
+      keyExtractor={(item, index) => index.toString()}
+      ListEmptyComponent={() => (
+        <View>
+          <Text style={{ textAlign: 'center' }}>
+            {resultmessage + "..."}
+          </Text>
         </View>
-        }
-        {shopowner.map((data, index) => {
-          return (
-            <Shopcard data={data} key={index}></Shopcard>
-          )
-        })}
-      </ScrollView>
+      )}
+      renderItem={({ item, index }) => (
+        <Shopcard data={item} key={index} />
+      )}
+    />
     </View>
   );
 };

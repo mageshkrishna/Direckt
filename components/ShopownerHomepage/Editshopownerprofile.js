@@ -30,7 +30,7 @@ const width = Dimensions.get("window").width;
 
 const EditOwnerProfile = () => {
   const navigation = useNavigation();
-  const [businessname, setbusinessname] = useState("Anbu Stores");
+  const [businessname, setbusinessname] = useState("");
   const [businessabout, setbusinessabout] = useState("");
   const [phonenumber, setphonenumber] = useState("");
   const [profilepic, setprofilepic] = useState("");
@@ -155,7 +155,7 @@ const EditOwnerProfile = () => {
       showToast('Please enter a valid phone number');
       return;
     }
-    if (businessname===null) {
+    if (businessname==="") {
       showToast('Please enter your business name');
       return;
     }
@@ -375,7 +375,7 @@ const EditOwnerProfile = () => {
             data={chooselocation}
             save="value"
             style={styles.storelocationselect}
-            closeicon={<AntDesign name="close" size={30} color="black" />}
+            closeicon={<AntDesign name="close" size={30} color={COLORS.gray} />}
           
           />
 
@@ -400,7 +400,7 @@ const EditOwnerProfile = () => {
             data={choosedata}
             save="value"
              
-            closeicon={<AntDesign name="close" size={30} color="black" />}
+            closeicon={<AntDesign name="close" size={30} color={COLORS.gray} />}
           />
         </View>
         <View style={styles.editfield}>
