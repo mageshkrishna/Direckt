@@ -343,7 +343,7 @@ const navigation = useNavigation();
         <View style={styles.thread}>
           <Animated.View style={styles.backLayer}>
             <View style={styles.backLayercontainer}>
-              <View style={{ height: "16%", alignItems: "flex-start" }}>
+              <View style={{ height: "17%", alignItems: "flex-start" }}>
                 <TouchableOpacity onPress={handleBackIconPress}>
                   <Entypo
                     name="chevron-with-circle-left"
@@ -360,9 +360,11 @@ const navigation = useNavigation();
                 }}
               >
                 {deleteindicator ? (
-                  <ActivityIndicator color={"white"} size={22} />
+                  <View style={{ marginLeft: 40 }}>
+                    <ActivityIndicator color={"white"} size={22} />
+                    </View>
                 ) : (
-                  <View style={{ marginLeft: 35 }}>
+                  <View style={{ marginLeft: 40 }}>
                     <TouchableOpacity
                       style={{ alignItems: "center", gap: 5 }}
                       onPress={() =>
@@ -504,12 +506,12 @@ const navigation = useNavigation();
           
                 </View>
               </View>
-              <View style={{ width: 20, justifyContent: "center" }}>
+              <View style={{ width: 27, justifyContent: "center" ,position:'absolute',right:-10,marginVertical:50}}>
                 <TouchableOpacity
                   style={styles.dragBtn}
                   onPress={handleDragBtnPress}
                 >
-                  <AntDesign name="delete" size={15} color="black" />
+                  <AntDesign name="delete" size={22} color="black" />
                 </TouchableOpacity>
               </View>
             </Animated.View>
@@ -1089,14 +1091,14 @@ const styles = StyleSheet.create({
   },
   backLayer: {
     flexDirection: "row",
-    height: 180,
+    height: 150,
     width: "100%",
     borderRadius: 8, // Ensure child view doesn't overflow
   },
   backLayercontainer: {
     width: "60%",
     height: "100%",
-    padding: 20,
+    padding: 10,
     backgroundColor: "red",
     borderRadius: 8,
   },
