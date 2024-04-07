@@ -36,8 +36,8 @@ const EditOwnerProfile = () => {
   const [profilepic, setprofilepic] = useState("");
   const [photos, setphotos] = useState([]);
   const [gmaplink, setgmaplink] = useState('');
-  const [address, setaddress] = useState('address');
-  const [deliverylocation, setdeliverylocation] = useState();
+  const [address, setaddress] = useState('');
+  const [deliverylocation, setdeliverylocation] = useState("");
   const [location, setlocation] = useState("");
   const [category, setcategory] = useState([]);
   const [category2, setcategory2] = useState([]);
@@ -141,10 +141,9 @@ const EditOwnerProfile = () => {
     return phoneNumberRegex.test(phone);
   }
   const updateshopowner = async () => {
+
     if(gmaplink){
-    if (gmaplink.trim() === '') {
-      showToast('Enter a valid Google map Link');
-    }
+
       if (!isValidUrl(gmaplink)) {
         showToast('Enter a valid Google map Link');
         return;
@@ -155,28 +154,55 @@ const EditOwnerProfile = () => {
       showToast('Please enter a valid phone number');
       return;
     }
-    if (businessname==="") {
+    if (!businessname) {
       showToast('Please enter your business name');
       return;
     }
-    setuploading(true)
+    if(businessname){
+      if(businessname.trim() === ""){
+        showToast('Please enter a valid Business name');
+      return;
+      }
+    }
+    if(businessabout){
+      if(businessabout.trim() === ""){
+        showToast('Please enter a valid Business about');
+      return;
+      }
+    }
+    if(address){
+      if(address.trim() === ""){
+        showToast('Please enter a valid address');
+      return;
+      }
+    }
+    if(deliverylocation){
+      if(deliverylocation.trim() === ""){
+        showToast('Please enter a valid delivery location');
+        return;
+      }
+    }
+
+
+    
     const formdata = {
       shopownerId: shopownerId,
       updateFields: {
         businessname: businessname,
         phonenumber: phonenumber,
-        businessabout: businessabout.trim(),
+        businessabout: businessabout,
         profilepic: profilepic,
         photos: photos,
         location: location,
         category: category.length === 0 ? category2 : category,
         gmaplink: gmaplink,
-        address: address.trim(),
-        deliverylocation: deliverylocation.trim(),
+        address: address,
+        deliverylocation: deliverylocation,
       },
       email: email
     };
     try {
+      setuploading(true)
       const updateuser = await axios.put(
         `https://direckt-copy1.onrender.com/shopowner/editshopowner`,
         formdata

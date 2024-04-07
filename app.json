@@ -41,7 +41,7 @@
         "android.permission.RECORD_AUDIO"
       ],
       "package": "com.direcktapp.direckt",
-      "versionCode": 2
+      "versionCode": 4
     },
     "web": {
       "favicon": "./assets/Direcktlogo.png"

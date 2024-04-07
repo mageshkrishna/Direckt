@@ -62,7 +62,7 @@ UIManager.setLayoutAnimationEnabledExperimental &&
 const InsideAccorditon = ({ data }) => {
   const [showPopup, setShowPopup] = useState(false);
   const navigation = useNavigation();
-
+ 
   return (
     <View style={styles.resultcard}>
     <View style={styles.resultcardtop}>
@@ -281,7 +281,7 @@ const navigation = useNavigation();
   }, [data]);
   const toggleExpand = () => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-    console.log("toggele expanded")
+   
     setExpanded(!expanded);
   };
   const translationX = useSharedValue(0);
