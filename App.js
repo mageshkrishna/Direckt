@@ -26,12 +26,12 @@ import { Provider } from "react-redux";
 import { configureStore } from "@reduxjs/toolkit";
 import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
-
 import * as SecureStore from 'expo-secure-store';
 import CustomerAccountDelete from './components/customerhomepage/CustomerAccountDelete';
 import ShopOwnerAccountDelete from './components/ShopownerHomepage/ShopOwnerAccountDelete';
 import ReportShop from './components/customerhomepage/ReportShop';
 import Editjob from './components/customerhomepage/Editjob';
+import { ActionSheetProvider} from '@expo/react-native-action-sheet';
 const Stack = createStackNavigator();
 const store = configureStore({reducer: rootReducer});
 
@@ -115,6 +115,7 @@ export default function App() {
 
   return (
     <Provider store={store}>
+      <ActionSheetProvider>
       <NavigationContainer>
         <StatusBar hidden={false} backgroundColor={COLORS.primary}/>
         <Stack.Navigator initialRouteName="Direcktsvg">
@@ -230,6 +231,7 @@ export default function App() {
           />
         </Stack.Navigator>
       </NavigationContainer>
+      </ActionSheetProvider>
     </Provider>
   );
 }

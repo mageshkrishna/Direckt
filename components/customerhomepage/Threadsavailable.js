@@ -180,7 +180,7 @@ const InsideAccorditon = ({ data }) => {
           backgroundColor: "#5271FF",
         }}
         onPress={() => {
-          data.gmaplink ? Linking.openURL(data.shopowner_id.gmaplink) : showToast()
+          data.shopowner_id.gmaplink ? Linking.openURL(data.shopowner_id.gmaplink) : showToast('google map not linked')
         }}
       >
         <Text style={{ color: "white" }}>Direction </Text>
@@ -516,183 +516,6 @@ const navigation = useNavigation();
               </View>
             </Animated.View>
           </Animated.View>
-
-          {/* {data.status ? (
-            <View style={styles.expirationtitle}>
-              <Text style={styles.expireText}>
-                Job expire at {localDateTime}
-              </Text>
-            </View>
-          ) : (
-            <></>
-          )}
-          <View style={styles.threadcardsection}>
-            <TouchableOpacity
-              style={styles.threadImage}
-              onPress={() => setShowPopup(true)}
-            >
-              {data.image_url ? (
-                <Image
-                  source={{
-                    uri: data.image_url,
-                  }}
-                  style={{
-                    height: "100%",
-                    width: "100%",
-                    backgroundColor: "white",
-                  }}
-                />
-              ) : (
-                <Image
-                  source={{
-                    uri: "https://img.freepik.com/premium-vector/default-image-icon-vector-missing-picture-page-website-design-mobile-app-no-photo-available_87543-11093.jpg",
-                  }}
-                  style={{
-                    height: "100%",
-                    width: "100%",
-                    backgroundColor: "white",
-                  }}
-                />
-              )}
-              {showPopup && data.image_url ? (
-                <ImagePopup
-                  imageUrl={data.image_url}
-                  onClose={() => setShowPopup(false)}
-                />
-              ) : (
-                <></>
-              )}
-              <View style={{ flexDirection: "row", alignItems: "center" }}>
-                <MaterialIcons name="category" size={17} color="black" />
-                <Text style={styles.threadcategory} numberOfLines={1}>
-                  {data.category}
-                </Text>
-              </View>
-            </TouchableOpacity>
-            <Pressable style={styles.threaddetails} onPress={toggleExpand}>
-              {data.status ? (
-                <View
-                  style={{
-                    flexDirection: "row",
-                    alignItems: "center",
-                    justifyContent: "flex-end",
-                  }}
-                >
-                  <TouchableOpacity
-                    style={{
-                      flexDirection: "row",
-                      alignItems: "center",
-                      justifyContent: "flex-end",
-                    }}
-                    onPress={() =>
-                      Alert.alert(
-                        "Confirm Deactivation",
-                        "You can Deactivate the Job only once. Do you want to deactivate?",
-                        [
-                          {
-                            text: "Cancel",
-                            style: "cancel",
-                          },
-                          {
-                            text: "Deactivate", // Corrected from "deactivated" to "Deactivate"
-                            onPress: async () => {
-                              await deactivatejob();
-                              onRefresh();
-                            },
-                          },
-                        ],
-                        { cancelable: true }
-                      )
-                    }
-                  >
-                    {deactivateindicator && (
-                      <ActivityIndicator size={18} color={COLORS.primary}/>
-                    )}
-                    <Text style={styles.deactivate}>Deactivate</Text>
-                  </TouchableOpacity>
-                </View>
-              ) : (
-                <View
-                  style={{
-                    flexDirection: "row",
-                    alignItems: "center",
-                    justifyContent: "flex-end",
-                  }}
-                >
-                  <Text style={styles.deactivated}>Not active</Text>
-                </View>
-              )}
-              <Text style={styles.threadtitle} numberOfLines={2}>
-                {data.jobtitle}
-              </Text>
-              <Text style={styles.threaddes} numberOfLines={3}>
-                {data.jobdescription}
-              </Text>
-              <View
-                style={{
-                  flexDirection: "row",
-                  marginTop: 3,
-                  alignItems: "center",
-                  justifyContent: "space-evenly",
-                }}
-              >
-                <TouchableOpacity
-                  style={{
-                    flexDirection: "row",
-                    alignItems: "center",
-                    justifyContent: "space-evenly",
-                  }}
-                  onPress={() =>
-                    Alert.alert(
-                      "Confirm Deletion",
-                      "Do you want to delete?",
-                      [
-                        {
-                          text: "Cancel",
-                          style: "cancel",
-                        },
-                        {
-                          text: "delete",
-                          onPress: () => {
-                            handleDeleteJob();
-                          },
-                        },
-                      ],
-                      { cancelable: true }
-                    )
-                  }
-                >
-                  {deleteindicator ? (
-                    <ActivityIndicator size={18} color="red" />
-                  ) : (
-                    <AntDesign name="delete" size={12} color="red" />
-                  )}
-
-                  <Text style={styles.threadowner}> Delete</Text>
-                </TouchableOpacity>
-                <View style={styles.viewdetails}>
-                  {jobreply.length > 0 ? (
-                    <>
-                      <Text style={{ color: "green" }}>
-                        {jobreply.length} response
-                      </Text>
-                    </>
-                  ) : (
-                    <TouchableOpacity
-                      onPress={() => {
-                        ToastAndroid.show(
-                          "No responses come back after some minutes",
-                          ToastAndroid.SHORT
-                        );
-                      }}
-                    >
-                      <Text>no response</Text>
-                    </TouchableOpacity>
-                  )}
-                </View>
-              </View>
-            </Pressable>
-          </View> */}
         </View>
       </Pressable>
       {expanded && jobreply && jobreply.length > 0 && (
@@ -819,7 +642,7 @@ const Threadsavailable = ({ route }) => {
 
     setTimeout(() => {
       setRefreshing(false); // Set refreshing back to false after data is fetched
-    }, 2000);
+    }, 200);
   }, []);
 
   if (indicator) {
