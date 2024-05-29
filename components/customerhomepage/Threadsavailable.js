@@ -46,11 +46,15 @@ import {
   useNavigation,
   useRoute,
 } from "@react-navigation/native";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { COLORS } from "../../constants/Theme";
+import { strings } from "../../locals/translations";
+import  createnewauthtoken from '../RefreshSession/RefreshSession'
+import { setCustomerToken } from "../../redux/customerAuthActions";
 
 const height = Dimensions.get("window").height;
 const width = Dimensions.get("window").width;
+
 
 // Now you can use these variables and components without any conflicts
 
@@ -62,135 +66,137 @@ UIManager.setLayoutAnimationEnabledExperimental &&
 const InsideAccorditon = ({ data }) => {
   const [showPopup, setShowPopup] = useState(false);
   const navigation = useNavigation();
- 
+
   return (
     <View style={styles.resultcard}>
-    <View style={styles.resultcardtop}>
-      <View style={styles.storeprofileImage}>
-        <TouchableOpacity
-          style={{ height: "100%", width: "80%", borderRadius: 5 }}
-          onPress={() => setShowPopup(true)}
-        >
-          {data.shopowner_id.profilepic ? (
-            <Image
-              source={{
-                uri: data.shopowner_id.profilepic,
-              }}
-              style={{ height: "100%", width: "100%", borderRadius: 5 }}
-            />
-          ) : (
-            <Image
-              source={require('../../assets/shop.png')}
-              style={{ height: "100%", width: "100%", borderRadius: 5 }}
-            />
-          )}
-        </TouchableOpacity>
-      </View>
-
-      {showPopup && (
-        data.profilepic ? (
-          <ImagePopup
-            imageUrl={data.shopowner_id.profilepic}
-            onClose={() => setShowPopup(false)}
-          />
-        ) : null
-      )}
-
-      <View style={styles.resultcardtopdetails}>
-        <View style={{ flex: 1, justifyContent: "center" }}>
-          <Text
-            style={[styles.storename]}
-            numberOfLines={1}
+      <View style={styles.resultcardtop}>
+        <View style={styles.storeprofileImage}>
+          <TouchableOpacity
+            style={{ height: "100%", width: "80%", borderRadius: 5 }}
+            onPress={() => setShowPopup(true)}
           >
-            {data.shopowner_id.businessname}
-          </Text>
-          {data.deliverystatus ? (
-            <Text style={{ fontSize: 12 }}>
-              Delivery:<Text style={{ color: "green" }}> Yes</Text>
-            </Text>
-          ) : (
-            <Text style={{ fontSize: 12 }}>
-              Delivery:<Text style={{ color: "red" }}> NO</Text>
-            </Text>
-          )}
+            {data.shopowner_id.profilepic ? (
+              <Image
+                source={{
+                  uri: data.shopowner_id.profilepic,
+                }}
+                style={{ height: "100%", width: "100%", borderRadius: 5 }}
+              />
+            ) : (
+              <Image
+                source={require('../../assets/shop.png')}
+                style={{ height: "100%", width: "100%", borderRadius: 5 }}
+              />
+            )}
+          </TouchableOpacity>
         </View>
-        <TouchableOpacity
-          style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
-          onPress={() => {
-            navigation.navigate("storeprofile", { _id: data.shopowner_id._id });
-          }}
-        >
-          <View
-            style={{
-              flexDirection: "row",
-              paddingHorizontal: 10,
-              paddingVertical: 5,
-              borderWidth: 2,
-              borderColor: "#5271FF",
-              color: "#5271FF",
-              borderRadius: 5,
 
+        {showPopup && (
+          data.shopowner_id.profilepic ? (
+            <ImagePopup
+              imageUrl={data.shopowner_id.profilepic}
+              onClose={() => setShowPopup(false)}
+            />
+          ) : null
+        )}
+
+        <View style={styles.resultcardtopdetails}>
+          <View style={{ flex: 1, justifyContent: "center" }}>
+            <Text
+              style={[styles.storename]}
+              numberOfLines={1}
+            >
+              {data.shopowner_id.businessname}
+            </Text>
+            {data.deliverystatus ? (
+              <Text style={{ fontSize: 12 }}>
+                Delivery:<Text style={{ color: "green" }}> Yes</Text>
+              </Text>
+            ) : (
+              <Text style={{ fontSize: 12 }}>
+                Delivery:<Text style={{ color: "red" }}> NO</Text>
+              </Text>
+            )}
+          </View>
+          <TouchableOpacity
+            style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
+            onPress={() => {
+              navigation.navigate("storeprofile", { _id: data.shopowner_id._id });
             }}
           >
-            <Text style={{ color: "#5271FF", fontSize: 12 }}>
-              View Profile{" "}
-            </Text>
-            <Feather name="send" size={14} color="#5271FF" />
-          </View>
+            <View
+              style={{
+                flexDirection: "row",
+                paddingHorizontal: 10,
+                paddingVertical: 5,
+                borderWidth: 2,
+                borderColor: "#5271FF",
+                color: "#5271FF",
+                borderRadius: 5,
+
+              }}
+            >
+              <Text style={{ color: "#5271FF", fontSize: 12 }}>
+                View Profile{" "}
+              </Text>
+              <Feather name="send" size={14} color="#5271FF" />
+            </View>
+          </TouchableOpacity>
+        </View>
+      </View>
+      <View style={styles.resultcardmiddle}>
+        <Text style={{ color: COLORS.primary, marginTop: 3, fontSize: 13 }}>
+          Reply message:
+        </Text>
+        <Text
+          style={{ color: "grey", fontSize: 13, marginVertical: 5 }}
+          numberOfLines={2}
+        >
+          {data.replymessage}
+        </Text>
+      </View>
+      <View style={styles.resultcardctc}>
+        <TouchableOpacity
+          style={{
+            flexDirection: "row",
+            paddingHorizontal: 26,
+            paddingVertical: 7,
+            borderWidth: 2,
+            borderColor: "#5271FF",
+            color: "white",
+            borderRadius: 5,
+            backgroundColor: "#5271FF",
+          }}
+          onPress={() => {
+            Linking.openURL(`tel:${data.shopowner_id.phonenumber}`)
+          }}
+        >
+          <Text style={{ color: "white" }}>Call Now </Text>
+          <MaterialIcons name="phone-in-talk" size={13} color="white" />
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={{
+            flexDirection: "row",
+            paddingHorizontal: 26,
+            paddingVertical: 7,
+            borderWidth: 2,
+            borderColor: "#5271FF",
+            color: "white",
+            borderRadius: 5,
+            backgroundColor: "#5271FF",
+          }}
+          onPress={() => {
+            data.shopowner_id.gmaplink ? Linking.openURL(data.shopowner_id.gmaplink) : showToast("Google map is not Linked")
+          }}
+        >
+          <Text style={{ color: "white" }}>Direction </Text>
+          <FontAwesome5 name="directions" size={13} color="white" />
         </TouchableOpacity>
       </View>
     </View>
-    <View style={styles.resultcardmiddle}>
-      <Text style={{ color: COLORS.primary, marginTop: 3, fontSize: 13 }}>
-        Reply message:
-      </Text>
-      <Text
-        style={{ color: "grey", fontSize: 13, marginVertical: 5 }}
-        numberOfLines={2}
-      >
-        {data.replymessage}
-      </Text>
-    </View>
-    <View style={styles.resultcardctc}>
-      <TouchableOpacity
-        style={{
-          flexDirection: "row",
-          paddingHorizontal: 26,
-          paddingVertical: 7,
-          borderWidth: 2,
-          borderColor: "#5271FF",
-          color: "white",
-          borderRadius: 5,
-          backgroundColor: "#5271FF",
-        }}
-        onPress={() => { Linking.openURL(`tel:${data.shopowner_id.phonenumber}`) }}
-      >
-        <Text style={{ color: "white" }}>Call Now </Text>
-        <MaterialIcons name="phone-in-talk" size={13} color="white" />
-      </TouchableOpacity>
-      <TouchableOpacity
-        style={{
-          flexDirection: "row",
-          paddingHorizontal: 26,
-          paddingVertical: 7,
-          borderWidth: 2,
-          borderColor: "#5271FF",
-          color: "white",
-          borderRadius: 5,
-          backgroundColor: "#5271FF",
-        }}
-        onPress={() => {
-          data.gmaplink ? Linking.openURL(data.shopowner_id.gmaplink) : showToast()
-        }}
-      >
-        <Text style={{ color: "white" }}>Direction </Text>
-        <FontAwesome5 name="directions" size={13} color="white" />
-      </TouchableOpacity>
-    </View>
-  </View>
   )
 };
-const AccordionItem = ({ data, token, onRefresh }) => {
+const AccordionItem = ({ data, token, onRefresh, email }) => {
   const [expanded, setExpanded] = useState(false);
   const [jobreply, setjobreply] = useState([]);
   const [jobIdToDelete, setjobIdToDelete] = useState(data._id);
@@ -198,7 +204,8 @@ const AccordionItem = ({ data, token, onRefresh }) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [deleteindicator, setdeleteindicator] = useState(false);
   const [deactivateindicator, setdeactivateindicator] = useState(false);
-const navigation = useNavigation();
+  const dispatch = useDispatch()
+  const navigation = useNavigation();
   const timestamp = data.expiryAt;
   const localDateTime = moment(timestamp)
     .utcOffset("+00:00")
@@ -207,24 +214,41 @@ const navigation = useNavigation();
   const deactivatejob = async () => {
     try {
       setdeactivateindicator(true);
+      let authtoken = await SecureStore.getItemAsync("customertoken")
+      console.log("Customer authttoken", authtoken)
       const response = await axios.post(
         "https://direckt-copy1.onrender.com/Customerdata/changeactivestate",
         { _id: jobIdToDelete },
         {
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${authtoken}`,
             "Content-Type": "application/json",
           },
         }
       );
+      dispatch(setCustomerToken(authtoken))
       setdeactivateindicator(false);
       ToastAndroid.show("Job Deactivated", ToastAndroid.SHORT);
     } catch (error) {
-      setdeactivateindicator(false);
-      if (axios.isAxiosError(error)) {
+        console.log(error.response.status)
+        if(error.response.status === 429){
+          showToast("Token expired")
+          const newtoken = await createnewauthtoken(email)
+          console.log(newtoken)
+          if(newtoken){
+            await SecureStore.setItemAsync('customertoken',newtoken);
+            await deactivatejob()
+          }
+          else{
+            alert("No received")
+          }
+        }
+
+      else if (axios.isAxiosError(error)) {
         // Axios-related error
         if (error.response) {
           // Response received with an error status code
+          console.log(error.response.data)
           showToast(`Error: ${error.response.data.error}`);
         } else {
           // Network error (no response received)
@@ -234,21 +258,25 @@ const navigation = useNavigation();
         showToast("An error occurred. Please try again.");
       }
     }
+    finally{
+      setdeactivateindicator(false);
+    }
   };
-  const deactivatedToast = () =>{
-    
+  const deactivatedToast = () => {
+
     showToast("you can't edit deactivated jobs")
- 
+
   }
   const handleDeleteJob = async () => {
     try {
       setdeleteindicator(true);
+      let authtoken = await SecureStore.getItemAsync("customertoken")
       const response = await axios.delete(
         "https://direckt-copy1.onrender.com/Customerdata/deletejob",
         {
           params: { _id: jobIdToDelete },
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${authtoken}`,
             "Content-Type": "application/json",
           },
         }
@@ -257,15 +285,27 @@ const navigation = useNavigation();
       if (response.status === 200) {
         setModalVisible(!modalVisible);
       }
+      dispatch(setCustomerToken(authtoken))
       setdeleteindicator(false);
     } catch (error) {
-      setdeleteindicator(false);
-
-      if (axios.isAxiosError(error)) {
+        console.log(error.response.status)
+        if(error.response.status === 429){
+          showToast("Token expired")
+          const newtoken = await createnewauthtoken(email)
+          console.log(newtoken)
+          if(newtoken){
+            await SecureStore.setItemAsync('customertoken',newtoken);
+            await handleDeleteJob()
+          }
+          else{
+            alert("No received")
+          }
+        }
+      else if (axios.isAxiosError(error)) {
         // Axios-related error
         if (error.response) {
           // Response received with an error status code
-          showToast(`Error: ${error.response.data.error}`);
+          showToast(`Error: ${error.response.data.status}`);
         } else {
           // Network error (no response received)
           showToast("Network error. Please check your internet connection.");
@@ -274,6 +314,9 @@ const navigation = useNavigation();
         showToast("An error occurred. Please try again.");
       }
     }
+    finally{
+      setdeleteindicator(false);
+    }
   };
 
   useEffect(() => {
@@ -281,7 +324,7 @@ const navigation = useNavigation();
   }, [data]);
   const toggleExpand = () => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-   
+
     setExpanded(!expanded);
   };
   const translationX = useSharedValue(0);
@@ -299,9 +342,12 @@ const navigation = useNavigation();
   };
 
   const handleBackIconPress = () => {
-    // Reset the card's position
+    // Reset the card's positioner
     translationX.value = withSpring(0);
   };
+  const lang = useSelector(
+    (state) => state.appLanguage.language
+  );
   return (
     <View>
       <Pressable onPress={toggleExpand}>
@@ -352,22 +398,22 @@ const navigation = useNavigation();
                 {deleteindicator ? (
                   <View style={{ marginLeft: 40 }}>
                     <ActivityIndicator color={"white"} size={22} />
-                    </View>
+                  </View>
                 ) : (
                   <View style={{ marginLeft: 40 }}>
                     <TouchableOpacity
                       style={{ alignItems: "center", gap: 5 }}
                       onPress={() =>
                         Alert.alert(
-                          "Confirm Deletion",
-                          "Do you want to delete?",
+                          strings[`${lang}`].confirmdel,
+                          strings[`${lang}`].confirmdelmsg,
                           [
                             {
                               text: "Cancel",
                               style: "cancel",
                             },
                             {
-                              text: "delete",
+                              text: strings[`${lang}`].delete,
                               onPress: () => {
                                 handleDeleteJob();
                               },
@@ -378,7 +424,7 @@ const navigation = useNavigation();
                       }
                     >
                       <AntDesign name="delete" size={17} color="white" />
-                      <Text style={{ color: "white",fontSize:13 }}>Delete</Text>
+                      <Text style={{ color: "white", fontSize: 13 }}>{strings[`${lang}`].delete}</Text>
                     </TouchableOpacity>
                   </View>
                 )}
@@ -393,15 +439,15 @@ const navigation = useNavigation();
                         style={{ alignItems: "center", gap: 5 }}
                         onPress={() =>
                           Alert.alert(
-                            "Confirm Deactivation",
-                            "You can Deactivate the Job only once. Do you want to deactivate?",
+                            strings[`${lang}`].confirmdeactivate,
+                            strings[`${lang}`].confirmdeactivatemsg,
                             [
                               {
                                 text: "Cancel",
                                 style: "cancel",
                               },
                               {
-                                text: "Deactivate", // Corrected from "deactivated" to "Deactivate"
+                                text: strings[`${lang}`].deactivate, // Corrected from "deactivated" to "Deactivate"
                                 onPress: async () => {
                                   await deactivatejob();
                                   onRefresh();
@@ -417,7 +463,7 @@ const navigation = useNavigation();
                           size={20}
                           color="white"
                         />
-                        <Text style={{ color: "white",fontSize:13 }}>Deactivate</Text>
+                        <Text style={{ color: "white", fontSize: 13 }}>{strings[`${lang}`].deactivate}</Text>
                       </TouchableOpacity>
                     )}
                   </View>
@@ -439,21 +485,21 @@ const navigation = useNavigation();
                     {data.status ? (
                       <Text style={styles.expireTime}>
                         <Feather name="calendar" size={11} color="#444444" />{" "}
-                        expire on {localDateTime}
+                        {strings[`${lang}`].expire} {localDateTime}
                       </Text>
                     ) : (
                       <View
                         style={{ flexDirection: "row", alignItems: "center" }}
                       >
                         <Text style={{ fontSize: 12, color: "red" }}>
-                          Deactivated
+                        {strings[`${lang}`].deactivated}
                         </Text>
                       </View>
                     )}
                   </View>
                   {data.image_url &&
                     <TouchableOpacity style={[styles.jobImage]}
-                    onPress={() => setShowPopup(true)}
+                      onPress={() => setShowPopup(true)}
                     >
                       <Image
                         style={styles.image}
@@ -473,40 +519,40 @@ const navigation = useNavigation();
                   )}
                 </View>
                 <View style={styles.jobCardBottom}>
-                  {data.status ? 
-                  <TouchableOpacity style={styles.editJob} onPress={()=>{navigation.navigate('Editjob',{token:token,job_id:data._id})}}>
-                    <Text style={{ color: "white" }}>
-                      <AntDesign name="edit" size={12} color="white" /> Edit Job
-                    </Text>
-                  </TouchableOpacity>
-                  :
-                  <TouchableOpacity style={styles.editJob} onPress={()=>{deactivatedToast()}}>
-                  <Text style={{ color: "white" }}>
-                    <AntDesign name="edit" size={12} color="white" /> Edit Job
-                  </Text>
-                </TouchableOpacity>
-}
-                  <View style={styles.viewResponse}>
-                  {jobreply.length > 0 ? (
-                    <>
-                      <Text style={{ color: COLORS.primary }}>
-                        {jobreply.length} response
+                  {data.status ?
+                    <TouchableOpacity style={styles.editJob} onPress={() => { navigation.navigate('Editjob', { token: token, job_id: data._id, title:data.jobtitle, description:data.jobdescription, email:email }) }}>
+                      <Text style={{ color: "white" }}>
+                        <AntDesign name="edit" size={12} color="white" /> Edit Job
                       </Text>
-                    </>
-                  ) : (
-                    <TouchableOpacity
-                      onPress={() => {
-                        ToastAndroid.show("No responses come back after some minutes", ToastAndroid.SHORT);
-                      }}
-                    >
-                      <Text style={{color:COLORS.primary}}>no response</Text>
                     </TouchableOpacity>
-                  )}
-                </View>
-          
+                    :
+                    <TouchableOpacity style={styles.editJob} onPress={() => { deactivatedToast() }}>
+                      <Text style={{ color: "white" }}>
+                        <AntDesign name="edit" size={12} color="white" /> {strings[`${lang}`].editjob}
+                      </Text>
+                    </TouchableOpacity>
+                  }
+                  <View style={styles.viewResponse}>
+                    {jobreply.length > 0 ? (
+                      <>
+                        <Text style={{ color: COLORS.primary }}>
+                          {jobreply.length} {strings[`${lang}`].response}
+                        </Text>
+                      </>
+                    ) : (
+                      <TouchableOpacity
+                        onPress={() => {
+                          ToastAndroid.show("No responses come back after some minutes", ToastAndroid.SHORT);
+                        }}
+                      >
+                        <Text style={{ color: COLORS.primary }}>{strings[`${lang}`].noresponse}</Text>
+                      </TouchableOpacity>
+                    )}
+                  </View>
+
                 </View>
               </View>
-              <View style={{ width: 27, justifyContent: "center" ,position:'absolute',right:-10,marginVertical:50}}>
+              <View style={{ width: 27, justifyContent: "center", position: 'absolute', right: -10, marginVertical: 50 }}>
                 <TouchableOpacity
                   style={styles.dragBtn}
                   onPress={handleDragBtnPress}
@@ -516,183 +562,6 @@ const navigation = useNavigation();
               </View>
             </Animated.View>
           </Animated.View>
-
-          {/* {data.status ? (
-            <View style={styles.expirationtitle}>
-              <Text style={styles.expireText}>
-                Job expire at {localDateTime}
-              </Text>
-            </View>
-          ) : (
-            <></>
-          )}
-          <View style={styles.threadcardsection}>
-            <TouchableOpacity
-              style={styles.threadImage}
-              onPress={() => setShowPopup(true)}
-            >
-              {data.image_url ? (
-                <Image
-                  source={{
-                    uri: data.image_url,
-                  }}
-                  style={{
-                    height: "100%",
-                    width: "100%",
-                    backgroundColor: "white",
-                  }}
-                />
-              ) : (
-                <Image
-                  source={{
-                    uri: "https://img.freepik.com/premium-vector/default-image-icon-vector-missing-picture-page-website-design-mobile-app-no-photo-available_87543-11093.jpg",
-                  }}
-                  style={{
-                    height: "100%",
-                    width: "100%",
-                    backgroundColor: "white",
-                  }}
-                />
-              )}
-              {showPopup && data.image_url ? (
-                <ImagePopup
-                  imageUrl={data.image_url}
-                  onClose={() => setShowPopup(false)}
-                />
-              ) : (
-                <></>
-              )}
-              <View style={{ flexDirection: "row", alignItems: "center" }}>
-                <MaterialIcons name="category" size={17} color="black" />
-                <Text style={styles.threadcategory} numberOfLines={1}>
-                  {data.category}
-                </Text>
-              </View>
-            </TouchableOpacity>
-            <Pressable style={styles.threaddetails} onPress={toggleExpand}>
-              {data.status ? (
-                <View
-                  style={{
-                    flexDirection: "row",
-                    alignItems: "center",
-                    justifyContent: "flex-end",
-                  }}
-                >
-                  <TouchableOpacity
-                    style={{
-                      flexDirection: "row",
-                      alignItems: "center",
-                      justifyContent: "flex-end",
-                    }}
-                    onPress={() =>
-                      Alert.alert(
-                        "Confirm Deactivation",
-                        "You can Deactivate the Job only once. Do you want to deactivate?",
-                        [
-                          {
-                            text: "Cancel",
-                            style: "cancel",
-                          },
-                          {
-                            text: "Deactivate", // Corrected from "deactivated" to "Deactivate"
-                            onPress: async () => {
-                              await deactivatejob();
-                              onRefresh();
-                            },
-                          },
-                        ],
-                        { cancelable: true }
-                      )
-                    }
-                  >
-                    {deactivateindicator && (
-                      <ActivityIndicator size={18} color={COLORS.primary}/>
-                    )}
-                    <Text style={styles.deactivate}>Deactivate</Text>
-                  </TouchableOpacity>
-                </View>
-              ) : (
-                <View
-                  style={{
-                    flexDirection: "row",
-                    alignItems: "center",
-                    justifyContent: "flex-end",
-                  }}
-                >
-                  <Text style={styles.deactivated}>Not active</Text>
-                </View>
-              )}
-              <Text style={styles.threadtitle} numberOfLines={2}>
-                {data.jobtitle}
-              </Text>
-              <Text style={styles.threaddes} numberOfLines={3}>
-                {data.jobdescription}
-              </Text>
-              <View
-                style={{
-                  flexDirection: "row",
-                  marginTop: 3,
-                  alignItems: "center",
-                  justifyContent: "space-evenly",
-                }}
-              >
-                <TouchableOpacity
-                  style={{
-                    flexDirection: "row",
-                    alignItems: "center",
-                    justifyContent: "space-evenly",
-                  }}
-                  onPress={() =>
-                    Alert.alert(
-                      "Confirm Deletion",
-                      "Do you want to delete?",
-                      [
-                        {
-                          text: "Cancel",
-                          style: "cancel",
-                        },
-                        {
-                          text: "delete",
-                          onPress: () => {
-                            handleDeleteJob();
-                          },
-                        },
-                      ],
-                      { cancelable: true }
-                    )
-                  }
-                >
-                  {deleteindicator ? (
-                    <ActivityIndicator size={18} color="red" />
-                  ) : (
-                    <AntDesign name="delete" size={12} color="red" />
-                  )}
-
-                  <Text style={styles.threadowner}> Delete</Text>
-                </TouchableOpacity>
-                <View style={styles.viewdetails}>
-                  {jobreply.length > 0 ? (
-                    <>
-                      <Text style={{ color: "green" }}>
-                        {jobreply.length} response
-                      </Text>
-                    </>
-                  ) : (
-                    <TouchableOpacity
-                      onPress={() => {
-                        ToastAndroid.show(
-                          "No responses come back after some minutes",
-                          ToastAndroid.SHORT
-                        );
-                      }}
-                    >
-                      <Text>no response</Text>
-                    </TouchableOpacity>
-                  )}
-                </View>
-              </View>
-            </Pressable>
-          </View> */}
         </View>
       </Pressable>
       {expanded && jobreply && jobreply.length > 0 && (
@@ -720,7 +589,9 @@ const Threadsavailable = ({ route }) => {
   const [indicator, setindicator] = useState(false);
   const [token, settoken] = useState(null);
   const router = useRoute();
+  const dispatch = useDispatch()
   const v = false;
+
   useFocusEffect(
     React.useCallback(() => {
       const handleBackPress = () => {
@@ -747,7 +618,9 @@ const Threadsavailable = ({ route }) => {
     }
   }, [route.params]);
   const custoken = useSelector((state) => state.customerAuth.customertoken);
-
+  const lang = useSelector(
+    (state) => state.appLanguage.language
+  );
   useEffect(() => {
     setindicator(true);
     const fetchData = async () => {
@@ -756,7 +629,7 @@ const Threadsavailable = ({ route }) => {
           .then((value) => {
             settoken(value);
           })
-          .catch((error) => {});
+          .catch((error) => { });
         const data = await AsyncStorage.getItem("customerdata");
 
         const parsedData = JSON.parse(data);
@@ -794,13 +667,26 @@ const Threadsavailable = ({ route }) => {
         setdata(response.data.result);
         setindicator(false);
       } catch (error) {
-        setindicator(false);
+          console.log(error.response.status)
+          if(error.response.status === 429){
+            showToast("Token expired")
+            const newtoken = await createnewauthtoken(email)
+            console.log(newtoken)
+            if(newtoken){
+              await SecureStore.setItemAsync('customertoken',newtoken);
+              dispatch(setCustomerToken(newtoken))
+            }
+            else{
+              alert("No received")
+            }
+          }
+        
 
-        if (axios.isAxiosError(error)) {
+        else if (axios.isAxiosError(error)) {
           // Axios-related error
           if (error.response) {
             // Response received with an error status code
-            showToast(`Error: ${error.response.data.error}`);
+            showToast(`Error in: ${error.response.data.error}`);
           } else {
             // Network error (no response received)
             showToast("Network error. Please check your internet connection.");
@@ -808,6 +694,9 @@ const Threadsavailable = ({ route }) => {
         } else {
           showToast("An error occurred. Please try again.");
         }
+      }
+      finally{
+        setindicator(false);
       }
     };
 
@@ -887,14 +776,14 @@ const Threadsavailable = ({ route }) => {
             }}
           >
             <MaterialIcons name="add" size={14} color="white" />
-            <Text style={{ color: "white" }}> Create Job</Text>
+            <Text style={{ color: "white" }}>{strings[`${lang}`].create}</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>
     );
   }
   return (
-   <View
+    <View
       style={{
         flex: 1,
         flexDirection: "column",
@@ -908,7 +797,7 @@ const Threadsavailable = ({ route }) => {
         }
       >
         <Text style={{ textAlign: "center", marginTop: 10 }}>
-          You can only create 5 job at same time.
+          {strings[`${lang}`].createonlyjobs}
         </Text>
         <View>
           {data.map((item, index) => (
@@ -917,12 +806,13 @@ const Threadsavailable = ({ route }) => {
               data={item}
               token={token}
               onRefresh={onRefresh}
+              email = {email}
             />
           ))}
         </View>
-       
+
       </ScrollView>
-     
+
     </View>
   );
 };
@@ -957,9 +847,9 @@ const styles = StyleSheet.create({
   },
   thread: {
     flex: 1,
+    height:165,
     alignItems: "center",
     justifyContent: "center",
-
     marginVertical: "3%",
     marginHorizontal: "5%",
     borderRadius: 5,
@@ -1029,7 +919,7 @@ const styles = StyleSheet.create({
   responsecontainer: {
     backgroundColor: "white",
     borderRadius: 5,
-  
+
     marginHorizontal: "5%",
   },
   centeredView: {
@@ -1073,7 +963,7 @@ const styles = StyleSheet.create({
   },
   backLayer: {
     flexDirection: "row",
-    height: 165,
+    height: '100%',
     width: "100%",
     borderRadius: 8, // Ensure child view doesn't overflow
   },
@@ -1134,6 +1024,7 @@ const styles = StyleSheet.create({
   editJob: {
     backgroundColor: "#8C52FF",
     padding: 8,
+    height:38,
     width: "40%",
     borderRadius: 5,
     alignItems: "center",
@@ -1143,6 +1034,8 @@ const styles = StyleSheet.create({
   viewResponse: {
     backgroundColor: "white",
     padding: 8,
+
+    height:38,
     width: "40%",
     borderWidth: 2,
     borderColor: "#8C52FF",
@@ -1156,7 +1049,7 @@ const styles = StyleSheet.create({
     padding: 2,
     marginBottom: 15,
     backgroundColor: "white",
-  },resultcardtop: {
+  }, resultcardtop: {
     flexDirection: "row",
     height: 65,
   },
@@ -1165,7 +1058,7 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     borderRadius: 5,
     elevation: 3,
-    margin:10,
+    margin: 10,
   },
   storeprofileImage: {
     padding: 5,

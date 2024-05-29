@@ -106,7 +106,7 @@ const EditOwnerProfile = () => {
           .then((value) => {
             settoken(value);
           })
-          .catch((error) => {});
+          .catch((error) => { });
         const data = await AsyncStorage.getItem("shopownerdata");
         if (data) {
           const parsedData = JSON.parse(data);
@@ -125,31 +125,32 @@ const EditOwnerProfile = () => {
           setshopownerId(parsedData._id)
         }
       } catch (err) {
-   
+
       }
     };
 
     fetchData();
   }, []);
 
-  const isValidUrl = (url) => {
-    const urlPattern = /^(ftp|http|https):\/\/[^ "]+$/;
-    return urlPattern.test(url);
-  };
+  function validateGoogleMapLink(link) {
+    var pattern = /^(?:https?:\/\/(?:www\.)?google\.com\/maps\/(?:place\/)?(?:[^/]+)\/@(-?\d+\.\d+),(-?\d+\.\d+)(?:,\d+z)?)|(?:https?:\/\/maps\.app\.goo\.gl\/[a-zA-Z0-9]+)$/;
+
+    return pattern.test(link);
+  }
   const validatePhone = (phone) => {
     const phoneNumberRegex = /^\d{10}$/;
     return phoneNumberRegex.test(phone);
   }
   const updateshopowner = async () => {
 
-    if(gmaplink){
+    if (gmaplink) {
 
-      if (!isValidUrl(gmaplink)) {
+      if (!validateGoogleMapLink(gmaplink)) {
         showToast('Enter a valid Google map Link');
         return;
       }
     }
-   
+
     if (!validatePhone(phonenumber)) {
       showToast('Please enter a valid phone number');
       return;
@@ -158,33 +159,33 @@ const EditOwnerProfile = () => {
       showToast('Please enter your business name');
       return;
     }
-    if(businessname){
-      if(businessname.trim() === ""){
+    if (businessname) {
+      if (businessname.trim() === "") {
         showToast('Please enter a valid Business name');
-      return;
+        return;
       }
     }
-    if(businessabout){
-      if(businessabout.trim() === ""){
+    if (businessabout) {
+      if (businessabout.trim() === "") {
         showToast('Please enter a valid Business about');
-      return;
+        return;
       }
     }
-    if(address){
-      if(address.trim() === ""){
+    if (address) {
+      if (address.trim() === "") {
         showToast('Please enter a valid address');
-      return;
+        return;
       }
     }
-    if(deliverylocation){
-      if(deliverylocation.trim() === ""){
+    if (deliverylocation) {
+      if (deliverylocation.trim() === "") {
         showToast('Please enter a valid delivery location');
         return;
       }
     }
 
 
-    
+
     const formdata = {
       shopownerId: shopownerId,
       updateFields: {
@@ -215,14 +216,14 @@ const EditOwnerProfile = () => {
         }
       );
       if (updateuser.data && updateuser.data._id) {
-     
+
         await AsyncStorage.setItem(
           "shopownerdata",
           JSON.stringify(updateuser.data)
         );
-       
+
       } else {
-       
+
       }
       const local = await AsyncStorage.setItem(
         "shopownerdata",
@@ -244,7 +245,7 @@ const EditOwnerProfile = () => {
         }
       } else {
         // Non-Axios error
-       
+
         showToast("An error occurred. Please try again.");
       }
     }
@@ -260,7 +261,7 @@ const EditOwnerProfile = () => {
       [
         {
           text: 'Cancel',
-          onPress: () =>{},
+          onPress: () => { },
           style: 'cancel',
         },
         {
@@ -282,7 +283,7 @@ const EditOwnerProfile = () => {
     try {
       const response = await axios.get("https://direckt-copy1.onrender.com/direckt/getcategory");
       const dataFromBackend = response.data;
-      
+
       if (Array.isArray(dataFromBackend) && dataFromBackend.length > 0) {
         // Map over the data to convert it into the required format
         const formattedData = dataFromBackend[0]?.categories.map(category => ({
@@ -306,7 +307,7 @@ const EditOwnerProfile = () => {
         }
       } else {
         // Non-Axios error
-       
+
         showToast("An error occurred. Please try again.");
       }
     }
@@ -321,30 +322,30 @@ const EditOwnerProfile = () => {
     try {
       const response = await axios.get("https://direckt-copy1.onrender.com/direckt/getlocations");
       const dataFromBackend = response.data;
-     
+
       if (Array.isArray(dataFromBackend) && dataFromBackend.length > 0) {
-        
+
         const formattedData = dataFromBackend[0]?.locations.map(location => ({
           key: location.key,
           value: location.value
         })) || [];
-       
+
         setchooselocation(formattedData);
       } else {
         return
       }
     } catch (error) {
       if (axios.isAxiosError(error)) {
-       
+
         if (error.response) {
-        
+
           showToast(`Error: ${error.response.data.error}`);
         } else {
-          
+
           showToast("Network error. Please check your internet connection.");
         }
       } else {
-    
+
         showToast("An error occurred. Please try again.");
       }
     }
@@ -402,7 +403,7 @@ const EditOwnerProfile = () => {
             save="value"
             style={styles.storelocationselect}
             closeicon={<AntDesign name="close" size={30} color={COLORS.gray} />}
-          
+
           />
 
 
@@ -414,7 +415,7 @@ const EditOwnerProfile = () => {
             onChangeText={(e) => setaddress(e)}
             value={address}
             placeholder="your shop address"
-            
+
           />
         </View>
 
@@ -425,7 +426,7 @@ const EditOwnerProfile = () => {
             setSelected={(val) => setcategory(val)}
             data={choosedata}
             save="value"
-             
+
             closeicon={<AntDesign name="close" size={30} color={COLORS.gray} />}
           />
         </View>
@@ -448,7 +449,7 @@ const EditOwnerProfile = () => {
             value={phonenumber.toString()}
             keyboardType="numeric"
             maxLength={10}
-            
+
           />
         </View>
         <View style={styles.editfield}>

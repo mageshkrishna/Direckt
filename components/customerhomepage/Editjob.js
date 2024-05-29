@@ -3,13 +3,18 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { COLORS } from '../../constants/Theme';
 import { useNavigation, useRoute } from '@react-navigation/native';
+import * as SecureStore from "expo-secure-store";
+import createnewauthtoken from '../RefreshSession/RefreshSession';
+import { useDispatch, useSelector } from "react-redux";
+import { setCustomerToken } from '../../redux/customerAuthActions';
 
 const Editjob = () => {
   const navigation = useNavigation(); // Extract navigation object here
   const route = useRoute();
-  const { token, job_id } = route.params;
-  const [jobtitle, setJobTitle] = useState('');
-  const [jobdescription, setJobDescription] = useState('');
+  const dispatch = useDispatch()
+  const { token, job_id, title, description, email } = route.params;
+  const [jobtitle, setJobTitle] = useState(title);
+  const [jobdescription, setJobDescription] = useState(description);
   const [loading, setLoading] = useState(false);
   const showToast = (message) => {
     ToastAndroid.show(message, ToastAndroid.SHORT);
@@ -27,23 +32,38 @@ const Editjob = () => {
     try {
       setLoading(true);
       const formdata = { jobtitle: jobtitle, job_id: job_id, jobdescription: jobdescription };
+      let authtoken = await SecureStore.getItemAsync("customertoken")
       const response = await axios.post(
         "https://direckt-copy1.onrender.com/Customerdata/editjobs",
         formdata,
         {
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${authtoken}`,
             'Content-Type': 'application/json',
           },
         }
       );
       setLoading(false);
       showToast("Job updated successfully");
-    
+      dispatch(setCustomerToken(authtoken))
       navigation.navigate("homeCustomer");
+      
     } catch (error) {
-      setLoading(false);
-      if (axios.isAxiosError(error)) {
+      console.log(error)
+      console.log(error.response.status)
+      if(error.response.status === 429){
+        showToast("Token expired")
+        const newtoken = await createnewauthtoken(email)
+        console.log(newtoken)
+        if(newtoken){
+          await SecureStore.setItemAsync('customertoken',newtoken);
+          await handleSaveChanges()
+        }
+        else{
+          alert("No received")
+        }
+      }
+      else if (axios.isAxiosError(error)) {
         if (error.response) {
           showToast(`Error: ${error.response.data.error}`);
         } else {
@@ -52,6 +72,9 @@ const Editjob = () => {
       } else {
         showToast("An error occurred. Please try again.");
       }
+    }
+    finally{
+      setLoading(false);
     }
   };
 
