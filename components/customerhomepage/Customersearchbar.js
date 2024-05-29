@@ -110,7 +110,7 @@ const Shopcard = ({ data, index }) => {
       <View style={styles.resultcardmiddle}>
         <Text
           style={{ color: "grey", fontSize: 13, marginVertical: 5 }}
-          numberOfLines={2}
+          numberOfLines={1}
         >
           {data.businessabout ? data.businessabout : "There is no description available for this shop"}
         </Text>

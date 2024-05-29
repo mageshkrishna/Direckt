@@ -24,7 +24,7 @@ const Shopownerprofile = () => {
   const [profilepic, setprofilepic] = useState("");
   const [photos, setphotos] = useState([]);
   const [gmaplink, setgmaplink] = useState(
-    "https://www.google.com/maps/place/Sri+Eshwar+College+of+Engineering,+Coimbatore/@10.827908,77.0579419,17z/data=!3m1!4b1!4m6!3m5!1s0x3ba84ee37569ae7f:0x3c5b1824b6e79192!8m2!3d10.827908!4d77.0605168!16s%2Fg%2F1tdyp6pq?entry=ttu"
+    ""
   );
   const [address, setaddress] = useState(
     "Store description will be written here for the betterment of the design"
@@ -203,6 +203,9 @@ const Shopownerprofile = () => {
       { cancelable: false }
     );
   };
+
+
+  
   const updateavailabilityStatusInAsyncStorage = async (availabilitystatus) => {
     try {
       // Retrieve the existing data from AsyncStorage
@@ -329,6 +332,8 @@ const Shopownerprofile = () => {
   const handleClosePopup = () => {
     setActiveImageIndex(null);
   };
+
+ 
 
   return (
     <ScrollView style={styles.container}>

@@ -208,6 +208,7 @@ const Profile = () => {
       { cancelable: false }
     );
   };
+  
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <ScrollView style={styles.container}>

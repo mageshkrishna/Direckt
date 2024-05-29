@@ -25,6 +25,7 @@ import Imagepicker from "./Imagepicker";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/native";
 import { COLORS } from "../../constants/Theme";
+import ProfilePicker from "./Profilepicker";
 const height = Dimensions.get("window").height;
 const width = Dimensions.get("window").width;
 
@@ -249,8 +250,51 @@ const EditOwnerProfile = () => {
       }
     }
   };
+  const deleteImageFromBackend = async (shopOwnerId, token, imageUrl) => {
+    const formData = new FormData();
+    formData.append('_id', shopOwnerId);
+    formData.append('imageUrl',imageUrl);
 
+    try {
+      const response = await axios.post(
+        `http://172.16.123.153:5000/shopowner/deletephotoimage`,
+        {_id:shopOwnerId,imageUrl}, // Pass formData as the second argument
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+    } catch (error) {
+      console.error('Error deleting image from backend:', error);
+    }
+};
 
+  const removeImageUrlFromShopOwnerData = async (imageUrl) => {
+    try {
+      // Retrieve the current shop owner data from AsyncStorage
+      const shopOwnerDataString = await AsyncStorage.getItem('shopownerdata');
+      if (!shopOwnerDataString) {
+        throw new Error('Shop owner data not found in AsyncStorage');
+      }
+  
+      // Parse the JSON string to get the shop owner data object
+      const shopOwnerData = JSON.parse(shopOwnerDataString);
+  
+      // Remove the imageUrl from the photos array
+      if (shopOwnerData.photos) {
+        const updatedPhotos = shopOwnerData.photos.filter((item) => item !== imageUrl);
+        shopOwnerData.photos = updatedPhotos;
+      }
+  
+      // Save the updated shop owner data back to AsyncStorage
+      await AsyncStorage.setItem('shopownerdata', JSON.stringify(shopOwnerData));
+    } catch (error) {
+      console.error('Error removing image URL from shop owner data:', error);
+      throw error;
+    }
+  };
+  
 
 
   const deleteimage = (itemToRemove) => {
@@ -265,14 +309,30 @@ const EditOwnerProfile = () => {
         },
         {
           text: 'delete', onPress: () => {
-            const updated = photos.filter(item => item !== itemToRemove);
-            setphotos(updated);
+            deleteImage(itemToRemove)
           }
         },
       ],
       { cancelable: false }
     )
   }
+
+  const deleteImage = async (imageUrl) => {
+    try {
+      // Attempt to delete the image from the backend
+      const backendDeleteResponse = await deleteImageFromBackend(shopownerId, token, imageUrl);
+  
+   
+        
+         removeImageUrlFromShopOwnerData(imageUrl);
+        const updatedPhotos = photos.filter(item => item !== imageUrl);
+        setphotos(updatedPhotos);
+      
+    } catch (error) {
+      Alert.alert('Error', 'Failed to delete image from backend');
+    }
+  };
+  
   const [choosedata, setChooseData] = useState([{ key: '1', value: 'loading...', disabled: true }]);
   useEffect(() => {
     fetchData(); // Fetch choosedata when the component mounts
@@ -370,11 +430,8 @@ const EditOwnerProfile = () => {
           }
         </View>
       </View>
-      <Imagepicker
-        editprofile={editprofile}
-        setprofilepic={setprofilepic}
-        profilepic={profilepic}
-      />
+     
+      <ProfilePicker profilepic={profilepic} setprofilepic={setprofilepic} token={token} shopOwnerId={shopownerId}  />
       <View style={styles.editdetailscontainer}>
         <View style={styles.editfield}>
           <Text style={styles.editstorenamelabel}>Name</Text>
@@ -480,7 +537,7 @@ const EditOwnerProfile = () => {
             );
           })}
           {photos.length < 5 ? (
-            <Imagepicker addphoto={addphoto} setphotos={setphotos} />
+            <Imagepicker addphoto={addphoto} setphotos={setphotos} shopOwnerId={shopownerId} token={token} />
           ) : (
             <></>
           )}

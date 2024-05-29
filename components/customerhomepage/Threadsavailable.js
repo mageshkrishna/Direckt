@@ -88,7 +88,7 @@ const InsideAccorditon = ({ data }) => {
       </View>
 
       {showPopup && (
-        data.profilepic ? (
+        data.shopowner_id.profilepic ? (
           <ImagePopup
             imageUrl={data.shopowner_id.profilepic}
             onClose={() => setShowPopup(false)}
@@ -195,7 +195,6 @@ const AccordionItem = ({ data, token, onRefresh }) => {
   const [jobreply, setjobreply] = useState([]);
   const [jobIdToDelete, setjobIdToDelete] = useState(data._id);
   const [showPopup, setShowPopup] = useState(false);
-  const [modalVisible, setModalVisible] = useState(false);
   const [deleteindicator, setdeleteindicator] = useState(false);
   const [deactivateindicator, setdeactivateindicator] = useState(false);
 const navigation = useNavigation();
@@ -255,7 +254,7 @@ const navigation = useNavigation();
       );
 
       if (response.status === 200) {
-        setModalVisible(!modalVisible);
+        onRefresh();
       }
       setdeleteindicator(false);
     } catch (error) {
@@ -285,7 +284,7 @@ const navigation = useNavigation();
     setExpanded(!expanded);
   };
   const translationX = useSharedValue(0);
-  const [isImage, setIsImage] = useState(true);
+ 
 
   const animatedStyle = useAnimatedStyle(() => {
     return {
@@ -305,31 +304,6 @@ const navigation = useNavigation();
   return (
     <View>
       <Pressable onPress={toggleExpand}>
-        <Modal
-          animationType="fade"
-          transparent={true}
-          visible={modalVisible}
-          onRequestClose={() => {
-            setModalVisible(!modalVisible);
-          }}
-        >
-          <View style={styles.centeredView}>
-            <View style={styles.modalView}>
-              <Feather name="check-circle" size={62} color="green" />
-              <Text style={styles.modalText}>Job Deleted Successfully</Text>
-              <Pressable
-                style={[styles.button, styles.buttonClose]}
-                onPress={() => {
-                  setModalVisible(!modalVisible);
-                  onRefresh();
-                }}
-              >
-                <Text style={styles.textStyle}>Okay</Text>
-              </Pressable>
-            </View>
-          </View>
-        </Modal>
-
         <View style={styles.thread}>
           <Animated.View style={styles.backLayer}>
             <View style={styles.backLayercontainer}>

@@ -11,8 +11,7 @@ const Imagepick = ({ setSelectedImage }) => {
       const result = await ImagePicker.launchCameraAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.Images,
         allowsEditing: true,
-        aspect: [4, 3],
-        quality: 1,
+        quality: 0.1,
       });
 
       if (!result.canceled) {
@@ -28,7 +27,6 @@ const Imagepick = ({ setSelectedImage }) => {
       const result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.Images,
         allowsEditing: false,
-        aspect: [4, 3],
         quality: 0.1,
       });
 
@@ -66,7 +64,36 @@ const Imagepick = ({ setSelectedImage }) => {
       }
     );
   };
+   const uploadImage = async (id, token, imageUri) => {
+  try {
+    const formData = new FormData();
 
+    if (imageUri) {
+      formData.append('image', {
+        uri: imageUri,
+        name: 'profile.jpg',
+        type: 'image/jpeg',
+      });
+    }
+
+    const response = await axios.put(`https://your-api-url.com/users/${id}/upload`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (response.status === 200) {
+      console.log('Image uploaded successfully:', response.data);
+      return response.data;
+    } else {
+      throw new Error('Failed to upload image');
+    }
+  } catch (error) {
+    console.error('Error uploading image:', error);
+    throw error;
+  }
+};
   return (
     <View>
       <TouchableOpacity onPress={showOptions}>

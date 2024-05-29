@@ -41,6 +41,7 @@ const Createthread = () => {
 
   const [indicator, setindicator] = useState(false);
   const [token, settoken] = useState(null);
+
   const navigation = useNavigation();
   const [modalVisible, setModalVisible] = useState(false);
   const customertoken = useSelector(
@@ -49,15 +50,16 @@ const Createthread = () => {
   const showToast = (e) => {
     ToastAndroid.show(e, ToastAndroid.SHORT);
   }; 
-  const handleSubmit = async (firebaseImageUrl) => {
+
+  const handleSubmit = async () => {
     if (!jobtitle) {
       setindicator(false);
       showToast("Enter Job Title");
       return;
     }
-    if(jobtitle.length<8){
+    if (jobtitle.length < 8) {
       setindicator(false);
-      showToast("Job title should be atleast 8 characters...");
+      showToast("Job title should be at least 8 characters...");
       return;
     }
     if (!jobdescription) {
@@ -65,9 +67,9 @@ const Createthread = () => {
       showToast("Enter Job Description");
       return;
     }
-    if(jobdescription.length<8){
+    if (jobdescription.length < 8) {
       setindicator(false);
-      showToast("Job description should be atleast 8 characters...");
+      showToast("Job description should be at least 8 characters...");
       return;
     }
     if (!location) {
@@ -82,33 +84,44 @@ const Createthread = () => {
     }
     if (!email) {
       setindicator(false);
-      showToast('Something Went Wrong! refresh the app');
+      showToast("Something Went Wrong! Refresh the app");
       return;
     }
   
     try {
       setindicator(true);
-      const data = {
-        location: location,
-        email: email,
-        jobtitle: jobtitle,
-        jobdescription: jobdescription,
-        category: category,
-        image_url: firebaseImageUrl,
-      };
+      
+      // Create FormData object to send mixed content (JSON + image)
+      const formData = new FormData();
+      formData.append('location', location);
+      formData.append('email', email);
+      formData.append('jobtitle', jobtitle);
+      formData.append('jobdescription', jobdescription);
+      formData.append('category', category);
+      
+      // Append image data if it exists
+      if (selectedImage) {
+        const filename = selectedImage.split('/').pop();
+        const match = /\.(\w+)$/.exec(filename);
+        const fileType = match ? `image/${match[1]}` : `image`;
   
+        formData.append('image', {
+          uri: selectedImage,
+          name: filename,
+          type: fileType
+        });
+      }
+      console.log(formData);
       const response = await axios.post(
         "https://direckt-copy1.onrender.com/Customerdata/createjob",
-        data,
+        formData,
         {
           headers: {
             Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json',
+            "Content-Type": "multipart/form-data", // Use multipart form data
           },
         }
       );
-  
-
   
       setjobtitle("");
       setjobdescription("");
@@ -121,75 +134,17 @@ const Createthread = () => {
       if (axios.isAxiosError(error)) {
         // Axios-related error
         if (error.response) {
-    
           showToast(`Error: ${error.response.data.error}`);
         } else {
           // Network error (no response received)
           showToast("Network error. Please check your internet connection.");
         }
       } else {
-     
         showToast("An error occurred. Please try again.");
       }
     }
   };
-  
-  
-  const handlesubmitimage = async () => {
 
-    if (!jobtitle) {
-      setindicator(false);
-      showToast("Enter Job Title")
-      return;
-    }
-    if(jobtitle.length<8){
-      setindicator(false);
-      showToast("Job title should be atleast 8 characters...");
-      return;
-    }
-    if (!jobdescription) {
-      setindicator(false);
-      showToast("Enter Job Description");
-      return;
-    }
-    if(jobdescription.length<8){
-      setindicator(false);
-      showToast("Job description should be atleast 8 characters...");
-      return;
-    }
-    if (!location) {
-      setindicator(false);
-      showToast("Select Location")
-      return;
-    }
-    if (!category) {
-      setindicator(false);
-      showToast("Select Category")
-      return;
-    }
-    if (!email) {
-      setindicator(false);
-      showToast('Something Went Wrong! refresh the app')
-      return;
-    }
-
-    try {
-      setindicator(true)
-      if (selectedImage) {
-
-
-        // Use await to wait for uploadMedia promise to resolve
-        const firebaseImageUrl = await uploadMedia(selectedImage);
-
-        if (firebaseImageUrl) {
-          await handleSubmit(firebaseImageUrl);
-        }
-      }
-
-    } catch (error) {
-    
-    }
-  };
  
   useEffect(() => {
     const fetchData = async () => {
@@ -392,7 +347,7 @@ const Createthread = () => {
             {indicator ? (<View>
               <ActivityIndicator color={COLORS.primary} size={40} />
             </View>) : <>
-              {!selectedImage ? (
+             
                 <TouchableOpacity
                   underlayColor="white"
                   onPress={() => {
@@ -407,22 +362,7 @@ const Createthread = () => {
                     </Text>
                   </View>
                 </TouchableOpacity>
-              ) : (
-                <TouchableOpacity
-                  underlayColor="white"
-                  onPress={() => {
-                    handlesubmitimage();
-                  }}
-                >
-                  <View style={styles.box3opacity}>
-                    <Text
-                      style={{ color: "white", fontSize: 18, fontWeight: "bold" }}
-                    >
-                      Post Job
-                    </Text>
-                  </View>
-                </TouchableOpacity>
-              )}</>}
+              </>}
           </View>
         </View>
       </SafeAreaView>
