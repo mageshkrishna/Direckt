@@ -134,66 +134,64 @@ const InsideAccorditon = ({ data }) => {
                 color: "#5271FF",
                 borderRadius: 5,
 
-              }}
-            >
-              <Text style={{ color: "#5271FF", fontSize: 12 }}>
-                View Profile{" "}
-              </Text>
-              <Feather name="send" size={14} color="#5271FF" />
-            </View>
-          </TouchableOpacity>
-        </View>
-      </View>
-      <View style={styles.resultcardmiddle}>
-        <Text style={{ color: COLORS.primary, marginTop: 3, fontSize: 13 }}>
-          Reply message:
-        </Text>
-        <Text
-          style={{ color: "grey", fontSize: 13, marginVertical: 5 }}
-          numberOfLines={2}
-        >
-          {data.replymessage}
-        </Text>
-      </View>
-      <View style={styles.resultcardctc}>
-        <TouchableOpacity
-          style={{
-            flexDirection: "row",
-            paddingHorizontal: 26,
-            paddingVertical: 7,
-            borderWidth: 2,
-            borderColor: "#5271FF",
-            color: "white",
-            borderRadius: 5,
-            backgroundColor: "#5271FF",
-          }}
-          onPress={() => {
-            Linking.openURL(`tel:${data.shopowner_id.phonenumber}`)
-          }}
-        >
-          <Text style={{ color: "white" }}>Call Now </Text>
-          <MaterialIcons name="phone-in-talk" size={13} color="white" />
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={{
-            flexDirection: "row",
-            paddingHorizontal: 26,
-            paddingVertical: 7,
-            borderWidth: 2,
-            borderColor: "#5271FF",
-            color: "white",
-            borderRadius: 5,
-            backgroundColor: "#5271FF",
-          }}
-          onPress={() => {
-            data.shopowner_id.gmaplink ? Linking.openURL(data.shopowner_id.gmaplink) : showToast("Google map is not Linked")
-          }}
-        >
-          <Text style={{ color: "white" }}>Direction </Text>
-          <FontAwesome5 name="directions" size={13} color="white" />
+            }}
+          >
+            <Text style={{ color: "#5271FF", fontSize: 12 }}>
+              View Profile{" "}
+            </Text>
+            <Feather name="send" size={14} color="#5271FF" />
+          </View>
         </TouchableOpacity>
       </View>
     </View>
+    <View style={styles.resultcardmiddle}>
+      <Text style={{ color: COLORS.primary, marginTop: 3, fontSize: 13 }}>
+        Reply message:
+      </Text>
+      <Text
+        style={{ color: "grey", fontSize: 13, marginVertical: 5 }}
+        numberOfLines={2}
+      >
+        {data.replymessage}
+      </Text>
+    </View>
+    <View style={styles.resultcardctc}>
+      <TouchableOpacity
+        style={{
+          flexDirection: "row",
+          paddingHorizontal: 26,
+          paddingVertical: 7,
+          borderWidth: 2,
+          borderColor: "#5271FF",
+          color: "white",
+          borderRadius: 5,
+          backgroundColor: "#5271FF",
+        }}
+        onPress={() => { Linking.openURL(`tel:${data.shopowner_id.phonenumber}`) }}
+      >
+        <Text style={{ color: "white" }}>Call Now </Text>
+        <MaterialIcons name="phone-in-talk" size={13} color="white" />
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={{
+          flexDirection: "row",
+          paddingHorizontal: 26,
+          paddingVertical: 7,
+          borderWidth: 2,
+          borderColor: "#5271FF",
+          color: "white",
+          borderRadius: 5,
+          backgroundColor: "#5271FF",
+        }}
+        onPress={() => {
+          data.gmaplink ? Linking.openURL(data.shopowner_id.gmaplink) : showToast()
+        }}
+      >
+        <Text style={{ color: "white" }}>Direction </Text>
+        <FontAwesome5 name="directions" size={13} color="white" />
+      </TouchableOpacity>
+    </View>
+  </View>
   )
 };
 const AccordionItem = ({ data, token, onRefresh, email }) => {
@@ -708,7 +706,7 @@ const Threadsavailable = ({ route }) => {
 
     setTimeout(() => {
       setRefreshing(false); // Set refreshing back to false after data is fetched
-    }, 2000);
+    }, 200);
   }, []);
 
   if (indicator) {
