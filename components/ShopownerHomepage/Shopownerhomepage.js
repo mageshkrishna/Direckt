@@ -16,15 +16,18 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import JobCard from "./Jobcard";
 import * as SecureStore from "expo-secure-store";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { COLORS } from "../../constants/Theme";
 import { useFocusEffect, useRoute } from "@react-navigation/native";
 import { FlatList, TouchableOpacity } from "react-native-gesture-handler";
 import { Ionicons } from "@expo/vector-icons";
+import {createnewauthtokenForShopowner} from '../RefreshSession/RefreshSession'
+import { setShopOwnerToken } from "../../redux/shopOwnerAuthActions";
 const height = Dimensions.get("window").height;
 
 const Shopownerhomepage = () => {
   const route = useRoute();
+  const dispatch = useDispatch();
   useFocusEffect(
     React.useCallback(() => {
       const handleBackPress = () => {
@@ -51,7 +54,7 @@ const Shopownerhomepage = () => {
 
 
   const [refreshing, setRefreshing] = useState(false);
-  const [token, setToken] = useState(null);
+  
   const [job, setJob] = useState([]);
   const [shopownerdata, setShopOwnerData] = useState(null);
   const [ownerdetail, setOwnerDetail] = useState(null);
@@ -59,9 +62,6 @@ const Shopownerhomepage = () => {
 
   const fetchData = async () => {
     try {
-      const value = await SecureStore.getItemAsync("shopownertoken");
-      setToken(value);
-
       const data = await AsyncStorage.getItem("shopownerdata");
       if (data) {
         const parsedData = JSON.parse(data);
@@ -70,7 +70,6 @@ const Shopownerhomepage = () => {
       }
     } catch (err) {
       setLoading(false);
-   
     }
   };
 
@@ -91,14 +90,16 @@ const Shopownerhomepage = () => {
   };
   useEffect(() => {
     const getJob = async () => {
-      if (!shopownerdata || !shopownerdata.location || !shopownerdata.category || !token) {
+      console.log("stared")
+      if (!shopownerdata || !shopownerdata.location || !shopownerdata.category ) {
         return;
       }
 
       const location = shopownerdata.location;
       const category = shopownerdata.category;
       const email = shopownerdata.email;
-
+      console.log(category)
+      const token = await SecureStore.getItemAsync("shopownertoken");
       try {
         setLoading(true);
         const response1 = await axios.get(
@@ -110,30 +111,46 @@ const Shopownerhomepage = () => {
             },
           }
         );
+      console.log(response1.data)
         setJob(response1.data);
-    
         setLoading(false);
       } catch (error) {
-        setLoading(false);
-        if (axios.isAxiosError(error)) {
-         
-          if (error.response) {
-          
-            if (error.response.status === 403) {
-            
-              Alert.alert(`Error: ${error.response.data.error}`);
-            } else {
-             
-              showToast(`Error: ${error.response.data.error}`);
-            }
+        if (error.response) {
+          console.log(error.response.status); 
+          if (error.response.status === 429) {
+              const newtoken = await createnewauthtokenForShopowner(email);
+              console.log("new token : " + newtoken)
+              if(newtoken){
+                await SecureStore.setItemAsync('shopownertoken',newtoken);
+                dispatch(setShopOwnerToken(newtoken))
+                await getJob(); 
+              }
+              else{
+                alert("No received")
+              }
+          } else if (error.response.status === 401) {
+              showToast('Invalid Auth Token');
           } else {
-          
+              // Handle other status codes or errors
+              alert('Unexpected Error:', error.response.data);
+          }
+      }
+      else if (axios.isAxiosError(error)) {
+          // Axios-related error
+          if (error.response) {
+            showToast(`Error: ${error.response.data.error}`);
+          } else {
+            // Network error (no response received)
             showToast("Network error. Please check your internet connection.");
           }
         } else {
           showToast("An error occurred. Please try again.");
         }
       }
+      finally{
+        setLoading(false);
+      }
+    
     };
 
     if (refreshing) {
@@ -141,7 +158,7 @@ const Shopownerhomepage = () => {
     }
 
     getJob();
-  }, [shopownerdata, token]);
+  }, [shopownerdata,shopOwnerToken]);
 
   if (loading) {
     return (

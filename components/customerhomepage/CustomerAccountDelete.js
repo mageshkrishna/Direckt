@@ -94,8 +94,20 @@ const CustomerAccountDelete = ({ route }) => {
                 navigation.navigate("Home");
         
         } catch (error) {
-           
-            if (axios.isAxiosError(error)) {
+            console.log(error.response.status)
+            if(error.response.status===429){
+                showToast("Token expired")
+                const newtoken = await createnewauthtoken(email)
+                console.log(newtoken)
+                if(newtoken){
+                await SecureStore.setItemAsync('customertoken',newtoken);
+                dispatch(setCustomerToken(newtoken))
+                }
+                else{
+                alert("No received")
+                }
+            }
+            else if (axios.isAxiosError(error)) {
                 // Axios-related error
                 if (error.response) {
                     // Response received with an error status code

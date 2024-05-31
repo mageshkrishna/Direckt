@@ -9,26 +9,38 @@ import { useRoute } from '@react-navigation/native';
 import ImagePopup from '../ShopownerHomepage/Imagepopup';
 import * as SecureStore from "expo-secure-store";
 const height = Dimensions.get("window").height
+import createnewauthtoken from '../RefreshSession/RefreshSession';
+import { useDispatch, useSelector } from "react-redux";
+import { setCustomerToken } from '../../redux/customerAuthActions';
+
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 
 const StoreProfile = () => {
     const route = useRoute();
-    const { _id } = route.params;
+    const { _id} = route.params;
 
     const [storedata, setstoredata] = useState();
     const [showPopup, setShowPopup] = useState(false);
 
     const [activeImageIndex, setActiveImageIndex] = useState(null);
     const [token, settoken] = useState(null);
+    const [email, setemail] = useState("")
     const navigation = useNavigation();
+    const dispatch = useDispatch()
 
     useEffect(() => {
-        SecureStore.getItemAsync("customertoken")
+        async function fetchtoken(){
+            SecureStore.getItemAsync("customertoken")
             .then((value) => {
-            
-                settoken(value);
+              settoken(value);
             })
-            .catch((error) => {});
+            .catch((error) => { });
+            const data =await AsyncStorage.getItem("customerdata");
+              const parsedData = JSON.parse(data);
+              setemail(parsedData.email);
+          }
+          fetchtoken()
     }, [])
 
     const handleImagePress = (index) => {
@@ -42,32 +54,42 @@ const StoreProfile = () => {
     const showToast = (e) => {
         ToastAndroid.show(e, ToastAndroid.SHORT);
     };
-
-    useEffect(() => {
+    async function fetchData(){
         if (!token || !_id) {
             return;
         }
        
         try {
-            axios.get(`https://direckt-copy1.onrender.com/shopowner/getshopownerprofile?_id=${_id}`,
+            console.log("inside try")
+            let authtoken = await SecureStore.getItemAsync("customertoken")
+            const response = await axios.get(`https://direckt-copy1.onrender.com/shopowner/getshopownerprofile?_id=${_id}`,
                 {
                     headers: {
-                        Authorization: `Bearer ${token}`,
+                        Authorization: `Bearer ${authtoken}`,
                         'Content-Type': 'application/json',
                     },
                 }
             )
-
-                .then(response => {
-
-                    setstoredata(response.data)
-
-                })
-                .catch(err => {
-                  
-                });
+            setstoredata(response.data)
+            console.log("after api")
+            dispatch(setCustomerToken(authtoken))
         } catch (error) {
-            if (axios.isAxiosError(error)) {
+            console.log("inside try")
+            console.log(error)
+            console.log(error.response.status)
+            if(error.response.status === 429){
+                showToast("Token expired")
+                const newtoken = await createnewauthtoken(email)
+                console.log(newtoken)
+                if(newtoken){
+                await SecureStore.setItemAsync('customertoken',newtoken);
+                await fetchData()
+                }
+                else{
+                alert("No received")
+                }
+            }
+            else if (axios.isAxiosError(error)) {
                 // Axios-related error
                 if (error.response) {
                    
@@ -81,6 +103,11 @@ const StoreProfile = () => {
                 showToast("An error occurred. Please try again.");
             }
         }
+    }
+    useEffect(() => {
+        console.log("inside effect")
+        
+        fetchData()
     }, [_id, token]);
     if (!storedata && _id) {
         return (

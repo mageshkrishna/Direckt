@@ -86,7 +86,7 @@ const UserLogin = ({route,setShopOwnerToken}) => {
         }
       );
    
-      const { status, data, token } = response.data;
+      const { status, data, token, refreshToken } = response.data;
     
      
       if (status) {
@@ -99,9 +99,7 @@ const UserLogin = ({route,setShopOwnerToken}) => {
         }
         // Store the token securely using react-native-keychain
         SecureStore.setItemAsync('shopownertoken',token)
-        .then(() => {})
-       
-        .catch(error => {});
+        SecureStore.setItemAsync('refreshTokenShopowner',refreshToken)
         setShopOwnerToken(token)
         showToast("Login Successful!");
   

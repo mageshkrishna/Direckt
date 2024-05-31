@@ -13,14 +13,17 @@ import { MaterialIcons } from "@expo/vector-icons";
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import { setShopOwnerToken } from "../../redux/shopOwnerAuthActions";
+import * as SecureStore from "expo-secure-store";
+import {createnewauthtokenForShopowner} from '../RefreshSession/RefreshSession'
+import { useDispatch } from "react-redux";
 const width = Dimensions.get("window").width;
 const height = Dimensions.get("window").height;
 
-const Imagepicker = ({ setphotos, token, shopOwnerId }) => {
+const Imagepicker = ({ setphotos, email, shopOwnerId }) => {
   const { showActionSheetWithOptions } = useActionSheet();
   const [loading, setLoading] = useState(false);
-
+  const dispatch = useDispatch();
   const openCamera = async () => {
     try {
       const result = await ImagePicker.launchCameraAsync({
@@ -64,14 +67,14 @@ const Imagepicker = ({ setphotos, token, shopOwnerId }) => {
         },
         {
           text: "OK",
-          onPress: () => uploadImage(shopOwnerId, token, imageUri),
+          onPress: () => uploadImage( imageUri),
         },
       ],
       { cancelable: false }
     );
   };
 
-  const uploadImage = async (id, token, imageUri) => {
+  const uploadImage = async ( imageUri) => {
     console.log(imageUri);
     setLoading(true);
     try {
@@ -87,9 +90,10 @@ const Imagepicker = ({ setphotos, token, shopOwnerId }) => {
           type: `image/${fileType}`,
         });
       }
-      console.log(token+" "+shopOwnerId);
+      formData.append("_id",shopOwnerId)
+      const token = await SecureStore.getItemAsync("shopownertoken");
       const response = await axios.post(
-        `http://172.16.123.153:5000/shopowner/changephotoimage?_id=${shopOwnerId}`,
+        `https://direckt-copy1.onrender.com/shopowner/changephotoimage`,
         formData,
         {
           headers: {
@@ -108,9 +112,40 @@ const Imagepicker = ({ setphotos, token, shopOwnerId }) => {
         }
         return prevPhotos; // Return the same array if there are already 5 photos
       });
-    } catch (error) {
-      console.error("Error uploading image:", error);
-    } finally {
+    }  catch (error) {
+      if (error.response) {
+        console.log(error.response.status); 
+        if (error.response.status === 429) {
+            const newtoken = await createnewauthtokenForShopowner(email);
+            console.log("new token : " + newtoken)
+            if(newtoken){
+              await SecureStore.setItemAsync('shopownertoken',newtoken);
+              dispatch(setShopOwnerToken(newtoken))
+              await uploadImage(imageUri); 
+            }
+            else{
+              alert("No received")
+            }
+        } else if (error.response.status === 401) {
+            showToast('Invalid Auth Token');
+        } else {
+            // Handle other status codes or errors
+            alert('Unexpected Error:', error.response.data);
+        }
+    }
+    else if (axios.isAxiosError(error)) {
+        // Axios-related error
+        if (error.response) {
+          showToast(`Error: ${error.response.data.error}`);
+        } else {
+          // Network error (no response received)
+          showToast("Network error. Please check your internet connection.");
+        }
+      } else {
+        showToast("An error occurred. Please try again.");
+      }
+    }
+    finally{
       setLoading(false);
     }
   };
@@ -183,7 +218,7 @@ const Imagepicker = ({ setphotos, token, shopOwnerId }) => {
     {loading ? (
       <ActivityIndicator size="large" color="#0000ff" />
     ) : (
-      shopOwnerId && token && <MaterialIcons name="add-photo-alternate" size={24} color="grey" />
+      shopOwnerId && <MaterialIcons name="add-photo-alternate" size={24} color="grey" />
     )}
   </View>
 </TouchableOpacity>

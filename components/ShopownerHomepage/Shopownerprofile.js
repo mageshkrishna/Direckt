@@ -4,7 +4,7 @@ import { React, useEffect, useState } from 'react'
 import { useIsFocused, useNavigation } from '@react-navigation/native';
 import axios from "axios";
 import { useDispatch } from 'react-redux';
-import { clearShopOwnerToken } from '../../redux/shopOwnerAuthActions';
+import { clearShopOwnerToken, setShopOwnerToken } from '../../redux/shopOwnerAuthActions';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 const height = Dimensions.get("window").height
@@ -12,6 +12,7 @@ const width = Dimensions.get("window").width
 import * as SecureStore from "expo-secure-store";
 import { TextInput } from 'react-native-gesture-handler';
 import { COLORS } from '../../constants/Theme';
+import {createnewauthtokenForShopowner} from '../RefreshSession/RefreshSession'
 import ImagePopup from './Imagepopup';
 const Shopownerprofile = () => {
   const dispatch = useDispatch();
@@ -35,11 +36,12 @@ const Shopownerprofile = () => {
   const [availabilitystatus, setavailabilitystatus] = useState(Boolean);
   const [deliverystatus, setdeliverystatus] = useState(Boolean)
   const [shopownerId, setshopownerId] = useState(null);
-  const [token, settoken] = useState(null)
+  
   const [shopindicator, setshopindicator] = useState(false)
   const [deliveryindicator, setdeliveryindicator] = useState(false)
   const [logoutindicator,setLogoutindicator] =useState(false);
   const isFocused = useIsFocused();
+
   const updatedeliveryStatusInAsyncStorage = async (deliverystatus) => {
     try {
       // Retrieve the existing data from AsyncStorage
@@ -85,9 +87,10 @@ const Shopownerprofile = () => {
     const formdata = {
       email: email
     }
+    const token = await SecureStore.getItemAsync("shopownertoken");
     try {
       setLogoutindicator(true);
-      const response = await axios.post(
+      const response =  axios.post(
         "https://direckt-copy1.onrender.com/auth/shopownerlogout",
         formdata,
         {
@@ -165,7 +168,7 @@ const Shopownerprofile = () => {
               email: email,
             };
 
-
+            const token = await SecureStore.getItemAsync("shopownertoken");
             try {
               // Assuming the API request is uncommented
               const response = await axios.put("https://direckt-copy1.onrender.com/shopowner/deliverystatus", formdata,
@@ -182,20 +185,40 @@ const Shopownerprofile = () => {
               }
               setdeliveryindicator(false)
             } catch (error) {
-              setdeliveryindicator(false)
-              if (axios.isAxiosError(error)) {
+              if (error.response) {
+                console.log(error.response.status); 
+                if (error.response.status === 429) {
+                    const newtoken = await createnewauthtokenForShopowner(email);
+                    console.log("new token : " + newtoken)
+                    if(newtoken){
+                      await SecureStore.setItemAsync('shopownertoken',newtoken);
+                      dispatch(setShopOwnerToken(newtoken))
+                      await delivery(); 
+                    }
+                    else{
+                      alert("No received")
+                    }
+                } else if (error.response.status === 401) {
+                    showToast('Invalid Auth Token');
+                } else {
+                    // Handle other status codes or errors
+                    alert('Unexpected Error:', error.response.data);
+                }
+            }
+            else if (axios.isAxiosError(error)) {
                 // Axios-related error
                 if (error.response) {
-                  // Response received with an error status code
                   showToast(`Error: ${error.response.data.error}`);
                 } else {
                   // Network error (no response received)
                   showToast("Network error. Please check your internet connection.");
                 }
               } else {
-
                 showToast("An error occurred. Please try again.");
               }
+            }
+            finally{
+              setdeliveryindicator(false)
             }
           }
         }
@@ -247,7 +270,7 @@ const Shopownerprofile = () => {
               availabilitystatus: !availabilitystatus,
               email: email,
             };
-
+            const token = await SecureStore.getItemAsync("shopownertoken");
             try {
               // Assuming the API request is uncommented
               const response = await axios.put("https://direckt-copy1.onrender.com/shopowner/availabilitystatus", formdata,
@@ -262,20 +285,40 @@ const Shopownerprofile = () => {
               setavailabilitystatus(!availabilitystatus)
               setshopindicator(false)
             } catch (error) {
-              setshopindicator(false)
-              if (axios.isAxiosError(error)) {
+              if (error.response) {
+                console.log(error.response.status); 
+                if (error.response.status === 429) {
+                    const newtoken = await createnewauthtokenForShopowner(email);
+                    console.log("new token : " + newtoken)
+                    if(newtoken){
+                      await SecureStore.setItemAsync('shopownertoken',newtoken);
+                      dispatch(setShopOwnerToken(newtoken))
+                      await availability(); 
+                    }
+                    else{
+                      alert("No received")
+                    }
+                } else if (error.response.status === 401) {
+                    showToast('Invalid Auth Token');
+                } else {
+                    // Handle other status codes or errors
+                    alert('Unexpected Error:', error.response.data);
+                }
+            }
+            else if (axios.isAxiosError(error)) {
                 // Axios-related error
                 if (error.response) {
-                  // Response received with an error status code
                   showToast(`Error: ${error.response.data.error}`);
                 } else {
                   // Network error (no response received)
                   showToast("Network error. Please check your internet connection.");
                 }
               } else {
-
                 showToast("An error occurred. Please try again.");
               }
+            }
+            finally{
+              setshopindicator(false)
             }
           }
         }
@@ -292,11 +335,6 @@ const Shopownerprofile = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        SecureStore.getItemAsync("shopownertoken")
-          .then((value) => {
-            settoken(value);
-          })
-          .catch((error) => { });
         const data = await AsyncStorage.getItem("shopownerdata");
 
         if (data) {

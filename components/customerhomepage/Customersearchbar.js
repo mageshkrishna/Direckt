@@ -11,11 +11,11 @@ import {
   ToastAndroid,
 } from "react-native";
 import React, { useEffect, useState } from "react";
-import { AntDesign, FontAwesome5} from "@expo/vector-icons";
+import { AntDesign, FontAwesome5 } from "@expo/vector-icons";
 import { MaterialIcons } from "@expo/vector-icons";
 import { ScrollView } from "react-native";
 import { TextInput } from "react-native";
-import { Feather,Ionicons } from "@expo/vector-icons";
+import { Feather, Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 
 import { SelectList } from "react-native-dropdown-select-list";
@@ -27,6 +27,11 @@ import ImagePopup from "../ShopownerHomepage/Imagepopup";
 import * as SecureStore from "expo-secure-store";
 import { FlatList } from "react-native-gesture-handler";
 const height = Dimensions.get("window").height;
+import { strings } from "../../locals/translations";
+import createnewauthtoken from '../RefreshSession/RefreshSession';
+import { useDispatch, useSelector } from "react-redux";
+import { setCustomerToken } from '../../redux/customerAuthActions';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Shopcard = ({ data, index }) => {
   const colorScheme = useColorScheme();
@@ -35,6 +40,9 @@ const Shopcard = ({ data, index }) => {
   const showToast = () => {
     ToastAndroid.show('Google map is not linked', ToastAndroid.SHORT);
   };
+  const lang = useSelector(
+    (state) => state.appLanguage.language
+  );
 
   return (
     <View style={styles.resultcard} key={index}>
@@ -124,9 +132,8 @@ const Shopcard = ({ data, index }) => {
                 <Text
                   style={{
                     padding: 4,
-                    backgroundColor:
-                      colorScheme === "dark" ? "grey" : "#FAF9F9",
-                    color: colorScheme === "dark" ? "black" : "black",
+                    backgroundColor: colorScheme=='dark'?"#FAF9F9":"#FAF9F9",
+                    color: "black",
                     borderRadius: 5,
                     fontSize: 13,
                     marginHorizontal: 2,
@@ -142,6 +149,7 @@ const Shopcard = ({ data, index }) => {
       <View style={styles.resultcardctc}>
         <TouchableOpacity
           style={{
+            height:35,
             flexDirection: "row",
             paddingHorizontal: 26,
             paddingVertical: 7,
@@ -153,11 +161,12 @@ const Shopcard = ({ data, index }) => {
           }}
           onPress={() => { Linking.openURL(`tel:${data.phonenumber}`) }}
         >
-          <Text style={{ color: "white" }}>Call Now </Text>
+          <Text style={{ color: "white" }}>{strings[`${lang}`].call} </Text>
           <MaterialIcons name="phone-in-talk" size={13} color="white" />
         </TouchableOpacity>
         <TouchableOpacity
           style={{
+            height:35,
             flexDirection: "row",
             paddingHorizontal: 26,
             paddingVertical: 7,
@@ -171,7 +180,7 @@ const Shopcard = ({ data, index }) => {
             data.gmaplink ? Linking.openURL(data.gmaplink) : showToast()
           }}
         >
-          <Text style={{ color: "white" }}>Direction </Text>
+          <Text style={{ color: "white" }}>{strings[`${lang}`].direction} </Text>
           <FontAwesome5 name="directions" size={13} color="white" />
         </TouchableOpacity>
       </View>
@@ -190,28 +199,34 @@ const CustomerSearchBar = () => {
   const [linearProgress, setlinearProgress] = useState(false);
   const [resultmessage, setresultmessage] = useState("Find shop and service")
   const [token, settoken] = useState(null);
-  const [choosedata, setChooseData] = useState([{key:'1', value:'loading...', disabled:true}]);
-  const[jobselection,setjoblocation] = useState(null)
- 
+  const [choosedata, setChooseData] = useState([{ key: '1', value: 'loading...', disabled: true }]);
+  const [jobselection, setjoblocation] = useState(null)
+  const dispatch = useDispatch()
+  const [email, setemail] = useState("")
+
   useEffect(() => {
     fetchDatacategory(); // Fetch choosedata when the component mounts
   }, []);
 
-  const fetchDatacategory= async () => {
+  const lang = useSelector(
+    (state) => state.appLanguage.language
+  );
+
+  const fetchDatacategory = async () => {
     try {
       const response = await axios.get("https://direckt-copy1.onrender.com/direckt/getcategory");
       const dataFromBackend = response.data;
-   
+
       if (Array.isArray(dataFromBackend) && dataFromBackend.length > 0) {
-      
+
         const formattedData = dataFromBackend[0]?.categories.map(category => ({
           key: category.key,
           value: category.value
         })) || [];
-       
+
         setChooseData(formattedData);
       } else {
-        
+
       }
     } catch (error) {
       if (axios.isAxiosError(error)) {
@@ -225,27 +240,33 @@ const CustomerSearchBar = () => {
         }
       } else {
         // Non-Axios error
-       
+
         showToast("An error occurred. Please try again.");
       }
     }
   };
-  
-  
+
+
 
   const showToast = (e) => {
     ToastAndroid.show(e, ToastAndroid.SHORT);
-};
-  useEffect(()=>{
-    SecureStore.getItemAsync("customertoken")
+  };
+  useEffect(() => {
+    async function fetchtoken(){
+      SecureStore.getItemAsync("customertoken")
       .then((value) => {
         settoken(value);
       })
-      .catch((error) => {});
+      .catch((error) => { });
+      const data =await AsyncStorage.getItem("customerdata");
+        const parsedData = JSON.parse(data);
+        setemail(parsedData.email);
+    }
+    fetchtoken()
   }, [])
 
   const fetchData = async () => {
-    if(!jobselection){
+    if (!jobselection) {
       showToast('Select Location ');
       return;
     }
@@ -253,7 +274,7 @@ const CustomerSearchBar = () => {
       showToast("Businessname or Category is required");
       return;
     }
-    if(businessname){
+    if (businessname) {
       setbusinessname(businessname.trim())
     }
     try {
@@ -262,7 +283,7 @@ const CustomerSearchBar = () => {
       setProgress(0.15);
       let formdata = {
         businessname: businessname.trim(),
-        location:jobselection
+        location: jobselection
       };
 
       if (category) {
@@ -273,13 +294,13 @@ const CustomerSearchBar = () => {
       if (availabilitystatus) {
         formdata.availabilitystatus = availabilitystatus;
       }
- 
+      let authtoken = await SecureStore.getItemAsync("customertoken")
       const response = await axios.get(
         "https://direckt-copy1.onrender.com/shopowner/getshops",
         {
           params: formdata,
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${authtoken}`,
             'Content-Type': 'application/json',
           },
         }
@@ -293,10 +314,23 @@ const CustomerSearchBar = () => {
       setTimeout(() => {
         setlinearProgress(false);
       }, 2000);
+      dispatch(setCustomerToken(authtoken))
     } catch (error) {
-      
-      setlinearProgress(false);
-      if (axios.isAxiosError(error)) {
+      console.log(error)
+      console.log(error.response.status)
+      if(error.response.status === 429){
+        showToast("Token expired")
+        const newtoken = await createnewauthtoken(email)
+        console.log(newtoken)
+        if(newtoken){
+          await SecureStore.setItemAsync('customertoken',newtoken);
+          await fetchData()
+        }
+        else{
+          alert("No received")
+        }
+      }
+      else if (axios.isAxiosError(error)) {
         // Axios-related error
         if (error.response) {
           // Response received with an error status code
@@ -306,12 +340,15 @@ const CustomerSearchBar = () => {
           showToast("Network error. Please check your internet connection.");
         }
       } else {
-  
+
         showToast("An error occurred. Please try again.");
       }
     }
+    finally{
+      setlinearProgress(false);
+    }
   };
-  const [chooselocation, setchooselocation] = useState([{key:'1', value:'loading...', disabled:true}]);
+  const [chooselocation, setchooselocation] = useState([{ key: '1', value: 'loading...', disabled: true }]);
   useEffect(() => {
     fetchDatalocation(); // Fetch choosedata when the component mounts
   }, []);
@@ -320,7 +357,7 @@ const CustomerSearchBar = () => {
     try {
       const response = await axios.get("https://direckt-copy1.onrender.com/direckt/getlocations");
       const dataFromBackend = response.data;
-      
+
       if (Array.isArray(dataFromBackend) && dataFromBackend.length > 0) {
         // Map over the data to convert it into the required format
         const formattedData = dataFromBackend[0]?.locations.map(location => ({
@@ -330,7 +367,7 @@ const CustomerSearchBar = () => {
         // Update the state with the formatted data
         setchooselocation(formattedData);
       } else {
-       return
+        return
       }
     } catch (error) {
       if (axios.isAxiosError(error)) {
@@ -343,12 +380,12 @@ const CustomerSearchBar = () => {
           showToast("Network error. Please check your internet connection.");
         }
       } else {
-       
+
         showToast("An error occurred. Please try again.");
       }
     }
   };
-  
+
   const [isNavigating, setIsNavigating] = useState(false);
 
   const handleNavigateBack = () => {
@@ -357,7 +394,7 @@ const CustomerSearchBar = () => {
       navigation.goBack();
     }
   };
-  
+
   return (
     <View style={styles.container}>
       <View style={styles.searchcontainer}>
@@ -369,14 +406,14 @@ const CustomerSearchBar = () => {
         >
           <TouchableOpacity
             onPress={() => {
-             handleNavigateBack();
+              handleNavigateBack();
             }}
           >
             <Ionicons name="arrow-back" size={24} color="#8A57E4" />
           </TouchableOpacity>
           <TextInput
             style={styles.searchinput}
-            placeholder={"Search shops near you..."}
+            placeholder={strings[`${lang}`].searchbarplaceholder}
             value={businessname}
             onChangeText={(e) => setbusinessname(e)}
             onSubmitEditing={fetchData}
@@ -385,39 +422,39 @@ const CustomerSearchBar = () => {
             <Feather name="search" size={30} color="#8A57E4" />
           </TouchableOpacity>
         </View>
-        
-       <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-            justifyContent:'flex-start',
-              columnGap: 10,
-             marginLeft:20,
-              width:'100%',
-          
-            }}
-          >
-            <Text style={{ color: colorScheme === "dark" ? "grey" : "grey" }}>
-              Shop open
-            </Text>
-            <Checkbox
-              value={availabilitystatus}
-              onValueChange={setavailabilitystatus}
-              color={availabilitystatus ? "#3C4142" : undefined}
-              style={{height:30,width:30}}
-            />
-          </View> 
+
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: 'flex-start',
+            columnGap: 10,
+            marginLeft: 20,
+            width: '100%',
+
+          }}
+        >
+          <Text style={{ color: colorScheme === "dark" ? "grey" : "grey" }}>
+          {strings[`${lang}`].shopopen}
+          </Text>
+          <Checkbox
+            value={availabilitystatus}
+            onValueChange={setavailabilitystatus}
+            color={availabilitystatus ? "#3C4142" : undefined}
+            style={{ height: 30, width: 30 }}
+          />
+        </View>
         <View style={styles.filtercontainer}>
-         
-           <View style={{ width: "45%" }}>
+
+          <View style={{ width: "45%" }}>
             <SelectList
-             setSelected={(val) => setjoblocation(val)}
+              setSelected={(val) => setjoblocation(val)}
               data={chooselocation}
               save="value"
-              placeholder="Location"
+              placeholder={strings[`${lang}`].location}
               dropdownTextStyles={{ color: "grey" }}
               inputStyles={{ color: "grey" }}
-              closeicon={<AntDesign name="close" size={30}color={COLORS.gray} />}
+              closeicon={<AntDesign name="close" size={30} color={COLORS.gray} />}
             />
           </View>
           <View style={{ width: "45%" }}>
@@ -425,13 +462,13 @@ const CustomerSearchBar = () => {
               setSelected={(val) => setcategory(val)}
               data={choosedata}
               save="value"
-              placeholder="category"
+              placeholder={strings[`${lang}`].category}
               dropdownTextStyles={{ color: "grey" }}
               inputStyles={{ color: "grey" }}
               closeicon={<AntDesign name="close" size={30} color={COLORS.gray} />}
             />
           </View>
-          
+
         </View>
         {linearProgress && (
           <LinearProgress
@@ -443,23 +480,23 @@ const CustomerSearchBar = () => {
       </View>
 
       <FlatList
-      style={[
-        styles.resultcontainer,
-        { backgroundColor: "#F7F9FF" },
-      ]}
-      data={shopowner}
-      keyExtractor={(item, index) => index.toString()}
-      ListEmptyComponent={() => (
-        <View>
-          <Text style={{ textAlign: 'center' }}>
-            {resultmessage + "..."}
-          </Text>
-        </View>
-      )}
-      renderItem={({ item, index }) => (
-        <Shopcard data={item} key={index} />
-      )}
-    />
+        style={[
+          styles.resultcontainer,
+          { backgroundColor: "#F7F9FF" },
+        ]}
+        data={shopowner}
+        keyExtractor={(item, index) => index.toString()}
+        ListEmptyComponent={() => (
+          <View>
+            <Text style={{ textAlign: 'center' }}>
+              {resultmessage + "..."}
+            </Text>
+          </View>
+        )}
+        renderItem={({ item, index }) => (
+          <Shopcard data={item} key={index} />
+        )}
+      />
     </View>
   );
 };
@@ -516,6 +553,7 @@ const styles = StyleSheet.create({
   },
   resultcard: {
     flex: 1,
+    height:200,
     paddingVertical: 10,
     backgroundColor: "white",
     borderRadius: 5,
@@ -542,6 +580,7 @@ const styles = StyleSheet.create({
     borderColor: "gray",
   },
   resultcardctc: {
+    height:65,
     flexDirection: "row",
     marginVertical: 10,
     justifyContent: "space-evenly",

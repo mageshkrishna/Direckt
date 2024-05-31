@@ -88,8 +88,9 @@ const handleLogin = async () => {
       }
     );
   
-    const { status, data, token } = response.data;
-       
+    const { status, data, token, refreshToken } = response.data;
+    console.log(data)
+    console.log(refreshToken)
        
     if (status) {
     
@@ -102,9 +103,9 @@ const handleLogin = async () => {
      
       }
       // Store the token securely using react-native-keychain
-      SecureStore.setItemAsync('customertoken',token)
-      .then(() => {})
-      .catch(error => {});
+
+      await SecureStore.setItemAsync('customertoken',token)
+      await SecureStore.setItemAsync('refreshToken',refreshToken)
       showToast("Login Successful!");
       setCustomerToken(token)
       navigation.navigate("Customerhome");

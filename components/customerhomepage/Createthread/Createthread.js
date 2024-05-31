@@ -5,9 +5,7 @@ import {
   StyleSheet,
   Dimensions,
   TextInput,
-
   Platform,
-
   Image,
   ActivityIndicator,
   ToastAndroid,
@@ -26,7 +24,10 @@ import { COLORS } from "../../../constants/Theme";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import uploadMedia from "./UploadImage";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { strings } from "../../../locals/translations";
+import {createnewauthtoken } from '../../RefreshSession/RefreshSession'
+import { setCustomerToken } from "../../../redux/customerAuthActions";
 
 const Width = Dimensions.get("window").width;
 
@@ -37,20 +38,21 @@ const Createthread = () => {
   const [location, setjoblocation] = useState(null);
   const [category, setjobcategory] = useState(null);
   const [email, setemail] = useState(null);
- 
+  const dispatch = useDispatch()
 
   const [indicator, setindicator] = useState(false);
-  const [token, settoken] = useState(null);
 
   const navigation = useNavigation();
   const [modalVisible, setModalVisible] = useState(false);
   const customertoken = useSelector(
     (state) => state.customerAuth.customertoken
   );
+  const lang = useSelector(
+    (state) => state.appLanguage.language
+  );
   const showToast = (e) => {
     ToastAndroid.show(e, ToastAndroid.SHORT);
   }; 
-
   const handleSubmit = async () => {
     if (!jobtitle) {
       setindicator(false);
@@ -77,6 +79,7 @@ const Createthread = () => {
       showToast("Select Location");
       return;
     }
+    console.log(email);
     if (!category) {
       setindicator(false);
       showToast("Select Category");
@@ -87,31 +90,29 @@ const Createthread = () => {
       showToast("Something Went Wrong! Refresh the app");
       return;
     }
-  
+   
     try {
       setindicator(true);
-      
-      // Create FormData object to send mixed content (JSON + image)
       const formData = new FormData();
-      formData.append('location', location);
-      formData.append('email', email);
-      formData.append('jobtitle', jobtitle);
-      formData.append('jobdescription', jobdescription);
-      formData.append('category', category);
-      
-      // Append image data if it exists
       if (selectedImage) {
-        const filename = selectedImage.split('/').pop();
-        const match = /\.(\w+)$/.exec(filename);
-        const fileType = match ? `image/${match[1]}` : `image`;
-  
-        formData.append('image', {
+        const uriParts = selectedImage.split(".");
+        const fileType = uriParts[uriParts.length - 1];
+        const fileName = selectedImage.split("/").pop();
+        formData.append("image", {
           uri: selectedImage,
-          name: filename,
-          type: fileType
+          name: fileName,
+          type: `image/${fileType}`,
         });
       }
-      console.log(formData);
+      // Append other data fields
+      formData.append("location", location);
+      formData.append("email", email);
+      formData.append("jobtitle", jobtitle);
+      formData.append("jobdescription", jobdescription);
+      formData.append("category", category);
+  
+      const token = await SecureStore.getItemAsync("customertoken");
+
       const response = await axios.post(
         "https://direckt-copy1.onrender.com/Customerdata/createjob",
         formData,
@@ -128,10 +129,27 @@ const Createthread = () => {
       setSelectedImage(null);
       setindicator(false);
       setModalVisible(!modalVisible);
+      dispatch(setCustomerToken(token))
     } catch (error) {
-      setindicator(false);
-  
-      if (axios.isAxiosError(error)) {
+      if (error.response) {
+        console.log(error.response.status); 
+        if (error.response.status === 429) {
+            const newtoken = await createnewauthtoken(email)
+            if(newtoken){
+              await SecureStore.setItemAsync('customertoken',token);
+              await handleSubmit(); 
+            }
+            else{
+              alert("No received")
+            }
+        } else if (error.response.status === 401) {
+            showToast('Invalid Auth Token');
+        } else {
+            // Handle other status codes or errors
+            alert('Unexpected Error:', error.response.data);
+        }
+    }
+    else if (axios.isAxiosError(error)) {
         // Axios-related error
         if (error.response) {
           showToast(`Error: ${error.response.data.error}`);
@@ -143,25 +161,21 @@ const Createthread = () => {
         showToast("An error occurred. Please try again.");
       }
     }
+    finally{
+      setindicator(false);
+    }
   };
 
  
   useEffect(() => {
     const fetchData = async () => {
       try {
-       
-        SecureStore.getItemAsync("customertoken")
-          .then((value) => {
-        
-            settoken(value);
-          })
-          .catch((error) => {});
-        const data = await AsyncStorage.getItem("customerdata");
-        const parsedData = JSON.parse(data);
-        setemail(parsedData.email);
-      
+        const data = await AsyncStorage.getItem("customerdata")
+        const parsedData = JSON.parse(data)
+        setemail(parsedData.email)
+        console.log(email)
       } catch (err) {
-        
+        console.log(err)
       }
     };
 
@@ -283,7 +297,7 @@ const Createthread = () => {
           <TextInput
             style={styles.box1input}
             onChangeText={(text) => setjobtitle(text)}
-            placeholder="Give a title."
+            placeholder={strings[`${lang}`].givetitle}
             value={jobtitle}
             maxLength={75}
           />
@@ -293,12 +307,12 @@ const Createthread = () => {
             multiline={true}
             numberOfLines={6}
             textAlignVertical="top"
-            placeholder="Describe your problem clearly."
+            placeholder={strings[`${lang}`].givedes}
             onChangeText={(text) => setjobdescription(text)}
             value={jobdescription}
             maxLength={300}
           />
-          <Text style={styles.box1text}>Choose Category</Text>
+          <Text style={styles.box1text}>{strings[`${lang}`].choosecategory}</Text>
           <SelectList
             setSelected={(val) => setjobcategory(val)}
             data={choosedata}
@@ -313,7 +327,7 @@ const Createthread = () => {
             dropdownItemStyles={{ width: "80%" }}
             closeicon={<AntDesign name="close" size={30} color={COLORS.gray} />}
           />
-          <Text style={styles.box1text}>Choose Location</Text>
+          <Text style={styles.box1text}>{strings[`${lang}`].chooselocation}</Text>
           <SelectList
             setSelected={(val) => setjoblocation(val)}
             data={chooselocation}

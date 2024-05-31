@@ -9,12 +9,12 @@ import {
   Alert,
   useColorScheme,
   TextInput,
-
   ToastAndroid,
   ActivityIndicator,
+  Modal,
 } from "react-native";
 import { MaterialIcons, Entypo, FontAwesome5 } from "@expo/vector-icons";
-import {  AntDesign } from "@expo/vector-icons";
+import { AntDesign } from "@expo/vector-icons";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { React, useEffect, useState } from "react";
 import { Dimensions } from "react-native";
@@ -26,9 +26,15 @@ import { COLORS } from "../../constants/Theme";
 import axios from "axios";
 import { clearCustomerToken } from "../../redux/customerAuthActions";
 const height = Dimensions.get("window").height;
+import { FontAwesome } from '@expo/vector-icons';
+import { changeLanguage } from "../../redux/LanguageAction";
+import { strings } from "../../locals/translations";
+import setCustomerToken from '../RefreshSession/RefreshSession'
+
 
 
 const Profile = () => {
+  const [modalVisible, setModalVisible] = useState(false)
   const [token, settoken] = useState(null);
   const [indicator, setindicator] = useState(false);
   const navigation = useNavigation();
@@ -37,37 +43,43 @@ const Profile = () => {
     (state) => state.customerAuth.customertoken
   );
 
+  const lang =useSelector(
+    (state) => state.appLanguage.language
+  );
+
+  let currentlang = lang
+
   const [customerdata, setCustomerData] = useState(null);
   const data = [
     {
       id: 1,
-      title: "What is Direckt?",
+      title: strings[`${lang}`].whatdireckt,
       content:
-        "Direckt is an app that connects customers with nearby sellers and service providers.",
+        strings[`${lang}`].direcktans,
     },
     {
       id: 2,
-      title: "Do I need to pay any money?",
+      title: strings[`${lang}`].paymoneyq,
       content:
-        "No, you don't need to pay any money, and don't pay in the name of Direckt.",
+      strings[`${lang}`].paymoneyans,
     },
     {
       id: 3,
-      title: "What happens when you create a job?",
+      title: strings[`${lang}`].whathappensq,
       content:
-        "When you create a job, it will be sent to sellers matching the category and location you specify. Your name and email are not sent to them.",
+      strings[`${lang}`].whathappensans
     },
     {
       id: 4,
-      title: "What is deactivate and delete?",
+      title: strings[`${lang}`].whatdel,
       content:
-        "Deactivating means you no longer receive responses to your job, but you can still see the job. Deleting means everything related to the job will be removed.",
+      strings[`${lang}`].whatdelans,
     },
     {
       id: 5,
-      title: "Is Direckt responsible for the products or services?",
+      title: strings[`${lang}`].isdirecktresq,
       content:
-        "No, Direckt is not responsible for the products or services offered by sellers; it simply connects you with them.",
+      strings[`${lang}`].isdirecktresans,
     },
   ];
 
@@ -81,13 +93,13 @@ const Profile = () => {
     }
     try {
       setFeedbackTextindicator(true)
-      const response = await axios.post('https://direckt-copy1.onrender.com/direckt/customerfeedback', { feedback: feedbackText });
+      const response = await axios.post('https://direckt-copy1.onrender.com/direckt/customerfeedback', { feedback: feedbackText });//check for usertoken
       showToast('Thanks for your feedback!');
       setFeedbackText('')
       setFeedbackTextindicator(false)
 
     } catch (error) {
-    
+
       setFeedbackTextindicator(false)
       if (axios.isAxiosError(error)) {
         // Axios-related error
@@ -99,7 +111,7 @@ const Profile = () => {
           showToast("Network error. Please check your internet connection.");
         }
       } else {
-       
+
         showToast("An error occurred. Please try again. logout and resign in");
       }
 
@@ -127,13 +139,13 @@ const Profile = () => {
         }
         SecureStore.getItemAsync("customertoken")
           .then((value) => {
-            
+
             settoken(value);
           })
-          .catch((error) => {});
-      
+          .catch((error) => { });
+
       } catch (err) {
-      
+
       }
     };
 
@@ -157,20 +169,33 @@ const Profile = () => {
       );
       dispatch(clearCustomerToken());
       await SecureStore.deleteItemAsync("customertoken");
-     
+      await SecureStore.deleteItemAsync('refreshToken');
+
       await AsyncStorage.removeItem("customerdata");
       setindicator(false);
       navigation.navigate("Home");
-      
+
     } catch (error) {
-      setindicator(false);
-      if (axios.isAxiosError(error)) {
+      console.log(error.response.status)
+      if(error.response.status === 429){
+        showToast("Token expired")
+        const newtoken = await createnewauthtoken(email)
+        console.log(newtoken)
+        if(newtoken){
+          await SecureStore.setItemAsync('customertoken',newtoken);
+          dispatch(setCustomerToken(newtoken))
+        }
+        else{
+          alert("No received")
+        }
+      }
+      else if (axios.isAxiosError(error)) {
         // Axios-related error
         if (error.response) {
           // Response received with an error status code
-          
+
           await SecureStore.deleteItemAsync("customertoken");
-        
+
           await AsyncStorage.removeItem("customerdata");
           navigation.navigate("Home");
         } else {
@@ -180,11 +205,14 @@ const Profile = () => {
       } else {
         // Non-Axios error
         await SecureStore.deleteItemAsync("customertoken");
-        
+
         await AsyncStorage.removeItem("customerdata");
         navigation.navigate("Home");
-        
+
       }
+    }
+    finally{
+      setindicator(false);
     }
   };
   const handleLogout = () => {
@@ -201,16 +229,49 @@ const Profile = () => {
           onPress: () => {
             removeData();
 
-         
+
           },
         },
       ],
       { cancelable: false }
     );
   };
-  
+
+  const handlelanguage = (e) => {
+    if (currentlang === e) {
+      return ;
+    }
+    currentlang = e
+    dispatch(changeLanguage(e))
+  }
   return (
     <SafeAreaView style={{ flex: 1 }}>
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => {
+          setModalVisible(!modalVisible);
+        }}>
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <Text style={styles.chooselang}>Choose language</Text>
+            <View style={styles.langlist}>
+              <TouchableOpacity style={styles.langitem} onPress={()=>handlelanguage('en')}>
+                <MaterialIcons name={`radio-button-${currentlang==="en"?"on":"off"}`} size={24} color="black" />
+                <Text>English</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.langitem}  onPress={()=>handlelanguage('ta')}>
+                <MaterialIcons name={`radio-button-${currentlang==="ta"?"on":"off"}`} size={24} color="black" />
+                <Text>தமிழ்</Text>
+              </TouchableOpacity>
+            </View>
+            <TouchableOpacity onPress={() => setModalVisible(false)} style={styles.changelangbtn}>
+              <Text style={{ color: 'white' }}>Okay</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
       <ScrollView style={styles.container}>
         <View style={styles.bodycontainer}>
           <View
@@ -222,13 +283,13 @@ const Profile = () => {
               justifyContent: "center",
             }}
           >
-            {indicator?(<View>
+            {indicator ? (<View>
               <ActivityIndicator color={"red"} size={40} />
-            </View>):<TouchableOpacity
+            </View>) : <TouchableOpacity
               style={{ flexDirection: "row", alignItems: "center" }}
               onPress={handleLogout}
             >
-              <Text style={styles.logout}>Log out </Text>
+              <Text style={styles.logout}>{strings[`${lang}`].logout}</Text>
               <MaterialIcons name="logout" size={24} color="red" />
             </TouchableOpacity>}
           </View>
@@ -246,7 +307,7 @@ const Profile = () => {
             </View>
           </View>
           <View style={styles.faq}>
-            <Text style={styles.faqtitle}>Frequently Asked Questions</Text>
+            <Text style={styles.faqtitle}>{strings[`${lang}`].faq}</Text>
             <ScrollView style={styles.faqcontainer}>
               {data.map((item, index) => (
                 <AccordionItem
@@ -261,7 +322,6 @@ const Profile = () => {
             </ScrollView>
           </View>
           <View style={styles.bodyfooter}>
-           
 
             <View style={styles.aboutlist}>
               <View>
@@ -278,7 +338,16 @@ const Profile = () => {
                     size={24}
                     color="black"
                   />
-                  <Text style={styles.aboutdireckt}>About Direckt</Text>
+                  <Text style={styles.aboutdireckt}>{strings[`${lang}`].aboutdireckt}</Text>
+                </TouchableOpacity>
+              </View>
+              <View>
+                <TouchableOpacity
+                  onPress={() => setModalVisible(true)}
+                  style={styles.aboutdetails}
+                >
+                  <FontAwesome name="language" size={24} color="black" />
+                  <Text style={styles.aboutdireckt}>{strings[`${lang}`].changelanguage}</Text>
                 </TouchableOpacity>
               </View>
               <View>
@@ -291,7 +360,7 @@ const Profile = () => {
                   style={styles.aboutdetails}
                 >
                   <MaterialIcons name="privacy-tip" size={24} color="black" />
-                  <Text style={styles.pp}>Privacy Policy</Text>
+                  <Text style={styles.pp}>{strings[`${lang}`].pp}</Text>
                 </TouchableOpacity>
               </View>
               <View>
@@ -308,24 +377,24 @@ const Profile = () => {
                     size={24}
                     color="black"
                   />
-                  <Text style={styles.tc}>Terms & Conditions</Text>
+                  <Text style={styles.tc}>{strings[`${lang}`].tandc}</Text>
                 </TouchableOpacity>
               </View>
               <View>
                 <TouchableOpacity
-                  onPress={() =>{
-                      Alert.alert(
-                      "Delete Account",
-                      "Are you sure you want to delete this account? (Account cannot be recovered once deleted)",
+                  onPress={() => {
+                    Alert.alert(
+                      strings[`${lang}`].deleteacc,
+                      strings[`${lang}`].delconfirm,
                       [
                         {
                           text: "Cancel",
                           style: "cancel",
                         },
                         {
-                          text: "delete",
+                          text: strings[`${lang}`].delete,
                           onPress: () => {
-                            navigation.navigate("CustomerAccountDelete",{email:customerdata.email});
+                            navigation.navigate("CustomerAccountDelete", { email: customerdata.email });
                           },
                         },
                       ],
@@ -336,7 +405,7 @@ const Profile = () => {
                   style={styles.aboutdetailslast}
                 >
                   <AntDesign name="delete" size={24} color="red" />
-                  <Text style={styles.deletaccount}>Delete account</Text>
+                  <Text style={styles.deletaccount}>{strings[`${lang}`].deleteacc}</Text>
                 </TouchableOpacity>
               </View>
             </View>
@@ -345,7 +414,7 @@ const Profile = () => {
           <View
             style={{ height: 200, width: "100%", flexDirection: 'column', alignItems: 'flex-start', justifyContent: 'center', gap: 10, paddingLeft: 15 }}
           >
-            <Text>Your Feedback Matters: Suggestions, Bug Reports Welcome!</Text>
+            <Text>{strings[`${lang}`].feedback}</Text>
             <TextInput
               style={{
                 flex: 1,
@@ -358,11 +427,11 @@ const Profile = () => {
               }}
               multiline
               numberOfLines={4}
-              placeholder="Type your feedback here..."
+              placeholder={strings[`${lang}`].typefeedback}
               value={feedbackText}
               onChangeText={setFeedbackText}
             />
-            <TouchableOpacity style={{ backgroundColor: COLORS.primary, paddingHorizontal: 12, paddingVertical: 8, borderRadius: 4, flexDirection: 'row', alignItems: 'center' }} onPress={handleFeedbackSubmit}><Text style={{ fontSize: 18, color: '#fff' }}>Submit</Text>{feedbackTextIndicator && <ActivityIndicator size={18} color={'#fff'} />}</TouchableOpacity>
+            <TouchableOpacity style={{ backgroundColor: COLORS.primary, paddingHorizontal: 12, paddingVertical: 8, borderRadius: 4, flexDirection: 'row', alignItems: 'center' }} onPress={handleFeedbackSubmit}><Text style={{ fontSize: 18, color: '#fff' }}>{strings[`${lang}`].submit}</Text>{feedbackTextIndicator && <ActivityIndicator size={18} color={'#fff'} />}</TouchableOpacity>
           </View>
         </View>
       </ScrollView>
@@ -452,8 +521,8 @@ const styles = StyleSheet.create({
     paddingVertical: "1%",
   },
   bodyfooter: {
-    height: (height * 30) / 100,
-    marginBottom:20
+    height: (height * 35) / 100,
+    marginBottom: 20,
   },
   footertitle: {
     fontSize: 18,
@@ -465,8 +534,10 @@ const styles = StyleSheet.create({
     justifyContent: "space-evenly",
   },
   aboutlist: {
-    height: (height * 30) / 100,
+    height: (height * 35) / 100,
     justifyContent: "space-evenly",
+    gap: 10,
+    marginBottom: 10,
   },
   aboutdetails: {
     flexDirection: "row",
@@ -491,10 +562,59 @@ const styles = StyleSheet.create({
   },
   logout: {
     color: "red",
-    fontSize: 18,
+    fontSize: 15,
   },
-  deletaccount:{
+  deletaccount: {
     color: "red",
     paddingHorizontal: 20,
+  },
+  box3signin: {
+    color: "white",
+    fontSize: 23,
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: 'white',
+    borderRadius: 10,
+    justifyContent: 'space-evenly',
+    padding: 40,
+    width: '70%',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+    gap: 10,
+  },
+  chooselang: {
+    fontSize: 19,
+  },
+  langitem: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 20,
+  },
+  changelangbtn: {
+    alignItems: 'center',
+    backgroundColor: COLORS.primary,
+    padding: 13,
+    borderRadius: 10,
+    width: 70,
+  },
+  langlist: {
+    height: 100,
+    justifyContent: 'space-evenly',
+    alignItems: 'center'
   }
 });

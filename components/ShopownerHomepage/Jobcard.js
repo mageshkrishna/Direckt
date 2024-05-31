@@ -31,14 +31,18 @@ import { COLORS } from "../../constants/Theme";
 import React from "react";
 import ImagePopup from "./Imagepopup";
 import axios from "axios";
+import {createnewauthtokenForShopowner} from '../RefreshSession/RefreshSession'
+import * as SecureStore from "expo-secure-store";
 const height = Dimensions.get("window").height;
 const width = Dimensions.get("window").width;
 import Checkbox from "expo-checkbox";
+import { useDispatch } from "react-redux";
 UIManager.setLayoutAnimationEnabledExperimental &&
   UIManager.setLayoutAnimationEnabledExperimental(true);
 
 
-const JobCard = ({ item, ownerdetail, token }) => {
+const JobCard = ({ item, ownerdetail }) => {
+  const dispatch = useDispatch();
   const job_id = item._id;
   const [modalVisible, setModalVisible] = useState(false);
   const [deliverystatus, setdeliverystatus] = useState(false);
@@ -70,6 +74,7 @@ const JobCard = ({ item, ownerdetail, token }) => {
       deliverystatus: deliverystatus,
       replymessage: replymessage,
     };
+    const token = await SecureStore.getItemAsync("shopownertoken");
     try {
       const response = await axios.post(
         "https://direckt-copy1.onrender.com/shopowner/createjobreply",
@@ -86,22 +91,40 @@ const JobCard = ({ item, ownerdetail, token }) => {
       setreplymessage('');
       setdeliverystatus(false);
       setModalVisible(!modalVisible);
-    } catch (error) {
-      setuploading(false);
-      // showToast('You have already replied to this job!');
-      if (axios.isAxiosError(error)) {
+    }  catch (error) {
+      if (error.response) {
+        console.log(error.response.status); 
+        if (error.response.status === 429) {
+            const newtoken = await createnewauthtokenForShopowner(email);
+            if(newtoken){
+              token  = newtoken
+              await SecureStore.setItemAsync('shopownertoken',token);
+              await createreply(); 
+            }
+            else{
+              alert("No received")
+            }
+        } else if (error.response.status === 401) {
+            showToast('Invalid Auth Token');
+        } else {
+            // Handle other status codes or errors
+            alert('Unexpected Error:', error.response.data);
+        }
+    }
+    else if (axios.isAxiosError(error)) {
         // Axios-related error
         if (error.response) {
-          // Response received with an error status code
-          showToast('You have already replied!');
+          showToast(`Error: ${error.response.data.error}`);
         } else {
           // Network error (no response received)
           showToast("Network error. Please check your internet connection.");
         }
       } else {
-      
         showToast("An error occurred. Please try again.");
       }
+    }
+    finally{
+      setuploading(false);
     }
   };
 

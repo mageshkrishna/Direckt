@@ -20,12 +20,18 @@ import { Ionicons, Feather} from "@expo/vector-icons";
 import { COLORS } from "../../constants/Theme";
 import Createthread from "./Createthread/Createthread";
 import Threadsavailable from "./Threadsavailable";
+import { useSelector } from "react-redux";
+import { strings } from "../../locals/translations";
 
 const Width = Dimensions.get("window").width;
 
 
 const Customerhome = () => {
   const navigation = useNavigation();
+
+  const lang = useSelector(
+    (state) => state.appLanguage.language
+  );
 
 
 
@@ -49,7 +55,7 @@ const Customerhome = () => {
         }}
       >
         <TouchableOpacity style={styles.searchbar} onPress={handleFocus}>
-          <Text style={styles.searchinput}>Search shops near you...</Text>
+          <Text style={styles.searchinput}>{strings[`${lang}`].searchbarplaceholder}</Text>
           <Feather name="search" size={30} color="black" />
         </TouchableOpacity>
 
@@ -131,7 +137,8 @@ const styles = StyleSheet.create({
     shadowColor: "black",
   },
   searchinput: {
-    color: COLORS.gray
+    color: COLORS.gray,
+    fontSize:11
   },
 });
 export default Customerhome;

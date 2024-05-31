@@ -7,6 +7,7 @@ import {
   Image,
   Alert,
   ActivityIndicator,
+  ToastAndroid,
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import { useActionSheet } from "@expo/react-native-action-sheet";
@@ -14,11 +15,14 @@ import Icon from "react-native-vector-icons/MaterialIcons";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { COLORS } from "../../constants/Theme";
-
-const ProfilePicker = ({ profilepic, setprofilepic, token, shopOwnerId }) => {
+import * as SecureStore from "expo-secure-store";
+import {createnewauthtokenForShopowner} from '../RefreshSession/RefreshSession'
+import { useDispatch } from "react-redux";
+import { setShopOwnerToken } from "../../redux/shopOwnerAuthActions";
+const ProfilePicker = ({ profilepic, setprofilepic, shopOwnerId , email }) => {
   const { showActionSheetWithOptions } = useActionSheet();
   const [loading, setLoading] = useState(false);
-
+  const dispatch = useDispatch();
 
   const openCamera = async () => {
     try {
@@ -63,7 +67,7 @@ const ProfilePicker = ({ profilepic, setprofilepic, token, shopOwnerId }) => {
         },
         {
           text: "OK",
-          onPress: () => uploadImage(shopOwnerId, token, imageUri),
+          onPress: () => uploadImage(shopOwnerId, imageUri),
         },
       ],
       { cancelable: false }
@@ -88,8 +92,9 @@ const ProfilePicker = ({ profilepic, setprofilepic, token, shopOwnerId }) => {
   };
   
   const removeImage = async () => {
+    
+    await uploadImage();
     setprofilepic(null);
-
     updateShopOwnerProfilePic(null);
   };
 
@@ -127,13 +132,15 @@ const ProfilePicker = ({ profilepic, setprofilepic, token, shopOwnerId }) => {
       }
     );
   };
-
-  const uploadImage = async (id, token, imageUri) => {
+  const showToast = (e) => {
+    ToastAndroid.show(e, ToastAndroid.SHORT);
+  };
+  const uploadImage = async (id, imageUri) => {
     console.log(imageUri);
     setLoading(true);
     try {
       const formData = new FormData();
-
+      const token = await SecureStore.getItemAsync("shopownertoken");
       if (imageUri) {
         const uriParts = imageUri.split(".");
         const fileType = uriParts[uriParts.length - 1];
@@ -144,12 +151,9 @@ const ProfilePicker = ({ profilepic, setprofilepic, token, shopOwnerId }) => {
           type: `image/${fileType}`,
         });
       }
-      console.log(token);
-      const queryParams = {
-        _id: shopOwnerId,
-      };
+     formData.append("_id",shopOwnerId)
       const response = await axios.post(
-        `https://direckt-copy1.onrender.com/shopowner/editprofileimage?_id=${shopOwnerId}`,
+        `https://direckt-copy1.onrender.com/shopowner/editprofileimage`,
         formData,
         {
           headers: {
@@ -161,9 +165,40 @@ const ProfilePicker = ({ profilepic, setprofilepic, token, shopOwnerId }) => {
       setprofilepic(response.data.data)
       console.log(response.data);
       updateShopOwnerProfilePic(response.data.data);
-    } catch (error) {
-      console.error("Error uploading image:", error);
-    } finally {
+    }  catch (error) {
+      if (error.response) {
+        console.log(error.response.status); 
+        if (error.response.status === 429) {
+            const newtoken = await createnewauthtokenForShopowner(email);
+            console.log("new token : " + newtoken)
+            if(newtoken){
+              await SecureStore.setItemAsync('shopownertoken',newtoken);
+              dispatch(setShopOwnerToken(newtoken))
+              await uploadImage(id, imageUri); 
+            }
+            else{
+              alert("No received")
+            }
+        } else if (error.response.status === 401) {
+            showToast('Invalid Auth Token');
+        } else {
+            // Handle other status codes or errors
+            alert('Unexpected Error:', error.response.data);
+        }
+    }
+    else if (axios.isAxiosError(error)) {
+        // Axios-related error
+        if (error.response) {
+          showToast(`Error: ${error.response.data.error}`);
+        } else {
+          // Network error (no response received)
+          showToast("Network error. Please check your internet connection.");
+        }
+      } else {
+        showToast("An error occurred. Please try again.");
+      }
+    }
+    finally{
       setLoading(false);
     }
   };
