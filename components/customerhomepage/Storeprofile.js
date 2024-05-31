@@ -9,7 +9,7 @@ import { useRoute } from '@react-navigation/native';
 import ImagePopup from '../ShopownerHomepage/Imagepopup';
 import * as SecureStore from "expo-secure-store";
 const height = Dimensions.get("window").height
-import createnewauthtoken from '../RefreshSession/RefreshSession';
+import {createnewauthtoken} from '../RefreshSession/RefreshSession';
 import { useDispatch, useSelector } from "react-redux";
 import { setCustomerToken } from '../../redux/customerAuthActions';
 
@@ -72,7 +72,6 @@ const StoreProfile = () => {
             )
             setstoredata(response.data)
             console.log("after api")
-            dispatch(setCustomerToken(authtoken))
         } catch (error) {
             console.log("inside try")
             console.log(error)

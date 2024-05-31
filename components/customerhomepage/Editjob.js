@@ -4,7 +4,7 @@ import axios from 'axios';
 import { COLORS } from '../../constants/Theme';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import * as SecureStore from "expo-secure-store";
-import createnewauthtoken from '../RefreshSession/RefreshSession';
+import {createnewauthtoken }from '../RefreshSession/RefreshSession';
 import { useDispatch, useSelector } from "react-redux";
 import { setCustomerToken } from '../../redux/customerAuthActions';
 
@@ -45,7 +45,6 @@ const Editjob = () => {
       );
       setLoading(false);
       showToast("Job updated successfully");
-      dispatch(setCustomerToken(authtoken))
       navigation.navigate("homeCustomer");
       
     } catch (error) {

@@ -129,14 +129,13 @@ const Createthread = () => {
       setSelectedImage(null);
       setindicator(false);
       setModalVisible(!modalVisible);
-      dispatch(setCustomerToken(token))
     } catch (error) {
       if (error.response) {
         console.log(error.response.status); 
         if (error.response.status === 429) {
             const newtoken = await createnewauthtoken(email)
             if(newtoken){
-              await SecureStore.setItemAsync('customertoken',token);
+              await SecureStore.setItemAsync('customertoken',newtoken);
               await handleSubmit(); 
             }
             else{

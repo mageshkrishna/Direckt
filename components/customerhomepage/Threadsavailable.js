@@ -224,7 +224,6 @@ const AccordionItem = ({ data, token, onRefresh, email }) => {
           },
         }
       );
-      dispatch(setCustomerToken(authtoken))
       setdeactivateindicator(false);
       ToastAndroid.show("Job Deactivated", ToastAndroid.SHORT);
     } catch (error) {
@@ -283,7 +282,6 @@ const AccordionItem = ({ data, token, onRefresh, email }) => {
       if (response.status === 200) {
         onRefresh();
       }
-      dispatch(setCustomerToken(authtoken))
       setdeleteindicator(false);
     } catch (error) {
         console.log(error.response.status)
@@ -648,8 +646,6 @@ const Threadsavailable = ({ route }) => {
             console.log(newtoken)
             if(newtoken){
               await SecureStore.setItemAsync('customertoken',newtoken);
-              dispatch(setCustomerToken(newtoken))
-              fetchjob();
             }
             else{
               alert("No received")
@@ -677,6 +673,9 @@ const Threadsavailable = ({ route }) => {
 
     fetchjob();
   }, [email, refreshing, token]);
+   useEffect(()=>{
+          onRefresh();
+   },[])
 
   const onRefresh = React.useCallback(async () => {
     setRefreshing(true); // Set refreshing to true before fetching data

@@ -28,7 +28,7 @@ import * as SecureStore from "expo-secure-store";
 import { FlatList } from "react-native-gesture-handler";
 const height = Dimensions.get("window").height;
 import { strings } from "../../locals/translations";
-import createnewauthtoken from '../RefreshSession/RefreshSession';
+import {createnewauthtoken} from '../RefreshSession/RefreshSession';
 import { useDispatch, useSelector } from "react-redux";
 import { setCustomerToken } from '../../redux/customerAuthActions';
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -314,7 +314,6 @@ const CustomerSearchBar = () => {
       setTimeout(() => {
         setlinearProgress(false);
       }, 2000);
-      dispatch(setCustomerToken(authtoken))
     } catch (error) {
       console.log(error)
       console.log(error.response.status)
