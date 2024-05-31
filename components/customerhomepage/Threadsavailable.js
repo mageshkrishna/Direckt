@@ -51,7 +51,7 @@ import { COLORS } from "../../constants/Theme";
 import { strings } from "../../locals/translations";
 
 import { setCustomerToken } from "../../redux/customerAuthActions";
-import  createnewauthtoken  from "../RefreshSession/RefreshSession";
+import  {createnewauthtoken}  from "../RefreshSession/RefreshSession";
 
 const height = Dimensions.get("window").height;
 const width = Dimensions.get("window").width;
@@ -617,7 +617,7 @@ const Threadsavailable = ({ route }) => {
   }, [custoken]);
 
   useEffect(() => {
-    if (refreshing) {
+    if (!refreshing) {
       return;
     }
     const fetchjob = async () => {
@@ -625,7 +625,7 @@ const Threadsavailable = ({ route }) => {
       if (!email ) {
         return;
       }
-      
+      const token = await SecureStore.getItemAsync("customertoken");
       try {
         setindicator(true);
         const response = await axios.get(

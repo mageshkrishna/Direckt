@@ -37,11 +37,12 @@ const height = Dimensions.get("window").height;
 const width = Dimensions.get("window").width;
 import Checkbox from "expo-checkbox";
 import { useDispatch } from "react-redux";
+import { setShopOwnerToken } from "../../redux/shopOwnerAuthActions";
 UIManager.setLayoutAnimationEnabledExperimental &&
   UIManager.setLayoutAnimationEnabledExperimental(true);
 
 
-const JobCard = ({ item, ownerdetail }) => {
+const JobCard = ({ item, ownerdetail ,email }) => {
   const dispatch = useDispatch();
   const job_id = item._id;
   const [modalVisible, setModalVisible] = useState(false);
@@ -54,9 +55,10 @@ const JobCard = ({ item, ownerdetail }) => {
 
   const timestamp = item.expiryAt;
   const localDateTime = moment(timestamp).utcOffset('+00:00').format('DD-MM-YYYY h:mm:ss A');
- 
-
+  console.log(email)
   const createreply = async () => {
+    const token = await SecureStore.getItemAsync("shopownertoken");
+    console.log(token);
     if (!replymessage) {
       showToast("Please fill  fields");
       setuploading(false);
@@ -74,7 +76,8 @@ const JobCard = ({ item, ownerdetail }) => {
       deliverystatus: deliverystatus,
       replymessage: replymessage,
     };
-    const token = await SecureStore.getItemAsync("shopownertoken");
+    console.log(formdata)
+   
     try {
       const response = await axios.post(
         "https://direckt-copy1.onrender.com/shopowner/createjobreply",
@@ -96,10 +99,11 @@ const JobCard = ({ item, ownerdetail }) => {
         console.log(error.response.status); 
         if (error.response.status === 429) {
             const newtoken = await createnewauthtokenForShopowner(email);
+            console.log("new token from "+newtoken)
             if(newtoken){
-              token  = newtoken
-              await SecureStore.setItemAsync('shopownertoken',token);
-              await createreply(); 
+              await SecureStore.setItemAsync("shopownertoken",newtoken);
+              createreply();
+               
             }
             else{
               alert("No received")
