@@ -46,6 +46,7 @@ const Editjob = () => {
       setLoading(false);
       showToast("Job updated successfully");
       navigation.navigate("homeCustomer");
+      dispatch(setCustomerToken(jobtitle+jobdescription))
       
     } catch (error) {
       console.log(error)

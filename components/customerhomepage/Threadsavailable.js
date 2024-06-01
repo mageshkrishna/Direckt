@@ -67,7 +67,7 @@ UIManager.setLayoutAnimationEnabledExperimental &&
 const InsideAccorditon = ({ data }) => {
   const [showPopup, setShowPopup] = useState(false);
   const navigation = useNavigation();
-
+   console.log(data)
   return (
     <View style={styles.resultcard}>
       <View style={styles.resultcardtop}>
@@ -93,7 +93,7 @@ const InsideAccorditon = ({ data }) => {
         </View>
 
         {showPopup && (
-          data.shopowner_id.shopowner_id.profilepic ? (
+          data.shopowner_id.profilepic ? (
             <ImagePopup
               imageUrl={data.shopowner_id.profilepic}
               onClose={() => setShowPopup(false)}
@@ -185,7 +185,7 @@ const InsideAccorditon = ({ data }) => {
           backgroundColor: "#5271FF",
         }}
         onPress={() => {
-          data.gmaplink ? Linking.openURL(data.shopowner_id.gmaplink) : showToast()
+          data.shopowner_id.gmaplink ? Linking.openURL(data.shopowner_id.gmaplink) : showToast("Location not provided by the shopowner")
         }}
       >
         <Text style={{ color: "white" }}>Direction </Text>
@@ -589,6 +589,7 @@ const Threadsavailable = ({ route }) => {
     }
   }, [route.params]);
   const custoken = useSelector((state) => state.customerAuth.customertoken);
+  console.log(custoken);
   const lang = useSelector(
     (state) => state.appLanguage.language
   );
@@ -646,6 +647,7 @@ const Threadsavailable = ({ route }) => {
             console.log(newtoken)
             if(newtoken){
               await SecureStore.setItemAsync('customertoken',newtoken);
+              fetchjob();
             }
             else{
               alert("No received")
@@ -672,10 +674,13 @@ const Threadsavailable = ({ route }) => {
     };
 
     fetchjob();
-  }, [email, refreshing, token]);
+  }, [email, refreshing]);
    useEffect(()=>{
           onRefresh();
    },[])
+   useEffect(()=>{
+    onRefresh();
+},[custoken])
 
   const onRefresh = React.useCallback(async () => {
     setRefreshing(true); // Set refreshing to true before fetching data
