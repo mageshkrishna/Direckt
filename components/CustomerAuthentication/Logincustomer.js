@@ -89,8 +89,7 @@ const handleLogin = async () => {
     );
   
     const { status, data, token, refreshToken } = response.data;
-    console.log(data)
-    console.log(refreshToken)
+
        
     if (status) {
     

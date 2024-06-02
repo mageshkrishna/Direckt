@@ -67,7 +67,10 @@ UIManager.setLayoutAnimationEnabledExperimental &&
 const InsideAccorditon = ({ data }) => {
   const [showPopup, setShowPopup] = useState(false);
   const navigation = useNavigation();
-   console.log(data)
+ 
+   const lang = useSelector(
+    (state) => state.appLanguage.language
+  );
   return (
     <View style={styles.resultcard}>
       <View style={styles.resultcardtop}>
@@ -138,7 +141,7 @@ const InsideAccorditon = ({ data }) => {
             }}
           >
             <Text style={{ color: "#5271FF", fontSize: 12 }}>
-              View Profile{" "}
+            {strings[`${lang}`].viewprofile}
             </Text>
             <Feather name="send" size={14} color="#5271FF" />
           </View>
@@ -170,7 +173,7 @@ const InsideAccorditon = ({ data }) => {
         }}
         onPress={() => { Linking.openURL(`tel:${data.shopowner_id.phonenumber}`) }}
       >
-        <Text style={{ color: "white" }}>Call Now </Text>
+        <Text style={{ color: "white" }}>{strings[`${lang}`].call} </Text>
         <MaterialIcons name="phone-in-talk" size={13} color="white" />
       </TouchableOpacity>
       <TouchableOpacity
@@ -188,10 +191,10 @@ const InsideAccorditon = ({ data }) => {
           data.shopowner_id.gmaplink ? Linking.openURL(data.shopowner_id.gmaplink) : showToast("Location not provided by the shopowner")
         }}
       >
-        <Text style={{ color: "white" }}>Direction </Text>
+        <Text style={{ color: "white" }}>{strings[`${lang}`].direction}</Text>
         <FontAwesome5 name="directions" size={13} color="white" />
       </TouchableOpacity>
-    </View>
+    </View> 
   </View>
   )
 };
@@ -213,7 +216,7 @@ const AccordionItem = ({ data, token, onRefresh, email }) => {
     try {
       setdeactivateindicator(true);
       let authtoken = await SecureStore.getItemAsync("customertoken")
-      console.log("Customer authttoken", authtoken)
+
       const response = await axios.post(
         "https://direckt-copy1.onrender.com/Customerdata/changeactivestate",
         { _id: jobIdToDelete },
@@ -227,17 +230,17 @@ const AccordionItem = ({ data, token, onRefresh, email }) => {
       setdeactivateindicator(false);
       ToastAndroid.show("Job Deactivated", ToastAndroid.SHORT);
     } catch (error) {
-        console.log(error.response.status)
+  
         if(error.response.status === 429){
-          showToast("Token expired")
+
           const newtoken = await createnewauthtoken(email)
-          console.log(newtoken)
+        
           if(newtoken){
             await SecureStore.setItemAsync('customertoken',newtoken);
             await deactivatejob()
           }
           else{
-            alert("No received")
+            navigation.replace('Home')
           }
         }
 
@@ -245,7 +248,7 @@ const AccordionItem = ({ data, token, onRefresh, email }) => {
         // Axios-related error
         if (error.response) {
           // Response received with an error status code
-          console.log(error.response.data)
+          
           showToast(`Error: ${error.response.data.error}`);
         } else {
           // Network error (no response received)
@@ -284,17 +287,17 @@ const AccordionItem = ({ data, token, onRefresh, email }) => {
       }
       setdeleteindicator(false);
     } catch (error) {
-        console.log(error.response.status)
+     
         if(error.response.status === 429){
-          showToast("Token expired")
+
           const newtoken = await createnewauthtoken(email)
-          console.log(newtoken)
+        
           if(newtoken){
             await SecureStore.setItemAsync('customertoken',newtoken);
             await handleDeleteJob()
           }
           else{
-            alert("No received")
+            navigation.replace('Home')
           }
         }
       else if (axios.isAxiosError(error)) {
@@ -493,7 +496,7 @@ const AccordionItem = ({ data, token, onRefresh, email }) => {
                   {data.status ?
                     <TouchableOpacity style={styles.editJob} onPress={() => { navigation.navigate('Editjob', { token: token, job_id: data._id, title:data.jobtitle, description:data.jobdescription, email:email }) }}>
                       <Text style={{ color: "white" }}>
-                        <AntDesign name="edit" size={12} color="white" /> Edit Job
+                        <AntDesign name="edit" size={12} color="white" />{strings[`${lang}`].editjob}
                       </Text>
                     </TouchableOpacity>
                     :
@@ -540,7 +543,7 @@ const AccordionItem = ({ data, token, onRefresh, email }) => {
           <Text
             style={{ textAlign: "center", paddingVertical: 10, fontSize: 18 }}
           >
-            Job Responses
+           {strings[`${lang}`].taskresponses}
           </Text>
           {jobreply.map((item, index) => (
             <InsideAccorditon key={index} data={item} />
@@ -589,7 +592,7 @@ const Threadsavailable = ({ route }) => {
     }
   }, [route.params]);
   const custoken = useSelector((state) => state.customerAuth.customertoken);
-  console.log(custoken);
+
   const lang = useSelector(
     (state) => state.appLanguage.language
   );
@@ -620,7 +623,7 @@ const Threadsavailable = ({ route }) => {
       return;
     }
     const fetchjob = async () => {
-      console.log("jfbvjefb");
+      
       if (!email ) {
         return;
       }
@@ -640,17 +643,17 @@ const Threadsavailable = ({ route }) => {
         setdata(response.data.result);
         setindicator(false);
       } catch (error) {
-          console.log(error.response.status)
+       
           if(error.response.status === 429){
-            showToast("Token expired")
+
             const newtoken = await createnewauthtoken(email)
-            console.log(newtoken)
+        
             if(newtoken){
               await SecureStore.setItemAsync('customertoken',newtoken);
               fetchjob();
             }
             else{
-              alert("No received")
+              navigation.replace('Home')
             }
           }
         

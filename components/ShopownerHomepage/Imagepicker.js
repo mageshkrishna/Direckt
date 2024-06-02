@@ -17,6 +17,7 @@ import { setShopOwnerToken } from "../../redux/shopOwnerAuthActions";
 import * as SecureStore from "expo-secure-store";
 import {createnewauthtokenForShopowner} from '../RefreshSession/RefreshSession'
 import { useDispatch } from "react-redux";
+import { useNavigation } from "@react-navigation/native";
 const width = Dimensions.get("window").width;
 const height = Dimensions.get("window").height;
 
@@ -73,9 +74,9 @@ const Imagepicker = ({ setphotos, email, shopOwnerId }) => {
       { cancelable: false }
     );
   };
-
+  const navigation = useNavigation();
   const uploadImage = async ( imageUri) => {
-    console.log(imageUri);
+  
     setLoading(true);
     try {
       const formData = new FormData();
@@ -114,17 +115,17 @@ const Imagepicker = ({ setphotos, email, shopOwnerId }) => {
       });
     }  catch (error) {
       if (error.response) {
-        console.log(error.response.status); 
+
         if (error.response.status === 429) {
             const newtoken = await createnewauthtokenForShopowner(email);
-            console.log("new token : " + newtoken)
+   
             if(newtoken){
               await SecureStore.setItemAsync('shopownertoken',newtoken);
               dispatch(setShopOwnerToken(newtoken))
               await uploadImage(imageUri); 
             }
             else{
-              alert("No received")
+              navigation.replace('Home')
             }
         } else if (error.response.status === 401) {
             showToast('Invalid Auth Token');
@@ -176,11 +177,11 @@ const Imagepicker = ({ setphotos, email, shopOwnerId }) => {
         JSON.stringify(shopOwnerData)
       );
 
-      console.log("Shop owner photos updated successfully:", shopOwnerData);
+ 
 
       return shopOwnerData; // Return the updated shop owner object if needed
     } catch (error) {
-      console.error("Error updating shop owner photos:", error);
+
       throw error;
     }
   };

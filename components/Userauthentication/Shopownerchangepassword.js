@@ -4,6 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
 import { COLORS } from '../../constants/Theme';
 import { TextInput } from 'react-native-gesture-handler';
+import { useDispatch } from 'react-redux';
 const Width = Dimensions.get("window").width;
 
 const Shopownerpassword = ({route}) => {
@@ -56,6 +57,7 @@ const Shopownerpassword = ({route}) => {
     }
    }
   }
+
    const showToast = (e) => {
     ToastAndroid.show(e, ToastAndroid.SHORT);
   };

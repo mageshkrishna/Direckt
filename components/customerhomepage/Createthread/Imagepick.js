@@ -3,9 +3,13 @@ import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { useActionSheet } from '@expo/react-native-action-sheet';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import { useSelector } from 'react-redux';
+import { strings } from '../../../locals/translations';
 const Imagepick = ({ setSelectedImage }) => {
   const { showActionSheetWithOptions } = useActionSheet();
-
+  const lang = useSelector(
+    (state) => state.appLanguage.language
+  );
   const openCamera = async () => {
     try {
       const result = await ImagePicker.launchCameraAsync({
@@ -18,7 +22,7 @@ const Imagepick = ({ setSelectedImage }) => {
         setSelectedImage(result.assets[0].uri);
       }
     } catch (error) {
-      console.error('Error opening camera: ', error);
+    
     }
   };
 
@@ -34,7 +38,7 @@ const Imagepick = ({ setSelectedImage }) => {
         setSelectedImage(result.assets[0].uri);
       }
     } catch (error) {
-      console.error('Error picking image: ', error);
+
     }
   };
 
@@ -64,40 +68,11 @@ const Imagepick = ({ setSelectedImage }) => {
       }
     );
   };
-   const uploadImage = async (id, token, imageUri) => {
-  try {
-    const formData = new FormData();
-
-    if (imageUri) {
-      formData.append('image', {
-        uri: imageUri,
-        name: 'profile.jpg',
-        type: 'image/jpeg',
-      });
-    }
-
-    const response = await axios.put(`https://your-api-url.com/users/${id}/upload`, formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-        Authorization: `Bearer ${token}`,
-      },
-    });
-
-    if (response.status === 200) {
-      console.log('Image uploaded successfully:', response.data);
-      return response.data;
-    } else {
-      throw new Error('Failed to upload image');
-    }
-  } catch (error) {
-    console.error('Error uploading image:', error);
-    throw error;
-  }
-};
+  
   return (
     <View>
       <TouchableOpacity onPress={showOptions}>
-        <Text style={{ paddingBottom: 10 }}>Choose Image</Text>
+        <Text style={{ paddingBottom: 10 }}>{strings[`${lang}`].chooseimage}</Text>
       </TouchableOpacity>
     </View>
   );

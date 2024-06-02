@@ -7,6 +7,7 @@ import * as SecureStore from "expo-secure-store";
 import {createnewauthtoken }from '../RefreshSession/RefreshSession';
 import { useDispatch, useSelector } from "react-redux";
 import { setCustomerToken } from '../../redux/customerAuthActions';
+import { strings } from '../../locals/translations';
 
 const Editjob = () => {
   const navigation = useNavigation(); // Extract navigation object here
@@ -16,6 +17,9 @@ const Editjob = () => {
   const [jobtitle, setJobTitle] = useState(title);
   const [jobdescription, setJobDescription] = useState(description);
   const [loading, setLoading] = useState(false);
+  const lang = useSelector(
+    (state) => state.appLanguage.language
+  );
   const showToast = (message) => {
     ToastAndroid.show(message, ToastAndroid.SHORT);
   };
@@ -49,18 +53,16 @@ const Editjob = () => {
       dispatch(setCustomerToken(jobtitle+jobdescription))
       
     } catch (error) {
-      console.log(error)
-      console.log(error.response.status)
+
       if(error.response.status === 429){
-        showToast("Token expired")
         const newtoken = await createnewauthtoken(email)
-        console.log(newtoken)
+
         if(newtoken){
           await SecureStore.setItemAsync('customertoken',newtoken);
           await handleSaveChanges()
         }
         else{
-          alert("No received")
+          navigation.replace('Home')
         }
       }
       else if (axios.isAxiosError(error)) {
@@ -80,17 +82,17 @@ const Editjob = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.pagetitle}>Edit Job</Text>
+      <Text style={styles.pagetitle}>{strings[`${lang}`].editjob}</Text>
       <View style={{width:'85%'}}>
       
-      <Text style={styles.label}>Job Title</Text>
+      <Text style={styles.label}>{strings[`${lang}`].Tasktitle}</Text>
       <TextInput
         style={styles.input}
         value={jobtitle}
         onChangeText={text => setJobTitle(text)}
         placeholder="Enter job title"
       />
-      <Text style={styles.label}>Job Description</Text>
+      <Text style={styles.label}>{strings[`${lang}`].TaskDescription}</Text>
       <TextInput
         style={[styles.input, { height: 100 }]}
         value={jobdescription}
@@ -106,10 +108,9 @@ const Editjob = () => {
         {loading ? (
           <ActivityIndicator size="small" color="#FFFFFF" />
         ) : (
-          <Text style={styles.buttonText}>Save Changes</Text>
+          <Text style={styles.buttonText}>{strings[`${lang}`].save}</Text>
         )}
       </TouchableOpacity>
-      <Text style={{textAlign:"center"}}>Once you updated refresh the jobs</Text>
       </View>
     </View>
   );

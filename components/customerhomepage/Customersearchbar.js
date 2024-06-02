@@ -315,18 +315,17 @@ const CustomerSearchBar = () => {
         setlinearProgress(false);
       }, 2000);
     } catch (error) {
-      console.log(error)
-      console.log(error.response.status)
+
       if(error.response.status === 429){
-        showToast("Token expired")
+
         const newtoken = await createnewauthtoken(email)
-        console.log(newtoken)
+
         if(newtoken){
           await SecureStore.setItemAsync('customertoken',newtoken);
           await fetchData()
         }
         else{
-          alert("No received")
+          navigation.replace('Home')
         }
       }
       else if (axios.isAxiosError(error)) {

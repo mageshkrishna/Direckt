@@ -26,8 +26,9 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/native";
 import { COLORS } from "../../constants/Theme";
 import ProfilePicker from "./Profilepicker";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setShopOwnerToken } from "../../redux/shopOwnerAuthActions";
+import { strings } from "../../locals/translations";
 const height = Dimensions.get("window").height;
 const width = Dimensions.get("window").width;
 
@@ -50,6 +51,8 @@ const EditOwnerProfile = () => {
   const [isButtonDisabled, setButtonDisabled] = useState(false);
   const [uploading, setuploading] = useState(false);
   const dispatch = useDispatch();
+
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -213,20 +216,21 @@ const EditOwnerProfile = () => {
       );
       setuploading(false);
       showToast("Profile Updated Successfully!");
+      dispatch(setShopOwnerToken(location+category));
       navigation.navigate("Shopownerprofile");
     }  catch (error) {
       if (error.response) {
-        console.log(error.response.status); 
+      
         if (error.response.status === 429) {
             const newtoken = await createnewauthtokenForShopowner(email);
-            console.log("new token : " + newtoken)
+          
             if(newtoken){
               await SecureStore.setItemAsync('shopownertoken',newtoken);
               dispatch(setShopOwnerToken(newtoken))
               await updateshopowner(); 
             }
             else{
-              alert("No received")
+              navigation.replace('Home')
             }
         } else if (error.response.status === 401) {
             showToast('Invalid Auth Token');
@@ -271,7 +275,7 @@ const EditOwnerProfile = () => {
       setphotos(updatedPhotos);
     }  catch (error) {
       if (error.response) {
-        console.log(error.response.status); 
+      
         if (error.response.status === 429) {
             const newtoken = await createnewauthtokenForShopowner(email);
             console.log("new token : " + newtoken)
@@ -281,7 +285,7 @@ const EditOwnerProfile = () => {
               await deleteImageFromBackend(shopOwnerId, imageUrl); 
             }
             else{
-              alert("No received")
+              navigation.replace('Home')
             }
         } else if (error.response.status === 401) {
             showToast('Invalid Auth Token');
@@ -306,6 +310,10 @@ const EditOwnerProfile = () => {
       
     }
   };
+
+  const lang =useSelector(
+    (state) => state.appLanguage.language
+  );
 
   const removeImageUrlFromShopOwnerData = async (imageUrl) => {
     try {
@@ -470,7 +478,7 @@ const EditOwnerProfile = () => {
             <ActivityIndicator size="medium" color="purple" />
           ) : (
             <TouchableOpacity onPress={updateshopowner}>
-              <Text style={styles.editpagesave}>Save</Text>
+              <Text style={styles.editpagesave}>{strings[`${lang}`].save}</Text>
             </TouchableOpacity>
           )}
         </View>
@@ -484,7 +492,7 @@ const EditOwnerProfile = () => {
       />
       <View style={styles.editdetailscontainer}>
         <View style={styles.editfield}>
-          <Text style={styles.editstorenamelabel}>Name</Text>
+          <Text style={styles.editstorenamelabel}>{strings[`${lang}`].name}</Text>
           <TextInput
             style={styles.editstorenameinput}
             onChangeText={(e) => setbusinessname(e)}
@@ -493,7 +501,7 @@ const EditOwnerProfile = () => {
           />
         </View>
         <View style={styles.editfield}>
-          <Text style={styles.editstorenamelabel}>description</Text>
+          <Text style={styles.editstorenamelabel}>{strings[`${lang}`].description}</Text>
           <TextInput
             style={styles.editstorenameinput}
             onChangeText={(e) => setbusinessabout(e)}
@@ -502,7 +510,7 @@ const EditOwnerProfile = () => {
           />
         </View>
         <View style={styles.editfield}>
-          <Text style={styles.editstorenamelabel}>Location</Text>
+          <Text style={styles.editstorenamelabel}>{strings[`${lang}`].location}</Text>
           <SelectList
             setSelected={(val) => setlocation(val)}
             data={chooselocation}
@@ -512,7 +520,7 @@ const EditOwnerProfile = () => {
           />
         </View>
         <View style={styles.editfield}>
-          <Text style={styles.editstorenamelabel}>Address</Text>
+          <Text style={styles.editstorenamelabel}>{strings[`${lang}`].address}</Text>
           <TextInput
             style={styles.editstorenameinput}
             onChangeText={(e) => setaddress(e)}
@@ -522,7 +530,7 @@ const EditOwnerProfile = () => {
         </View>
 
         <View style={styles.editfield}>
-          <Text style={styles.editstorenamelabel}>category</Text>
+          <Text style={styles.editstorenamelabel}>{strings[`${lang}`].category}</Text>
 
           <MultipleSelectList
             setSelected={(val) => setcategory(val)}
@@ -533,7 +541,7 @@ const EditOwnerProfile = () => {
         </View>
         <View style={styles.editfield}>
           <Text style={styles.editstorenamelabel}>
-            Delivery locations or Servicable location{" "}
+          {strings[`${lang}`].deliverylocation}
           </Text>
           <TextInput
             placeholder="give place names you can able to deliver"
@@ -543,7 +551,7 @@ const EditOwnerProfile = () => {
           />
         </View>
         <View style={styles.editfield}>
-          <Text style={styles.editstorenamelabel}>Mobile Number</Text>
+          <Text style={styles.editstorenamelabel}>{strings[`${lang}`].mobilenumber}</Text>
           <TextInput
             style={styles.editstorenameinput}
             onChangeText={(text) => setphonenumber(text)}
@@ -553,7 +561,7 @@ const EditOwnerProfile = () => {
           />
         </View>
         <View style={styles.editfield}>
-          <Text style={styles.editstorenamelabel}>Google Map</Text>
+          <Text style={styles.editstorenamelabel}>{strings[`${lang}`].gmap}</Text>
           <TextInput
             style={styles.editstorenameinput}
             onChangeText={(e) => setgmaplink(e)}
@@ -564,7 +572,7 @@ const EditOwnerProfile = () => {
       </View>
       <View style={styles.shopImages}>
         <Text style={styles.heading}>
-          Photos ( You can only upload 5 photos )
+        {strings[`${lang}`].photosmore}
         </Text>
         <ScrollView style={styles.imagecontainer} horizontal={true}>
           {photos.map((item, index) => {
@@ -678,7 +686,7 @@ const styles = StyleSheet.create({
     shadowColor: "grey",
   },
   shopImages: {
-    height: (height * 26) / 100,
+    height: (height * 30) / 100,
     paddingHorizontal: 30,
     paddingVertical: 20,
   },

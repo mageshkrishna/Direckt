@@ -9,6 +9,7 @@ import {
   BackHandler,
   Dimensions,
   ToastAndroid,
+  Alert,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
@@ -16,11 +17,13 @@ import JobCard from "./Jobcard";
 import * as SecureStore from "expo-secure-store";
 import { useDispatch, useSelector } from "react-redux";
 import { COLORS } from "../../constants/Theme";
-import { useFocusEffect, useRoute } from "@react-navigation/native";
+import { useFocusEffect, useNavigation, useRoute } from "@react-navigation/native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { Ionicons } from "@expo/vector-icons";
 import { createnewauthtokenForShopowner } from '../RefreshSession/RefreshSession';
 import { setShopOwnerToken } from "../../redux/shopOwnerAuthActions";
+import { strings } from "../../locals/translations";
+
 
 const height = Dimensions.get("window").height;
 
@@ -31,7 +34,11 @@ const Shopownerhomepage = () => {
   const shopOwnerToken = useSelector(
     (state) => state.shopOwnerAuth.shopOwnerToken
   );
+  const lang = useSelector(
+    (state) => state.appLanguage.language
+  );
 
+     
   const [refreshing, setRefreshing] = useState(false);
   const [job, setJob] = useState([]);
   const [shopownerdata, setShopOwnerData] = useState(null);
@@ -70,15 +77,17 @@ const Shopownerhomepage = () => {
         setEmail(parsedData.email);
       }
     } catch (err) {
-      console.log("Error fetching data from AsyncStorage:", err);
+
     }
   };
-
+  const navigation = useNavigation();
   const getJob = async () => {
     if (!shopownerdata || !shopownerdata.location || !shopownerdata.category) {
+      setJob([])
+      Alert.alert("Provide both location and category to recieve tasks")
       return;
     }
-
+    
     const { location, category, email } = shopownerdata;
     const token = await SecureStore.getItemAsync("shopownertoken");
 
@@ -97,12 +106,12 @@ const Shopownerhomepage = () => {
       if (Array.isArray(response.data.result)) {
         setJob(response.data.result);
       } else {
-        console.log("Fetched jobs are not an array", response.data);
+     
         setJob([]);
       }
     } catch (error) {
       if (error.response) {
-        console.log(error.response.status);
+   
         if (error.response.status === 429) {
           const newToken = await createnewauthtokenForShopowner(email);
           if (newToken) {
@@ -110,12 +119,12 @@ const Shopownerhomepage = () => {
             dispatch(setShopOwnerToken(newToken));
             getJob();
           } else {
-            Alert.alert("Token Refresh Failed");
+            navigation.replace('Home')
           }
         } else if (error.response.status === 401) {
           ToastAndroid.show('Invalid Auth Token', ToastAndroid.SHORT);
         } else {
-          Alert.alert('Unexpected Error:', error.response.data);
+          Alert.alert('Unexpected Error:');
         }
       } else if (axios.isAxiosError(error)) {
         if (error.response) {
@@ -133,6 +142,9 @@ const Shopownerhomepage = () => {
 
   useEffect(() => {
     fetchData();
+  }, [shopOwnerToken]);
+  useEffect(() => {
+    fetchData();
   }, []);
 
   useEffect(() => {
@@ -145,7 +157,7 @@ const Shopownerhomepage = () => {
     setRefreshing(true);
     await getJob();
     setRefreshing(false);
-  }, [shopownerdata, shopOwnerToken, email]);
+  }, [shopownerdata, shopOwnerToken, email ,refreshing]);
 
   if (loading) {
     return (
@@ -201,7 +213,7 @@ const Shopownerhomepage = () => {
             }}
           >
             <Ionicons name="refresh" size={24} color="black" />
-            <Text style={{ fontSize: 16 }}>Click to Refresh</Text>
+            <Text style={{ fontSize: 16 }}>{strings[`${lang}`].refresh}</Text>
           </TouchableOpacity>
         </View>
       ) : (
@@ -221,7 +233,7 @@ const Shopownerhomepage = () => {
               source={require('../../assets/Loading-rafiki.png')}
               style={{ height: '50%', width: '80%' }}
             />
-            <Text>No jobs available. Refresh the app</Text>
+            <Text>No Tasks available. Refresh the app</Text>
           </View>
           <TouchableOpacity
             onPress={onRefresh}
@@ -234,7 +246,7 @@ const Shopownerhomepage = () => {
             }}
           >
             <Ionicons name="refresh" size={24} color="black" />
-            <Text style={{ fontSize: 16 }}>Refresh for new jobs</Text>
+            <Text style={{ fontSize: 16 }}>{strings[`${lang}`].refresh}</Text>
           </TouchableOpacity>
         </ScrollView>
       )}

@@ -36,12 +36,12 @@ import * as SecureStore from "expo-secure-store";
 const height = Dimensions.get("window").height;
 const width = Dimensions.get("window").width;
 import Checkbox from "expo-checkbox";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setShopOwnerToken } from "../../redux/shopOwnerAuthActions";
+import { strings } from "../../locals/translations";
+import { useNavigation } from "@react-navigation/native";
 UIManager.setLayoutAnimationEnabledExperimental &&
   UIManager.setLayoutAnimationEnabledExperimental(true);
-
-
 const JobCard = ({ item, ownerdetail ,email }) => {
   const dispatch = useDispatch();
   const job_id = item._id;
@@ -55,10 +55,10 @@ const JobCard = ({ item, ownerdetail ,email }) => {
 
   const timestamp = item.expiryAt;
   const localDateTime = moment(timestamp).utcOffset('+00:00').format('DD-MM-YYYY h:mm:ss A');
-  console.log(email)
+  const navigation = useNavigation();
   const createreply = async () => {
     const token = await SecureStore.getItemAsync("shopownertoken");
-    console.log(token);
+
     if (!replymessage) {
       showToast("Please fill  fields");
       setuploading(false);
@@ -76,8 +76,7 @@ const JobCard = ({ item, ownerdetail ,email }) => {
       deliverystatus: deliverystatus,
       replymessage: replymessage,
     };
-    console.log(formdata)
-   
+ 
     try {
       const response = await axios.post(
         "https://direckt-copy1.onrender.com/shopowner/createjobreply",
@@ -96,17 +95,17 @@ const JobCard = ({ item, ownerdetail ,email }) => {
       setModalVisible(!modalVisible);
     }  catch (error) {
       if (error.response) {
-        console.log(error.response.status); 
+    
         if (error.response.status === 429) {
             const newtoken = await createnewauthtokenForShopowner(email);
-            console.log("new token from "+newtoken)
+         
             if(newtoken){
               await SecureStore.setItemAsync("shopownertoken",newtoken);
               createreply();
                
             }
             else{
-              alert("No received")
+              navigation.replace('Home')
             }
         } else if (error.response.status === 401) {
             showToast('Invalid Auth Token');
@@ -131,7 +130,9 @@ const JobCard = ({ item, ownerdetail ,email }) => {
       setuploading(false);
     }
   };
-
+  const lang = useSelector(
+    (state) => state.appLanguage.language
+  );
   const [expanded, setExpanded] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
   const toggleExpand = () => {
@@ -141,166 +142,173 @@ const JobCard = ({ item, ownerdetail ,email }) => {
 
   return (
     <View>
-      <View>
-        <Modal
-          animationType="fade"
-          transparent={true}
-          visible={modalVisible}
-          onRequestClose={() => {
-            setModalVisible(!modalVisible);
-          }}>
-          <View style={styles.centeredView}>
-            <View style={styles.modalView}>
-              <Feather name="check-circle" size={62} color="green" />
-              <Text style={styles.modalText}>Job Reply Sent !</Text>
-              <Pressable
-                style={[styles.button, styles.buttonClose]}
-                onPress={() => {
-                  setModalVisible(!modalVisible);
-                }}>
-                <Text style={styles.textStyle}>Okay</Text>
-              </Pressable>
-            </View>
-          </View>
-        </Modal>
-        <View style={styles.job}>
-          <View style={styles.expirationtitle}>
-            <Text style={styles.expireText}>Job expire at {localDateTime} or before</Text>
-          </View>
-          <View style={styles.jobcardsection}>
-            <TouchableOpacity
-              style={styles.jobImage}
-              onPress={() => setShowPopup(true)}
-            >
-
-              {item.image_url ? <Image
-                source={{
-                  uri: item.image_url,
-                }}
-                style={{ height: "100%", width: "90%", backgroundColor: "white" }}
-              /> : <Image
-                source={{ uri: 'https://img.freepik.com/premium-vector/default-image-icon-vector-missing-picture-page-website-design-mobile-app-no-photo-available_87543-11093.jpg', }}
-                style={{ height: "100%", width: "90%", backgroundColor: "white" }}
-              />
-              }
-              <View style={{ flexDirection: "row", alignItems: "center" }}>
-               
-                <Text style={styles.jobcategory} numberOfLines={1}>
-                  {item.category}
-                </Text>
-              </View>
-            </TouchableOpacity>
-            <Pressable style={styles.jobdetails} onPress={toggleExpand}>
-              <Text style={styles.jobtitle} numberOfLines={1}>
-                {item.jobtitle}
-              </Text>
-              <Text style={styles.jobdes} numberOfLines={2}>
-                {item.jobdescription}
-              </Text>
-              <View
-                style={{
-                  flexDirection: "row",
-                  marginTop: 3,
-                  alignItems: "center",
-                }}
-              >
-                <Text style={styles.location}>{ }</Text>
-                <View style={styles.viewdetails}>
-                  <Text>View details</Text>
-                </View>
-              </View>
+    <View>
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => {
+          setModalVisible(!modalVisible);
+        }}>
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <Feather name="check-circle" size={62} color="green" />
+            <Text style={styles.modalText}>Job Reply Sent !</Text>
+            <Pressable
+              style={[styles.button, styles.buttonClose]}
+              onPress={() => {
+                setModalVisible(!modalVisible);
+              }}>
+              <Text style={styles.textStyle}>Okay</Text>
             </Pressable>
           </View>
         </View>
-      </View>
-      {showPopup && item.image_url ? (
-        <ImagePopup
-          imageUrl={item.image_url}
-          onClose={() => setShowPopup(false)}
-        />
-      ) : <></>}
-      {expanded && (
-        <View style={styles.jobdetailcontainer}>
-          <View style={styles.detailcard}>
-            <View>
-              <View>
-                <Text style={styles.detailtitle}>Title*</Text>
-                <Text>{item.jobtitle}</Text>
-              </View>
-              <View>
-                <Text style={styles.detailtitle}>Description*</Text>
-                <Text>{item.jobdescription}</Text>
-              </View>
-              <View>
-                <Text style={styles.detailtitle}>Location*</Text>
-                <Text>{item.location}</Text>
-              </View>
-            </View>
-          </View>
-          <View style={styles.jobresponsesection}>
-            <View
-              style={{
-                width: "100%",
-                gap: 30,
-              }}
-            >
-              <View>
-                <Text style={{ color: "grey", paddingBottom: 10 }}>
-                  Write a Reply Message
-                </Text>
-                <TextInput
-                  style={styles.replyinput}
-                  multiline={true}
-                  maxLength={125}
-                  textAlignVertical="top"
-                  numberOfLines={5}
-                  value={replymessage}
-                  onChangeText={(val) => {
-                    setreplymessage(val);
-                  }}
-                  placeholder="Describe about the product or service or cost"
-                />
-              </View>
+      </Modal>
+      <Pressable style={styles.job} onPress={toggleExpand}>
+        <View style={styles.jobCard}>
+          <View style={{ width: "100%" }}>
+            <View style={styles.jobCardTop}>
               <View
-                style={{ flexDirection: "row", alignContent: "center", justifyContent: 'flex-start', gap: (width * 20) / 100 }}
+                style={[styles.jobDetails, item.image_url ? { width: "65%" } : {}]}
               >
-                <View
-                  style={{
-                    flexDirection: "row",
-                    alignItems: "center",
-                    justifyContent: "flex-start",
-                    columnGap: 10,
-
-                  }}
-                >
-                  <Text style={{ color: "grey" }}>Delivery option</Text>
-                  <Checkbox
-                    value={deliverystatus}
-                    onValueChange={() => setdeliverystatus(!deliverystatus)}
-                    color={deliverystatus ? "#4630EB" : undefined}
-                    style={{height:25,width:25}}
-                  />
-                </View>
-                <TouchableOpacity
-                  onPress={() => {
-                    createreply();
-                  }}
-                  style={styles.acceptorder}
-                >
-                  {uploading && (
-                    <ActivityIndicator
-                      color="white"
-                      style={{ height: 10, width: 10 }}
-                    />
-                  )}
-                  <Text style={{ color: "white" }}>Accept</Text>
-                </TouchableOpacity>
+                <Text style={styles.jobTitle} numberOfLines={1}>
+                  {item.jobtitle}
+                </Text>
+                <Text style={styles.jobDescription} numberOfLines={2}>
+                  {item.jobdescription}
+                </Text>
+                <Text style={styles.expireTime}>
+                  <Feather name="calendar" size={11} color="#444444" />{" "}
+                 {strings[`${lang}`].expire+" "+localDateTime}
+                </Text>
               </View>
+              {item.image_url &&
+                <TouchableOpacity style={[styles.jobImage]}
+                  onPress={() => setShowPopup(true)}
+                >
+                  <Image
+                    style={styles.image}
+                    source={{
+                      uri: item.image_url,
+                    }}
+                  />
+                </TouchableOpacity>
+              }
+              {showPopup && item.image_url ? (
+                <ImagePopup
+                  imageUrl={item.image_url}
+                  onClose={() => setShowPopup(false)}
+                />
+              ) : (
+                <></>
+              )}
+            </View>
+            <View style={styles.jobCardBottom}>
+              <View style={styles.editJob}>
+                <Text style={{ color: COLORS.primary }}>
+                  {item.category}
+                </Text>
+              </View>
+              <View style={styles.viewResponse}>
+
+                <View>
+                  <Text style={{ color: "white" }}>{strings[`${lang}`].viewdetail}</Text>
+                </View>
+              </View>
+
             </View>
           </View>
         </View>
-      )}
+      </Pressable>
     </View>
+    {showPopup && item.image_url ? (
+      <ImagePopup
+        imageUrl={item.image_url}
+        onClose={() => setShowPopup(false)}
+      />
+    ) : <></>}
+    {expanded && (
+      <View style={styles.jobdetailcontainer}>
+        <View style={styles.detailcard}>
+          <View>
+            <View>
+              <Text style={styles.detailtitle}>{strings[`${lang}`].Tasktitle}</Text>
+              <Text>{item.jobtitle}</Text>
+            </View>
+            <View>
+              <Text style={styles.detailtitle}>{strings[`${lang}`].TaskDescription}</Text>
+              <Text>{item.jobdescription}</Text>
+            </View>
+            <View>
+              <Text style={styles.detailtitle}>{strings[`${lang}`].location}</Text>
+              <Text>{item.location}</Text>
+            </View>
+          </View>
+        </View>
+        <View style={styles.jobresponsesection}>
+          <View
+            style={{
+              width: "100%",
+              gap: 30,
+            }}
+          >
+            <View>
+              <Text style={{ color: "grey", paddingBottom: 10 }}>
+              {strings[`${lang}`].ReplyMessage}
+              </Text>
+              <TextInput
+                style={styles.replyinput}
+                multiline={true}
+                maxLength={125}
+                textAlignVertical="top"
+                numberOfLines={5}
+                value={replymessage}
+                onChangeText={(val) => {
+                  setreplymessage(val);
+                }}
+                placeholder={strings[`${lang}`].Describe}
+              />
+            </View>
+            <View
+              style={{ flexDirection: "row", alignContent: "center", justifyContent: 'flex-start', gap: (width * 20) / 100 }}
+            >
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  justifyContent: "flex-start",
+                  columnGap: 10,
+
+                }}
+              >
+                <Text style={{ color: "grey" }}>{strings[`${lang}`].Deliveryoption}</Text>
+                <Checkbox
+                  value={deliverystatus}
+                  onValueChange={() => setdeliverystatus(!deliverystatus)}
+                  color={deliverystatus ? "#4630EB" : undefined}
+                  style={{ height: 25, width: 25 }}
+                />
+              </View>
+              <TouchableOpacity
+                onPress={() => {
+                  createreply();
+                }}
+                style={styles.acceptorder}
+              >
+                {uploading && (
+                  <ActivityIndicator
+                    color="white"
+                    style={{ height: 10, width: 10 }}
+                  />
+                )}
+                <Text style={{ color: "white" }}>{strings[`${lang}`].Accept}</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </View>
+    )}
+  </View>
   );
 };
 
@@ -309,12 +317,12 @@ export default JobCard;
 const styles = StyleSheet.create({
   job: {
     flex: 1,
-    height: (height * 20) / 100,
+    height: 165,
     backgroundColor: "white",
     elevation: 1,
-    marginVertical: "3%",
+    marginTop: 8,
     marginHorizontal: "3%",
-    borderRadius: 5,
+    borderRadius: 8,
   },
   expirationtitle: {
     alignItems: 'center',
@@ -347,7 +355,7 @@ const styles = StyleSheet.create({
     height: "100%",
     justifyContent: "center",
     width: (width * 65) / 100,
-    gap:10,
+    gap: 10,
     padding: 7,
   },
   jobsection: {
@@ -469,5 +477,70 @@ const styles = StyleSheet.create({
     paddingVertical: 15,
     textAlign: 'center',
     fontSize: 17,
+  },
+  jobCard: {
+    flex: 1,
+    flexDirection: "row",
+    height: "100%",
+    width: "100%",
+    backgroundColor: "white",
+    borderWidth: 0.5,
+    borderColor: "#D0D0D0",
+    borderRadius: 8,
+    position: "absolute",
+  },
+  jobCardTop: {
+    flexDirection: "row",
+    height: "65%",
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+  },
+  jobDetails: {
+    justifyContent: "space-evenly",
+  },
+  jobTitle: {
+    fontSize: 20,
+    color: "#8C52FF",
+  },
+  jobDescription: {
+    fontSize: 14,
+  },
+  expireTime: {
+    color: "#444444",
+    fontSize: 11,
+  },
+  jobImage: {
+    width: "35%",
+    padding: 5,
+  },
+  image: {
+    height: "100%",
+    width: "100%",
+    borderRadius: 3,
+  },
+  jobCardBottom: {
+    flexDirection: "row",
+    height: "35%",
+    width: "100%",
+    alignItems: "flex-start",
+    justifyContent: "space-evenly",
+  },
+  editJob: {
+    padding: 8,
+    height: 38,
+    width: "40%",
+    borderRadius: 6,
+    alignItems: "center",
+  },
+  viewResponse: {
+    backgroundColor: COLORS.primary,
+    padding: 8,
+
+    height: 38,
+    width: "40%",
+    borderWidth: 2,
+    borderColor: "#8C52FF",
+    borderRadius: 5,
+    alignItems: "center",
   },
 });

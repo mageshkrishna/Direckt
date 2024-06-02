@@ -1,9 +1,9 @@
-import { StyleSheet, Text, View, ScrollView, TouchableOpacity, Dimensions, Image, Linking, Alert, Pressable, ToastAndroid, ActivityIndicator } from 'react-native'
-import { FontAwesome5, AntDesign, MaterialCommunityIcons, MaterialIcons, Feather, Entypo } from '@expo/vector-icons';
+import { StyleSheet, Text, View, ScrollView, TouchableOpacity, Dimensions, Image, Linking, Alert, Pressable, ToastAndroid, ActivityIndicator, Modal } from 'react-native'
+import { FontAwesome5, AntDesign, MaterialCommunityIcons, MaterialIcons, Feather, Entypo, FontAwesome } from '@expo/vector-icons';
 import { React, useEffect, useState } from 'react'
 import { useIsFocused, useNavigation } from '@react-navigation/native';
 import axios from "axios";
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { clearShopOwnerToken, setShopOwnerToken } from '../../redux/shopOwnerAuthActions';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -14,6 +14,8 @@ import { TextInput } from 'react-native-gesture-handler';
 import { COLORS } from '../../constants/Theme';
 import {createnewauthtokenForShopowner} from '../RefreshSession/RefreshSession'
 import ImagePopup from './Imagepopup';
+import { changeLanguage } from '../../redux/LanguageAction';
+import { strings } from "../../locals/translations";
 const Shopownerprofile = () => {
   const dispatch = useDispatch();
 
@@ -24,11 +26,9 @@ const Shopownerprofile = () => {
   const [phonenumber, setphonenumber] = useState("");
   const [profilepic, setprofilepic] = useState("");
   const [photos, setphotos] = useState([]);
-  const [gmaplink, setgmaplink] = useState(
-    ""
-  );
+  const [gmaplink, setgmaplink] = useState("");
   const [address, setaddress] = useState(
-    "Store description will be written here for the betterment of the design"
+    "Store description will be written here"
   );
   const [deliverylocation, setdeliverylocation] = useState();
   const [location, setlocation] = useState("");
@@ -41,7 +41,8 @@ const Shopownerprofile = () => {
   const [deliveryindicator, setdeliveryindicator] = useState(false)
   const [logoutindicator,setLogoutindicator] =useState(false);
   const isFocused = useIsFocused();
-
+ 
+  
   const updatedeliveryStatusInAsyncStorage = async (deliverystatus) => {
     try {
       // Retrieve the existing data from AsyncStorage
@@ -191,16 +192,16 @@ const Shopownerprofile = () => {
       setdeliveryindicator(false);
     } catch (error) {
       if (error.response) {
-        console.log(error.response.status);
+  
         if (error.response.status === 429) {
           const newtoken = await createnewauthtokenForShopowner(email);
-          console.log('new token : ' + newtoken);
+       
           if (newtoken) {
             await SecureStore.setItemAsync('shopownertoken', newtoken);
             dispatch(setShopOwnerToken(newtoken));
             await handleDeliveryStatusChange();
           } else {
-            alert('No received');
+            navigation.replace('Home')
           }
         } else if (error.response.status === 401) {
           showToast('Invalid Auth Token');
@@ -222,7 +223,19 @@ const Shopownerprofile = () => {
       setdeliveryindicator(false);
     }
   };
-  
+  const lang =useSelector(
+    (state) => state.appLanguage.language
+  );
+
+  let currentlang = lang
+  const handlelanguage = async (e) => {
+    if (currentlang === e) {
+      return ;
+    }
+    currentlang = e
+    await SecureStore.setItemAsync('language', e); 
+    dispatch(changeLanguage(e))
+  }
 
   
   const updateavailabilityStatusInAsyncStorage = async (availabilitystatus) => {
@@ -289,16 +302,16 @@ const Shopownerprofile = () => {
       setshopindicator(false);
     } catch (error) {
       if (error.response) {
-        console.log(error.response.status);
+      
         if (error.response.status === 429) {
           const newtoken = await createnewauthtokenForShopowner(email);
-          console.log('new token : ' + newtoken);
+         
           if (newtoken) {
             await SecureStore.setItemAsync('shopownertoken', newtoken);
             dispatch(setShopOwnerToken(newtoken));
             await handleAvailabilityStatusChange();
           } else {
-            alert('No received');
+            navigation.replace('Home')
           }
         } else if (error.response.status === 401) {
           showToast('Invalid Auth Token');
@@ -362,6 +375,7 @@ const Shopownerprofile = () => {
   const handleImagePress = (index) => {
     setActiveImageIndex(index);
   };
+  const [modalVisible, setModalVisible] = useState(false)
   const handleClosePopup = () => {
     setActiveImageIndex(null);
   };
@@ -370,6 +384,32 @@ const Shopownerprofile = () => {
 
   return (
     <ScrollView style={styles.container}>
+        <Modal
+        animationType="fade"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => {
+          setModalVisible(!modalVisible);
+        }}>
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <Text style={styles.chooselang}>Choose language</Text>
+            <View style={styles.langlist}>
+              <TouchableOpacity style={styles.langitem} onPress={()=>handlelanguage('en')}>
+                <MaterialIcons name={`radio-button-${currentlang==="en"?"on":"off"}`} size={24} color="black" />
+                <Text>English</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.langitem}  onPress={()=>handlelanguage('ta')}>
+                <MaterialIcons name={`radio-button-${currentlang==="ta"?"on":"off"}`} size={24} color="black" />
+                <Text>தமிழ்</Text>
+              </TouchableOpacity>
+            </View>
+            <TouchableOpacity onPress={() => setModalVisible(false)} style={styles.changelangbtn}>
+              <Text style={{ color: 'white' }}>Okay</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
       <View
 
         style={styles.headercontainer}>
@@ -407,7 +447,7 @@ const Shopownerprofile = () => {
         <View>
           <TouchableOpacity style={styles.editprofile} onPress={() => { navigation.navigate('EditOwnerProfile') }}>
             <Feather name="edit" size={20} color="black" />
-            <Text> Edit Profile</Text>
+            <Text>{strings[`${lang}`].editprofile}</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -447,7 +487,7 @@ const Shopownerprofile = () => {
                       onPress: () => { },
                       style: 'cancel',
                     },
-                    { text: 'open', onPress: () => gmaplink ? Linking.openURL(gmaplink) : showToast('Google map is not linked') },
+                    { text: 'open', onPress: () => gmaplink ? Linking.openURL(gmaplink) : showToast('Provide location link') },
                   ],
                   { cancelable: false }
                 )
@@ -462,43 +502,45 @@ const Shopownerprofile = () => {
       </View>
       <View style={styles.otherdetails}>
         <View style={styles.detailitem}>
-          <Text style={styles.shopdetailstitle}>Location</Text>
+          <Text style={styles.shopdetailstitle}>{strings[`${lang}`].location}</Text>
           <View style={styles.shopdetailsbox}>
-            <Text style={styles.shopdetailsvalue} numberOfLines={1}>{location ? location : "- location not added -"}</Text>
+          <Text style={styles.shopdetailsvalue} numberOfLines={1}>
+          {location ? location : strings[`${lang}`].nolocation}
+          </Text>
           </View>
         </View>
         <View style={styles.detailitem}>
-          <Text style={styles.shopdetailstitle}>Address</Text>
+          <Text style={styles.shopdetailstitle}>{strings[`${lang}`].address}</Text>
           <View style={styles.shopdetailsbox}>
-            <Text style={styles.shopdetailsvalue} numberOfLines={2}>{address ? address : '- address not added -'}</Text>
+            <Text style={styles.shopdetailsvalue} numberOfLines={2}>{address ? address :  strings[`${lang}`].noaddress}</Text>
           </View>
         </View>
         <View style={styles.detailitem}>
-          <Text style={styles.deliverylocationtitle}>category</Text>
+          <Text style={styles.deliverylocationtitle}>{strings[`${lang}`].category}</Text>
           <View style={styles.deliverylocationContainer}>
             {category.map((item, index) => (
               <View key={index} style={styles.locations}>
                 <Text>{item}</Text>
               </View>
             ))}
-            {category == 0 && <View style={styles.locations}><Text>no category added</Text></View>}
+            {category == 0 && <View style={styles.locations}><Text>{ strings[`${lang}`].nocategory}</Text></View>}
           </View>
         </View>
         <View style={styles.detailitem}>
-          <Text style={styles.shopdetailstitle}>Delivery or Servicable locations</Text>
+          <Text style={styles.shopdetailstitle}>{strings[`${lang}`].deliverylocation}</Text>
           <View style={styles.shopdetailsbox}>
-            <Text style={styles.shopdetailsvalue}>{deliverylocation ? deliverylocation : '- locations not added -'}</Text>
+            <Text style={styles.shopdetailsvalue}>{deliverylocation ? deliverylocation :  strings[`${lang}`].nolocation}</Text>
           </View>
         </View>
         <View style={styles.detailitem}>
-          <Text style={styles.shopdetailstitle}>Mobile number</Text>
+          <Text style={styles.shopdetailstitle}>{strings[`${lang}`].mobilenumber}</Text>
           <View style={styles.shopdetailsbox}>
             <Text style={styles.shopdetailsvalue}>{phonenumber}</Text>
           </View>
         </View>
       </View>
       <View style={styles.shopImages}>
-        <Text style={styles.heading}>Photos</Text>
+        <Text style={styles.heading}>{strings[`${lang}`].photos}</Text>
         <ScrollView style={styles.imagecontainer} horizontal={true}>
           {
             photos.map((item, index) => {
@@ -527,7 +569,7 @@ const Shopownerprofile = () => {
       </View>
       <View style={styles.bodyfooter}>
         <View>
-          <Text style={styles.footertitle}>How to use DirecKT</Text>
+          <Text style={styles.footertitle}>{strings[`${lang}`].howtousedireckt}</Text>
         </View>
         <View style={styles.sociallinks}>
           <TouchableOpacity onPress={() => Linking.openURL('https://www.instagram.com/direcktapp?igsh=Nmk1Z2s0dHNnYWo2')}
@@ -544,13 +586,22 @@ const Shopownerprofile = () => {
           </TouchableOpacity>
         </View>
         <View style={styles.aboutlist}>
+        <View>
+            <TouchableOpacity
+              onPress={() => setModalVisible(true)}
+              style={styles.aboutdetails}
+            >
+              <FontAwesome name="language" size={24} color="black" />
+              <Text style={styles.aboutdireckt}>{strings[`${lang}`].changelanguage}</Text>
+            </TouchableOpacity>
+          </View>
           <View>
             <TouchableOpacity
               onPress={() => Linking.openURL('https://mageshkrishna.github.io/DirecktAbout/index')}
               style={styles.aboutdetails}
             >
               <AntDesign name="exclamationcircleo" size={24} color="black" />
-              <Text style={styles.aboutdireckt}>About Direckt</Text>
+              <Text style={styles.aboutdireckt}>{strings[`${lang}`].aboutdireckt}</Text>
             </TouchableOpacity>
           </View>
           <View>
@@ -559,7 +610,7 @@ const Shopownerprofile = () => {
               style={styles.aboutdetails}
             >
               <MaterialIcons name="privacy-tip" size={24} color="black" />
-              <Text style={styles.pp}>Privacy Policy</Text>
+              <Text style={styles.pp}>{strings[`${lang}`].pp}</Text>
             </TouchableOpacity>
           </View>
           <View>
@@ -568,7 +619,7 @@ const Shopownerprofile = () => {
               style={styles.aboutdetails}
             >
               <MaterialCommunityIcons name="file-document-multiple-outline" size={24} color="black" />
-              <Text style={styles.tc}>Terms & Conditions</Text>
+              <Text style={styles.tc}>{strings[`${lang}`].tandc}</Text>
             </TouchableOpacity>
           </View>
           <View>
@@ -576,8 +627,8 @@ const Shopownerprofile = () => {
               style={styles.aboutdetails}
               onPress={() =>{
                 Alert.alert(
-                "Delete Account",
-                "Are you sure you want to delete this account? (Account cannot be recovered once deleted)",
+                  strings[`${lang}`].deleteacc,
+                  strings[`${lang}`].delconfirm,
                 [
                   {
                     text: "Cancel",
@@ -596,7 +647,7 @@ const Shopownerprofile = () => {
             }
             >
               <AntDesign name="delete" size={24} color="red" />
-              <Text style={[{ color: 'red' }, styles.tc]}>Delete account</Text>
+              <Text style={[{ color: 'red' }, styles.tc]}>{strings[`${lang}`].deleteacc}</Text>
 
             </TouchableOpacity>
           </View>
@@ -627,9 +678,9 @@ const Shopownerprofile = () => {
           </View>
         </View>
         <View
-          style={{ height: 200, width: "100%", flexDirection: 'column', alignItems: 'flex-start', justifyContent: 'center', gap: 10, paddingLeft: 15, marginTop: 20 }}
+          style={{ height: 180, width: "100%", flexDirection: 'column', alignItems: 'flex-start', justifyContent: 'center', gap: 10, paddingLeft: 15, marginTop: 20 }}
         >
-          <Text>Your Feedback Matters: Suggestions, Bug Reports Welcome!</Text>
+          <Text>{strings[`${lang}`].feedback}</Text>
           <TextInput
             style={{
               flex: 1,
@@ -642,11 +693,11 @@ const Shopownerprofile = () => {
             }}
             multiline
             numberOfLines={4}
-            placeholder="Type your feedback here..."
+            placeholder={strings[`${lang}`].typefeedback}
             value={feedbackText}
             onChangeText={setFeedbackText}
           />
-          <TouchableOpacity style={{ backgroundColor: COLORS.primary, paddingHorizontal: 12, paddingVertical: 8, borderRadius: 4, flexDirection: 'row', alignItems: 'center' }} onPress={handleFeedbackSubmit}><Text style={{ fontSize: 18, color: '#fff' }}>Submit</Text>{feedbackTextIndicator && <ActivityIndicator size={18} color={'#fff'} />}</TouchableOpacity>
+          <TouchableOpacity style={{ backgroundColor: COLORS.primary, paddingHorizontal: 12, paddingVertical: 8, borderRadius: 4, flexDirection: 'row', alignItems: 'center' }} onPress={handleFeedbackSubmit}><Text style={{ fontSize: 18, color: '#fff' }}>{strings[`${lang}`].submit}</Text>{feedbackTextIndicator && <ActivityIndicator size={18} color={'#fff'} />}</TouchableOpacity>
         </View>
       </View>
     </ScrollView>
@@ -659,6 +710,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "white",
+   
   },
   headercontainer: {
     flex: 1,
@@ -893,6 +945,60 @@ const styles = StyleSheet.create({
   },
   tc: {
     paddingHorizontal: 20,
-  }
+  },centeredView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: 'white',
+    borderRadius: 10,
+    justifyContent: 'space-evenly',
+    padding: 40,
+    width: '70%',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+    gap: 10,
+  },
+  chooselang: {
+    fontSize: 19,
+  },
+  langitem: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 20,
+  },
+  changelangbtn: {
+    alignItems: 'center',
+    backgroundColor: COLORS.primary,
+    padding: 13,
+    borderRadius: 10,
+    width: 70,
+  },
+  langlist: {
+    height: 100,
+    justifyContent: 'space-evenly',
+    alignItems: 'center'
+  },
+  aboutlist: {
+    height: (height * 40) / 100,
+    justifyContent: 'space-evenly',
+  },
+  bodyfooter: {
+    flex: 1,
+    height: (height * 90) / 100,
+    padding: 20,
+    backgroundColor: "white",
+  },
 
 })

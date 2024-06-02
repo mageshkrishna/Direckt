@@ -60,7 +60,7 @@ const StoreProfile = () => {
         }
        
         try {
-            console.log("inside try")
+           
             let authtoken = await SecureStore.getItemAsync("customertoken")
             const response = await axios.get(`https://direckt-copy1.onrender.com/shopowner/getshopownerprofile?_id=${_id}`,
                 {
@@ -71,21 +71,19 @@ const StoreProfile = () => {
                 }
             )
             setstoredata(response.data)
-            console.log("after api")
+  
         } catch (error) {
-            console.log("inside try")
-            console.log(error)
-            console.log(error.response.status)
+       
+     
             if(error.response.status === 429){
-                showToast("Token expired")
                 const newtoken = await createnewauthtoken(email)
-                console.log(newtoken)
+     
                 if(newtoken){
                 await SecureStore.setItemAsync('customertoken',newtoken);
                 await fetchData()
                 }
                 else{
-                alert("No received")
+                    navigation.replace('Home')
                 }
             }
             else if (axios.isAxiosError(error)) {
@@ -104,8 +102,7 @@ const StoreProfile = () => {
         }
     }
     useEffect(() => {
-        console.log("inside effect")
-        
+      
         fetchData()
     }, [_id, token]);
     if (!storedata && _id) {

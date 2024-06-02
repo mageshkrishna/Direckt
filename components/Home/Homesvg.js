@@ -5,12 +5,27 @@ import logo from "../Home/Direcktsvg.png"
 import { useEffect } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/native";
-
+import { useDispatch } from "react-redux";
+import * as SecureStore from "expo-secure-store";
+import { changeLanguage } from '../../redux/LanguageAction';
 
 const Direcktsvg = () => {
-    const navigation = useNavigation(); 
+    const navigation = useNavigation();
+
+    const dispatch = useDispatch();
+    const handlelanguage = async () => {
+   
+      let currentlang = await SecureStore.getItemAsync('language'); 
+      if(currentlang){
+        dispatch(changeLanguage(currentlang))
+      }
+    }
+       
     useEffect(() => {
-        // Function to retrieve data from AsyncStorage
+       
+
+
+
         const retrieveData = async () => {
           try {
             const storedData = await AsyncStorage.getItem('customerdata');
@@ -30,9 +45,12 @@ const Direcktsvg = () => {
           }
         };
     
-       
+        handlelanguage()
         retrieveData();
       }, []);
+  
+
+ 
     return(
         <SafeAreaView style={{flex:1, alignItems:"center",justifyContent:"center"}}>
             <Image source={logo} style={{height:300,width:300}}/>

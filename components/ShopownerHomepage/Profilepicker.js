@@ -17,8 +17,10 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { COLORS } from "../../constants/Theme";
 import * as SecureStore from "expo-secure-store";
 import {createnewauthtokenForShopowner} from '../RefreshSession/RefreshSession'
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setShopOwnerToken } from "../../redux/shopOwnerAuthActions";
+import { strings } from "../../locals/translations";
+import { useNavigation } from "@react-navigation/native";
 const ProfilePicker = ({ profilepic, setprofilepic, shopOwnerId , email }) => {
   const { showActionSheetWithOptions } = useActionSheet();
   const [loading, setLoading] = useState(false);
@@ -36,7 +38,7 @@ const ProfilePicker = ({ profilepic, setprofilepic, shopOwnerId , email }) => {
         handleImageSelection(result.assets[0].uri);
       }
     } catch (error) {
-      console.error("Error opening camera:", error);
+  
     }
   };
 
@@ -52,7 +54,7 @@ const ProfilePicker = ({ profilepic, setprofilepic, shopOwnerId , email }) => {
         handleImageSelection(result.assets[0].uri);
       }
     } catch (error) {
-      console.error("Error picking image:", error);
+    
     }
   };
 
@@ -135,8 +137,9 @@ const ProfilePicker = ({ profilepic, setprofilepic, shopOwnerId , email }) => {
   const showToast = (e) => {
     ToastAndroid.show(e, ToastAndroid.SHORT);
   };
+  const navigation = useNavigation();
   const uploadImage = async (id, imageUri) => {
-    console.log(imageUri);
+  
     setLoading(true);
     try {
       const formData = new FormData();
@@ -163,21 +166,21 @@ const ProfilePicker = ({ profilepic, setprofilepic, shopOwnerId , email }) => {
         }
       );
       setprofilepic(response.data.data)
-      console.log(response.data);
+   
       updateShopOwnerProfilePic(response.data.data);
     }  catch (error) {
       if (error.response) {
-        console.log(error.response.status); 
+     
         if (error.response.status === 429) {
             const newtoken = await createnewauthtokenForShopowner(email);
-            console.log("new token : " + newtoken)
+  
             if(newtoken){
               await SecureStore.setItemAsync('shopownertoken',newtoken);
               dispatch(setShopOwnerToken(newtoken))
               await uploadImage(id, imageUri); 
             }
             else{
-              alert("No received")
+              navigation.replace('Home')
             }
         } else if (error.response.status === 401) {
             showToast('Invalid Auth Token');
@@ -222,18 +225,15 @@ const ProfilePicker = ({ profilepic, setprofilepic, shopOwnerId , email }) => {
         "shopownerdata",
         JSON.stringify(shopOwnerData)
       );
-
-      console.log(
-        "Shop owner profile pic updated successfully:",
-        shopOwnerData
-      );
-
       return shopOwnerData; // Return the updated shop owner object if needed
     } catch (error) {
-      console.error("Error updating shop owner profile pic:", error);
+    
       throw error;
     }
   };
+  const lang =useSelector(
+    (state) => state.appLanguage.language
+  );
   return (
     <View style={styles.container}>
      {loading ? (
@@ -248,7 +248,7 @@ const ProfilePicker = ({ profilepic, setprofilepic, shopOwnerId , email }) => {
 
 
       <TouchableOpacity onPress={showOptions}>
-        <Text style={{ paddingVertical: 10 }}>Change Image</Text>
+        <Text style={{ paddingVertical: 10 }}>{strings[`${lang}`].chooseimage}</Text>
       </TouchableOpacity>
     </View>
   );

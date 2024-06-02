@@ -23,7 +23,7 @@ import Imagepick from "./Imagepick";
 import { COLORS } from "../../../constants/Theme";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import uploadMedia from "./UploadImage";
+
 import { useSelector, useDispatch } from "react-redux";
 import { strings } from "../../../locals/translations";
 import {createnewauthtoken } from '../../RefreshSession/RefreshSession'
@@ -79,7 +79,7 @@ const Createthread = () => {
       showToast("Select Location");
       return;
     }
-    console.log(email);
+
     if (!category) {
       setindicator(false);
       showToast("Select Category");
@@ -131,7 +131,7 @@ const Createthread = () => {
       setModalVisible(!modalVisible);
     } catch (error) {
       if (error.response) {
-        console.log(error.response.status); 
+
         if (error.response.status === 429) {
             const newtoken = await createnewauthtoken(email)
             if(newtoken){
@@ -139,7 +139,7 @@ const Createthread = () => {
               await handleSubmit(); 
             }
             else{
-              alert("No received")
+              navigation.replace('Home')
             }
         } else if (error.response.status === 401) {
             showToast('Invalid Auth Token');
@@ -172,9 +172,9 @@ const Createthread = () => {
         const data = await AsyncStorage.getItem("customerdata")
         const parsedData = JSON.parse(data)
         setemail(parsedData.email)
-        console.log(email)
+ 
       } catch (err) {
-        console.log(err)
+  
       }
     };
 
@@ -279,7 +279,7 @@ const Createthread = () => {
           <View style={styles.centeredView}>
             <View style={styles.modalView}>
               <Feather name="check-circle" size={62} color="green" />
-              <Text style={styles.modalText}>Job created Successfully</Text>
+              <Text style={styles.modalText}>Task created Successfully</Text>
               <Pressable
                 style={[styles.button, styles.buttonClose]}
                 onPress={() => {
@@ -292,7 +292,7 @@ const Createthread = () => {
           </View>
         </Modal>
         <View style={styles.box1}>
-          <Text style={styles.box1text}>Job Title</Text>
+          <Text style={styles.box1text}>{strings[`${lang}`].Tasktitle}</Text>
           <TextInput
             style={styles.box1input}
             onChangeText={(text) => setjobtitle(text)}
@@ -300,7 +300,7 @@ const Createthread = () => {
             value={jobtitle}
             maxLength={75}
           />
-          <Text style={styles.box2text}>Job Descripton</Text>
+          <Text style={styles.box2text}>{strings[`${lang}`].TaskDescription}</Text>
           <TextInput
             style={styles.box2input}
             multiline={true}
@@ -352,7 +352,7 @@ const Createthread = () => {
                   style={{ width: 80, height: 80, borderRadius: 50 }}
                 />
                 <TouchableOpacity onPress={()=>setSelectedImage(null)}>
-                <Text>remove Image</Text>
+                <Text>{strings[`${lang}`].removeimage}</Text>
                 </TouchableOpacity>
                   </View>
               ) : null}
@@ -369,9 +369,9 @@ const Createthread = () => {
                 >
                   <View style={styles.box3opacity}>
                     <Text
-                      style={{ color: "white", fontSize: 18, fontWeight: "bold" }}
+                      style={{ color: "white", fontWeight: "bold" }}
                     >
-                      Post Job
+                      {strings[`${lang}`].posttask}
                     </Text>
                   </View>
                 </TouchableOpacity>

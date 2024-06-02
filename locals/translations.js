@@ -1,10 +1,10 @@
 
 export const strings = {
   en: {
-    create: 'create Job',
+    create: 'create Tasks',
     createonlyjobs:'You can only create 5 jobs at same time',
     expire:'expire on',
-    editjob:'Edit Job',
+    editjob:'Edit Task',
     deactivated:'Deactivated',
     noresponse:'No response',
     response:'response',
@@ -12,25 +12,31 @@ export const strings = {
     deactivate:'Deactivate',
     call:'call now',
     direction:'Direction',
+    viewprofile:"View profile",
     confirmdel:'Confirm Deletion',
     confirmdelmsg:'Do you want to delete?',
     confirmdeactivate:'Confirm Deactivation',
-    confirmdeactivatemsg:'You can Deactivate the Job only once. Do you want to deactivate?',
-
+    confirmdeactivatemsg:'You can Deactivate the Task only once. Do you want to deactivate?',
+    taskresponses:"Task responses",
     searchbarplaceholder:'Search shops near you...',
     location:'location',
     category:'category',
     shopopen: 'Shop open',
     NoShopavailable:'No Shops or service found...',
     findshop:'Find shop and service...',
-    gmapnotlinked:'Google Map is not linked',
+    gmapnotlinked:'Location not provided by the user',
+    save:"save",
 
+    Tasktitle:'Task Title',
+    TaskDescription:'Task Description',
     chooseimage:'Choose Image',
     choosecategory:'Choose Category',
     chooselocation:'Choose Location',
     selectoption:'Select option',
     givetitle:'Give a title',
     givedes:'Describe your problem clearly.',
+    removeimage:'remove image',
+    posttask:'Post Task',
 
     logout:'Log out',
     faq:'Frequently Asked Questions',
@@ -38,10 +44,10 @@ export const strings = {
     direcktans:'Direckt is an app that connects customers with nearby sellers and service providers.',
     paymoneyq:'Do I need to pay any money?',
     paymoneyans:"No, you don't need to pay any money, and don't pay in the name of Direckt.",
-    whathappensq:'What happens when you create a job?',
-    whathappensans:'When you create a job, it will be sent to sellers matching the category and location you specify. Your name and email are not sent to them.',
+    whathappensq:'What happens when you create a Task?',
+    whathappensans:'When you create a Task, it will be sent to sellers matching the category and location you specify. Your name and email are not sent to them.',
     whatdel:'What is deactivate and delete?',
-    whatdelans:'Deactivating means you no longer receive responses to your job, but you can still see the job. Deleting means everything related to the job will be removed.',
+    whatdelans:'Deactivating means you no longer receive responses to your Task, but you can still see the Task. Deleting means everything related to the job will be removed.',
     isdirecktresq:'Is Direckt responsible for the products or services?',
     isdirecktresans:'No, Direckt is not responsible for the products or services offered by sellers; it simply connects you with them.',
 
@@ -56,13 +62,19 @@ export const strings = {
     typefeedback:'Type your feedback here...',
 
 
+   viewdetail:"view details",
+   Describe:"Describe about the product or service or cost",
+   Deliveryoption:"Delivery option",
+   Accept:"Yes I can",
+   ReplyMessage:"Write a Reply Message",
 
 
 
-    refresh:'Refresh',
+    refresh:'refresh',
 
 
-
+    name:"name",
+    description:'description',
     howtousedireckt:'How to use DirecKT',
     photos:'Photos',
     mobilenumber:'Mobile number',
@@ -72,20 +84,26 @@ export const strings = {
     nodes:'There is no descritpion available for this shop',
     noaddress:'address not added',
     nodeliverylocation:'locations not added',
+    nolocation:"add location details",
+    nocategory:"category not added",
+    gmap:'Google map location link',
+    photosmore:"photos ( you can only upload 5 image )"
 
   },
   ta: {
-    create: 'உருவாக்க',
-    createonlyjobs:'நீங்கள் ஒரே நேரத்தில் 5 வேலைகளை மட்டுமே உருவாக்க முடியும்',
+    create: 'உருவாக்கு',
+    createonlyjobs:'நீங்கள் ஒரே நேரத்தில் 5 பணிகளை மட்டுமே உருவாக்க முடியும்',
     expire:'காலாவதியாகும்',
     deactivated:'செயலிழக்கப்பட்டது',
-    editjob:'வேலையைத் திருத்து',
-    noresponse:'பதில் இல்லை',
+    editjob:'திருத்து',
+    noresponse:'இல்லை',
     response:'பதில்',
+    taskresponses:"பணி பதில்கள்",
     delete:'அழி',
     deactivate:'செயலிழக்கச் செய்',
-    call:'இப்போது அழைக்கவும்',
+    call:'அழை',
     direction:'திசை',
+    viewprofile:"முழு விவரங்கள்",
     confirmdel:'நீக்குவதை உறுதிப்படுத்தவும்',
     confirmdelmsg:'நீக்க வேண்டுமா?',
     confirmdeactivate:'செயலிழப்பை உறுதிப்படுத்தவும்',
@@ -99,12 +117,16 @@ export const strings = {
     findshop:'கடை மற்றும் சேவையைக் கண்டறியவும்...',
     gmapnotlinked:'கூகுள் மேப் இணைக்கப்படவில்லை',
 
-    chooseimage:'படத்தை தேர்வு செய்யவும்',
+    Tasktitle:'பணி தலைப்பு',
+    TaskDescription:'பணி விளக்கம்',
+    chooseimage:'படத்தை தேர்வு செய்',
     choosecategory:'வகையைத் தேர்ந்தெடுக்கவும்',
     chooselocation:'இருப்பிடத்தைத் தேர்ந்தெடுக்கவும்',
     selectoption:'விருப்பத்தைத் தேர்ந்தெடுக்கவும்',
     givetitle:'தலைப்பு கொடுங்கள்',
     givedes:'உங்கள் பிரச்சனை/தேவையை தெளிவாக விவரிக்கவும்.',
+    removeimage:'படத்தை அகற்று',
+    posttask:'பணியை சேமி',
 
     logout:'வெளியேறு',
     faq:'அடிக்கடி கேட்கப்படும் கேள்விகள்',
@@ -130,14 +152,19 @@ export const strings = {
     typefeedback:'உங்கள் கருத்தை இங்கே தட்டச்சு செய்யவும்...',
 
 
-
-
-
+    save:"சேமி",
+  
+    viewdetail:"முழுவிவரம்",
+    Describe:"தயாரிப்பு அல்லது சேவை அல்லது விலை பற்றி விவரிக்கவும்",
+    Deliveryoption:"டெலிவரி",
+    Accept:"ஆம்",
+    ReplyMessage:"பதில் செய்தியை எழுதவும்",
 
     refresh:'புதுப்பிப்பு',
-
-
+   
+    description:'விளக்கம்',
     howtousedireckt:'DirecKT ஐ எவ்வாறு பயன்படுத்துவது',
+    name:"பெயர்",
     photos:'புகைப்படங்கள்',
     mobilenumber:'கைபேசி எண்',
     deliverylocation:'டெலிவரி அல்லது சேவை செய்யக்கூடிய இடங்கள்',
@@ -146,5 +173,9 @@ export const strings = {
     nodes:'இந்த கடைக்கு எந்த விளக்கமும் இல்லை',
     noaddress:'முகவரி சேர்க்கப்படவில்லை',
     nodeliverylocation:'இடங்கள் சேர்க்கப்படவில்லை',
+    nolocation:"இடம் சேர்க்கப்படவில்லை",
+    nocategory:"வகை சேர்க்கப்படவில்லை ",
+    gmap:'கூகுள் மேப்',
+    photosmore:"புகைப்படங்கள் (நீங்கள் 5 படங்களை மட்டுமே பதிவேற்ற முடியும்)"
   },
 };

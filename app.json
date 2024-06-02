@@ -4,7 +4,7 @@
     "slug": "direckt",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/Direcktlogo.png",
+    "icon": "./assets/DireckTlogo.png",
     "userInterfaceStyle": "light",
     "plugins": [
       [
@@ -31,7 +31,7 @@
     "android": {
       "googleServicesFile": "./google-services.json",
       "adaptiveIcon": {
-        "foregroundImage": "./assets/Direcktlogo.png",
+        "foregroundImage": "./assets/DireckTlogo.png",
         "backgroundColor": "#ffffff"
       },
       "permissions": [
@@ -44,7 +44,7 @@
       "versionCode": 4
     },
     "web": {
-      "favicon": "./assets/Direcktlogo.png"
+      "favicon": "./assets/DireckTlogo.png"
     },
     "extra": {
       "eas": {
