@@ -74,7 +74,7 @@ const ShopOwnerAccountDelete = ({ route }) => {
 
         try {
             const response = await axios.post(
-                "https://direckt-copy1.onrender.com/auth/deleteshopowner",
+                "https://server.direckt.site/auth/deleteshopowner",
                 formDataLogin,
                 {
                     headers: {

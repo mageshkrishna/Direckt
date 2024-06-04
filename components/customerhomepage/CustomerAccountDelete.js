@@ -74,7 +74,7 @@ const CustomerAccountDelete = ({ route }) => {
 
         try {
             const response = await axios.post(
-                "https://direckt-copy1.onrender.com/auth/deletecustomer",
+                "https://server.direckt.site/auth/deletecustomer",
                 formDataLogin,
                 {
                     headers: {

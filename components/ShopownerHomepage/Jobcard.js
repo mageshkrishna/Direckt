@@ -79,7 +79,7 @@ const JobCard = ({ item, ownerdetail ,email }) => {
  
     try {
       const response = await axios.post(
-        "https://direckt-copy1.onrender.com/shopowner/createjobreply",
+        "https://server.direckt.site/shopowner/createjobreply",
         formdata
         ,
         {

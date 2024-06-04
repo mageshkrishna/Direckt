@@ -200,7 +200,7 @@ const EditOwnerProfile = () => {
     try {
       setuploading(true);
       const updateuser = await axios.put(
-        `https://direckt-copy1.onrender.com/shopowner/editshopowner`,
+        `https://server.direckt.site/shopowner/editshopowner`,
         formdata,
         {
           headers: {
@@ -262,7 +262,7 @@ const EditOwnerProfile = () => {
     const token = await SecureStore.getItemAsync("shopownertoken");
     try {
       const response = await axios.post(
-        `https://direckt-copy1.onrender.com/shopowner/deletephotoimage`,
+        `https://server.direckt.site/shopowner/deletephotoimage`,
         { _id: shopOwnerId, imageUrl }, // Pass formData as the second argument
         {
           headers: {
@@ -278,7 +278,6 @@ const EditOwnerProfile = () => {
       
         if (error.response.status === 429) {
             const newtoken = await createnewauthtokenForShopowner(email);
-            console.log("new token : " + newtoken)
             if(newtoken){
               await SecureStore.setItemAsync('shopownertoken',newtoken);
               dispatch(setShopOwnerToken(newtoken))
@@ -340,7 +339,7 @@ const EditOwnerProfile = () => {
         JSON.stringify(shopOwnerData)
       );
     } catch (error) {
-      console.error("Error removing image URL from shop owner data:", error);
+
       throw error;
     }
   };
@@ -389,7 +388,7 @@ const EditOwnerProfile = () => {
   const fetchData = async () => {
     try {
       const response = await axios.get(
-        "https://direckt-copy1.onrender.com/direckt/getcategory"
+        "https://server.direckt.site/direckt/getcategory"
       );
       const dataFromBackend = response.data;
 
@@ -433,7 +432,7 @@ const EditOwnerProfile = () => {
   const fetchDatalocation = async () => {
     try {
       const response = await axios.get(
-        "https://direckt-copy1.onrender.com/direckt/getlocations"
+        "https://server.direckt.site/direckt/getlocations"
       );
       const dataFromBackend = response.data;
 

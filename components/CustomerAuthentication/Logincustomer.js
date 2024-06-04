@@ -79,7 +79,7 @@ const handleLogin = async () => {
 
   try {
     const response = await axios.post(
-      "https://direckt-copy1.onrender.com/auth/logincus",
+      "https://server.direckt.site/auth/logincus",
       formDataLogin,
       {
         headers: {

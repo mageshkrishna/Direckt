@@ -77,7 +77,7 @@ const UserLogin = ({route,setShopOwnerToken}) => {
   
     try {
       const response = await axios.post(
-        "https://direckt-copy1.onrender.com/auth/login",
+        "https://server.direckt.site/auth/login",
         formDataLogin,
         {
           headers: {

@@ -21,6 +21,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { setShopOwnerToken } from "../../redux/shopOwnerAuthActions";
 import { strings } from "../../locals/translations";
 import { useNavigation } from "@react-navigation/native";
+import * as ImageManipulator from 'expo-image-manipulator';
+
 const ProfilePicker = ({ profilepic, setprofilepic, shopOwnerId , email }) => {
   const { showActionSheetWithOptions } = useActionSheet();
   const [loading, setLoading] = useState(false);
@@ -31,11 +33,12 @@ const ProfilePicker = ({ profilepic, setprofilepic, shopOwnerId , email }) => {
       const result = await ImagePicker.launchCameraAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.Images,
         allowsEditing: true,
-        quality: 0.1,
+        quality: 0.4,
       });
 
       if (!result.canceled) {
-        handleImageSelection(result.assets[0].uri);
+        const file = await ImageManipulator.manipulateAsync(result.assets[0].uri, [], { compress: 0.4 });
+        handleImageSelection(file.uri);
       }
     } catch (error) {
   
@@ -47,11 +50,12 @@ const ProfilePicker = ({ profilepic, setprofilepic, shopOwnerId , email }) => {
       const result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.Images,
         allowsEditing: false,
-        quality: 0.1,
+        quality: 0.4,
       });
 
       if (!result.canceled) {
-        handleImageSelection(result.assets[0].uri);
+        const file = await ImageManipulator.manipulateAsync(result.assets[0].uri, [], { compress: 0.4 });
+        handleImageSelection(file.uri);
       }
     } catch (error) {
     
@@ -156,7 +160,7 @@ const ProfilePicker = ({ profilepic, setprofilepic, shopOwnerId , email }) => {
       }
      formData.append("_id",shopOwnerId)
       const response = await axios.post(
-        `https://direckt-copy1.onrender.com/shopowner/editprofileimage`,
+        `https://server.direckt.site/shopowner/editprofileimage`,
         formData,
         {
           headers: {

@@ -93,7 +93,7 @@ const Profile = () => {
     }
     try {
       setFeedbackTextindicator(true)
-      const response = await axios.post('https://direckt-copy1.onrender.com/direckt/customerfeedback', { feedback: feedbackText });//check for usertoken
+      const response = await axios.post('https://server.direckt.site/direckt/customerfeedback', { feedback: feedbackText });//check for usertoken
       showToast('Thanks for your feedback!');
       setFeedbackText('')
       setFeedbackTextindicator(false)
@@ -158,7 +158,7 @@ const Profile = () => {
     try {
       setindicator(true);
       const response = await axios.post(
-        "https://direckt-copy1.onrender.com/auth/customerlogout",
+        "https://server.direckt.site/auth/customerlogout",
         formdata,
         {
           headers: {

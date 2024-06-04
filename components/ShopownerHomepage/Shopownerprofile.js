@@ -71,7 +71,7 @@ const Shopownerprofile = () => {
     }
     try {
       setFeedbackTextindicator(true);
-      const response = await axios.post('https://direckt-copy1.onrender.com/direckt/shopownerfeedback', { feedback: feedbackText });
+      const response = await axios.post('https://server.direckt.site/direckt/shopownerfeedback', { feedback: feedbackText });
       showToast('Thankyou for your valuable feedback!')
       setFeedbackText('')
       setFeedbackTextindicator(false)
@@ -92,7 +92,7 @@ const Shopownerprofile = () => {
     try {
       setLogoutindicator(true);
       const response =  axios.post(
-        "https://direckt-copy1.onrender.com/auth/shopownerlogout",
+        "https://server.direckt.site/auth/shopownerlogout",
         formdata,
         {
           headers: {
@@ -176,7 +176,7 @@ const Shopownerprofile = () => {
     const token = await SecureStore.getItemAsync('shopownertoken');
     try {
       const response = await axios.put(
-        'https://direckt-copy1.onrender.com/shopowner/deliverystatus',
+        'https://server.direckt.site/shopowner/deliverystatus',
         formdata,
         {
           headers: {
@@ -288,7 +288,7 @@ const Shopownerprofile = () => {
     const token = await SecureStore.getItemAsync('shopownertoken');
     try {
       const response = await axios.put(
-        'https://direckt-copy1.onrender.com/shopowner/availabilitystatus',
+        'https://server.direckt.site/shopowner/availabilitystatus',
         formdata,
         {
           headers: {

@@ -72,7 +72,7 @@ const CustomerForgetpassword = ({route}) => {
     try {
       setindicator(true);
       const response = await axios.post(
-        "https://direckt-copy1.onrender.com/auth/customerforgetpassword",
+        "https://server.direckt.site/auth/customerforgetpassword",
         { email: email }
       );
       showToast("otp send succesfully to the email");
@@ -112,7 +112,7 @@ const CustomerForgetpassword = ({route}) => {
     try {
       setotpindicator(true);
       const response = await axios.post(
-        "https://direckt-copy1.onrender.com/auth/customerverifyotp",
+        "https://server.direckt.site/auth/customerverifyotp",
         { otp: otp, email: email }
       );
       showToast("otp verified succesfully");

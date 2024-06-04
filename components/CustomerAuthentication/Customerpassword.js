@@ -28,7 +28,7 @@ const Customerpassword = ({route}) => {
    else{
     try{
         setindicator(true)
-      const response = await axios.post('https://direckt-copy1.onrender.com/auth/customerupdatepassword'
+      const response = await axios.post('https://server.direckt.site/auth/customerupdatepassword'
       ,{email:email,newPassword:newPassword,token:token}
       )
       setindicator(false)

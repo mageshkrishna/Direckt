@@ -38,7 +38,7 @@ const Editjob = () => {
       const formdata = { jobtitle: jobtitle, job_id: job_id, jobdescription: jobdescription };
       let authtoken = await SecureStore.getItemAsync("customertoken")
       const response = await axios.post(
-        "https://direckt-copy1.onrender.com/Customerdata/editjobs",
+        "https://server.direckt.site/Customerdata/editjobs",
         formdata,
         {
           headers: {

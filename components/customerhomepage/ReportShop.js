@@ -64,7 +64,7 @@ const ReportShop = ({ route }) => {
       setreportindicator(true);
    
       const response = await axios.post(
-        "https://direckt-copy1.onrender.com/auth/reportShopOwner",
+        "https://server.direckt.site/auth/reportShopOwner",
         { customerId: customerid, shopOwnerId:shopownerid, reason:reportmsg}
       );
    

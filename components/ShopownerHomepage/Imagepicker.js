@@ -18,6 +18,7 @@ import * as SecureStore from "expo-secure-store";
 import {createnewauthtokenForShopowner} from '../RefreshSession/RefreshSession'
 import { useDispatch } from "react-redux";
 import { useNavigation } from "@react-navigation/native";
+import * as ImageManipulator from 'expo-image-manipulator';
 const width = Dimensions.get("window").width;
 const height = Dimensions.get("window").height;
 
@@ -30,14 +31,15 @@ const Imagepicker = ({ setphotos, email, shopOwnerId }) => {
       const result = await ImagePicker.launchCameraAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.Images,
         allowsEditing: true,
-        quality: 0.1,
+        quality: 0.4,
       });
 
       if (!result.canceled) {
-        handleImageSelection(result.assets[0].uri);
+        const file = await ImageManipulator.manipulateAsync(result.assets[0].uri, [], { compress: 0.4 });
+        handleImageSelection(file.uri);
       }
     } catch (error) {
-      console.error("Error opening camera:", error);
+
     }
   };
 
@@ -46,14 +48,15 @@ const Imagepicker = ({ setphotos, email, shopOwnerId }) => {
       const result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.Images,
         allowsEditing: false,
-        quality: 0.1,
+        quality: 0.4,
       });
 
       if (!result.canceled) {
-        handleImageSelection(result.assets[0].uri);
+        const file = await ImageManipulator.manipulateAsync(result.assets[0].uri, [], { compress: 0.4 });
+        handleImageSelection(file.uri);
       }
     } catch (error) {
-      console.error("Error picking image:", error);
+
     }
   };
 
@@ -94,7 +97,7 @@ const Imagepicker = ({ setphotos, email, shopOwnerId }) => {
       formData.append("_id",shopOwnerId)
       const token = await SecureStore.getItemAsync("shopownertoken");
       const response = await axios.post(
-        `https://direckt-copy1.onrender.com/shopowner/changephotoimage`,
+        `https://server.direckt.site/shopowner/changephotoimage`,
         formData,
         {
           headers: {

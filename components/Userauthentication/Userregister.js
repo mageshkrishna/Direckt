@@ -102,7 +102,7 @@ const Userregister = ({route}) => {
         email: email,
         password: password
       }
-      const response = await axios.post('https://direckt-copy1.onrender.com/auth/register', formdata, {
+      const response = await axios.post('https://server.direckt.site/auth/register', formdata, {
         headers: {
           'Content-Type': 'application/json',
         },

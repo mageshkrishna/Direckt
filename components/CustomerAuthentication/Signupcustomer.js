@@ -73,7 +73,7 @@ const Signupcustomer = ({route}) => {
         password,
       };
 
-      const response = await axios.post('https://direckt-copy1.onrender.com/auth/registercus', formData, {
+      const response = await axios.post('https://server.direckt.site/auth/registercus', formData, {
         headers: {
           'Content-Type': 'application/json',
         },

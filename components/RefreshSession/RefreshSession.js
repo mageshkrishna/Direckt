@@ -24,7 +24,7 @@ async function createnewauthtoken ( email ){
             token:token
         }
 
-        const response = await axios.post('https://direckt-copy1.onrender.com/auth/refreshcus',formdata)
+        const response = await axios.post('https://server.direckt.site/auth/refreshcus',formdata)
         const responseData = response.data
         const newauthtoken = responseData.authtoken
         return newauthtoken
@@ -53,7 +53,7 @@ async function createnewauthtokenForShopowner ( email ){
             token:token
         }
      
-        const response = await axios.post('https://direckt-copy1.onrender.com/auth/refreshshopowner',formdata)
+        const response = await axios.post('https://server.direckt.site/auth/refreshshopowner',formdata)
         const responseData = response.data
         const newauthtoken = responseData.authtoken
         return newauthtoken

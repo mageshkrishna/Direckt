@@ -218,7 +218,7 @@ const AccordionItem = ({ data, token, onRefresh, email }) => {
       let authtoken = await SecureStore.getItemAsync("customertoken")
 
       const response = await axios.post(
-        "https://direckt-copy1.onrender.com/Customerdata/changeactivestate",
+        "https://server.direckt.site/Customerdata/changeactivestate",
         { _id: jobIdToDelete },
         {
           headers: {
@@ -272,7 +272,7 @@ const AccordionItem = ({ data, token, onRefresh, email }) => {
       setdeleteindicator(true);
       let authtoken = await SecureStore.getItemAsync("customertoken")
       const response = await axios.delete(
-        "https://direckt-copy1.onrender.com/Customerdata/deletejob",
+        "https://server.direckt.site/Customerdata/deletejob",
         {
           params: { _id: jobIdToDelete },
           headers: {
@@ -631,7 +631,7 @@ const Threadsavailable = ({ route }) => {
       try {
         setindicator(true);
         const response = await axios.get(
-          `https://direckt-copy1.onrender.com/Customerdata/getreplydata?email=${email}`,
+          `https://server.direckt.site/Customerdata/getreplydata?email=${email}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,

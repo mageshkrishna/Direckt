@@ -73,7 +73,7 @@ const CustomerVerification = ({ route }) => {
     try {
       setotpindicator(true);
       const response = await axios.post(
-        "https://direckt-copy1.onrender.com/auth/verifycustomer",
+        "https://server.direckt.site/auth/verifycustomer",
         { email: email, name: name, password: password, otp: otp }
       );
       if (response.status === 200) {

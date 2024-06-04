@@ -94,7 +94,7 @@ const Shopownerhomepage = () => {
     try {
       setLoading(true);
       const response = await axios.get(
-        `https://direckt-copy1.onrender.com/shopowner/getjobs?location=${location}&category=${category}&email=${email}`,
+        `https://server.direckt.site/shopowner/getjobs?location=${location}&category=${category}&email=${email}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,

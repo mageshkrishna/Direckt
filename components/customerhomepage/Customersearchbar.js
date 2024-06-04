@@ -214,7 +214,7 @@ const CustomerSearchBar = () => {
 
   const fetchDatacategory = async () => {
     try {
-      const response = await axios.get("https://direckt-copy1.onrender.com/direckt/getcategory");
+      const response = await axios.get("https://server.direckt.site/direckt/getcategory");
       const dataFromBackend = response.data;
 
       if (Array.isArray(dataFromBackend) && dataFromBackend.length > 0) {
@@ -296,7 +296,7 @@ const CustomerSearchBar = () => {
       }
       let authtoken = await SecureStore.getItemAsync("customertoken")
       const response = await axios.get(
-        "https://direckt-copy1.onrender.com/shopowner/getshops",
+        "https://server.direckt.site/shopowner/getshops",
         {
           params: formdata,
           headers: {
@@ -353,7 +353,7 @@ const CustomerSearchBar = () => {
 
   const fetchDatalocation = async () => {
     try {
-      const response = await axios.get("https://direckt-copy1.onrender.com/direckt/getlocations");
+      const response = await axios.get("https://server.direckt.site/direckt/getlocations");
       const dataFromBackend = response.data;
 
       if (Array.isArray(dataFromBackend) && dataFromBackend.length > 0) {

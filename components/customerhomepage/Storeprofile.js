@@ -62,7 +62,7 @@ const StoreProfile = () => {
         try {
            
             let authtoken = await SecureStore.getItemAsync("customertoken")
-            const response = await axios.get(`https://direckt-copy1.onrender.com/shopowner/getshopownerprofile?_id=${_id}`,
+            const response = await axios.get(`https://server.direckt.site/shopowner/getshopownerprofile?_id=${_id}`,
                 {
                     headers: {
                         Authorization: `Bearer ${authtoken}`,

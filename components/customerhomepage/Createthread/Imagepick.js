@@ -5,6 +5,7 @@ import { useActionSheet } from '@expo/react-native-action-sheet';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { useSelector } from 'react-redux';
 import { strings } from '../../../locals/translations';
+import * as ImageManipulator from 'expo-image-manipulator';
 const Imagepick = ({ setSelectedImage }) => {
   const { showActionSheetWithOptions } = useActionSheet();
   const lang = useSelector(
@@ -15,11 +16,12 @@ const Imagepick = ({ setSelectedImage }) => {
       const result = await ImagePicker.launchCameraAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.Images,
         allowsEditing: true,
-        quality: 0.1,
+        quality: 0.4,
       });
 
       if (!result.canceled) {
-        setSelectedImage(result.assets[0].uri);
+        const file = await ImageManipulator.manipulateAsync(result.assets[0].uri, [], { compress: 0.4 });
+        setSelectedImage(file.uri);
       }
     } catch (error) {
     
@@ -31,11 +33,12 @@ const Imagepick = ({ setSelectedImage }) => {
       const result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.Images,
         allowsEditing: false,
-        quality: 0.1,
+        quality: 0.4,
       });
 
       if (!result.canceled) {
-        setSelectedImage(result.assets[0].uri);
+        const file = await ImageManipulator.manipulateAsync(result.assets[0].uri, [], { compress: 0.4 });
+        setSelectedImage(file.uri);
       }
     } catch (error) {
 
