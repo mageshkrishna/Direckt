@@ -6,15 +6,14 @@ import {
   TouchableOpacity,
   ToastAndroid,
   ActivityIndicator,
-  Alert,
   Modal,
   Pressable
 } from "react-native";
 import React, { useState, useEffect } from "react";
-import { SafeAreaView, StyleSheet } from "react-native";
+import { StyleSheet } from "react-native";
 import { COLORS } from "../../constants/Theme";
 import { useNavigation } from "@react-navigation/native";
-import { FontAwesome, Feather } from '@expo/vector-icons';
+import {  Feather } from '@expo/vector-icons';
 import axios from "axios";
 
 const Width = Dimensions.get("window").width;

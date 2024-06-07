@@ -13,7 +13,7 @@ import {
   ActivityIndicator,
   Modal,
 } from "react-native";
-import { MaterialIcons, Entypo, FontAwesome5 } from "@expo/vector-icons";
+import { MaterialIcons } from "@expo/vector-icons";
 import { AntDesign } from "@expo/vector-icons";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { React, useEffect, useState } from "react";

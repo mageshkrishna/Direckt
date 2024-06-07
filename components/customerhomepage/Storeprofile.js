@@ -10,8 +10,8 @@ import ImagePopup from '../ShopownerHomepage/Imagepopup';
 import * as SecureStore from "expo-secure-store";
 const height = Dimensions.get("window").height
 import {createnewauthtoken} from '../RefreshSession/RefreshSession';
-import { useDispatch, useSelector } from "react-redux";
-import { setCustomerToken } from '../../redux/customerAuthActions';
+import { useDispatch } from "react-redux";
+
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
@@ -185,7 +185,7 @@ const StoreProfile = () => {
                     <View style={styles.ctcsection}>
                         <TouchableOpacity
                             onPress={() => {
-                                storedata.gmaplink ? Linking.openURL(storedata.gmaplink) : showToast('Google map is not linked');
+                                storedata.gmaplink ? Linking.openURL(storedata.gmaplink) : showToast('location not provided by the shopowner');
                             }}
                             style={[styles.ctcicon, styles.ctcdirection]}>
                             <FontAwesome5 name="directions" size={42} color="#5271FF" />

@@ -84,7 +84,7 @@ const Shopownerhomepage = () => {
   const getJob = async () => {
     if (!shopownerdata || !shopownerdata.location || !shopownerdata.category) {
       setJob([])
-      Alert.alert("Provide both location and category to recieve tasks")
+      Alert.alert("Provide both location and category to recieve tasks you can change it in editprofile section")
       return;
     }
     

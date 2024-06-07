@@ -1,5 +1,4 @@
 import {
-  ScrollView,
   StyleSheet,
   Text,
   View,
@@ -8,13 +7,9 @@ import {
   LayoutAnimation,
   UIManager,
   Image,
-  ImageBackground,
   Pressable,
-  Linking,
-  Alert,
   TextInput,
   ActivityIndicator,
-  ViewComponent,
   ToastAndroid,
   Modal,
 } from "react-native";
@@ -22,7 +17,7 @@ import moment from 'moment';
 
 import { useState} from "react";
 import {
-  MaterialIcons,
+
 
   Feather
 } from "@expo/vector-icons";
@@ -37,7 +32,6 @@ const height = Dimensions.get("window").height;
 const width = Dimensions.get("window").width;
 import Checkbox from "expo-checkbox";
 import { useDispatch, useSelector } from "react-redux";
-import { setShopOwnerToken } from "../../redux/shopOwnerAuthActions";
 import { strings } from "../../locals/translations";
 import { useNavigation } from "@react-navigation/native";
 UIManager.setLayoutAnimationEnabledExperimental &&

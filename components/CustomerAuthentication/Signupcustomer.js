@@ -6,11 +6,9 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   ToastAndroid,
-  Modal,
-  Pressable
 } from "react-native";
 import React, { useState,useEffect } from "react";
-import { SafeAreaView, StyleSheet, Alert } from "react-native";
+import { SafeAreaView, StyleSheet } from "react-native";
 import { COLORS } from "../../constants/Theme";
 import { useNavigation } from "@react-navigation/native";
 import { FontAwesome } from '@expo/vector-icons';

@@ -30,7 +30,6 @@ const height = Dimensions.get("window").height;
 import { strings } from "../../locals/translations";
 import {createnewauthtoken} from '../RefreshSession/RefreshSession';
 import { useDispatch, useSelector } from "react-redux";
-import { setCustomerToken } from '../../redux/customerAuthActions';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Shopcard = ({ data, index }) => {
@@ -38,7 +37,7 @@ const Shopcard = ({ data, index }) => {
   const [showPopup, setShowPopup] = useState(false);
   const navigation = useNavigation();
   const showToast = () => {
-    ToastAndroid.show('Google map is not linked', ToastAndroid.SHORT);
+    ToastAndroid.show('location not provided by the shopowner', ToastAndroid.SHORT);
   };
   const lang = useSelector(
     (state) => state.appLanguage.language

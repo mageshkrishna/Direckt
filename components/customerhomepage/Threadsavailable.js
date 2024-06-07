@@ -15,7 +15,6 @@ import {
   RefreshControl,
   ActivityIndicator,
   ToastAndroid,
-  Modal,
   BackHandler,
   useColorScheme,
 } from "react-native";
@@ -25,16 +24,12 @@ import {
   Entypo,
   MaterialCommunityIcons,
   MaterialIcons,
-  Ionicons,
   FontAwesome5,
 } from "@expo/vector-icons";
-import { FlatList, PanGestureHandler } from "react-native-gesture-handler";
 import Animated, {
   useSharedValue,
-  useAnimatedGestureHandler,
   useAnimatedStyle,
   withSpring,
-  clamp,
 } from "react-native-reanimated";
 import * as SecureStore from "expo-secure-store";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -50,7 +45,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { COLORS } from "../../constants/Theme";
 import { strings } from "../../locals/translations";
 
-import { setCustomerToken } from "../../redux/customerAuthActions";
 import  {createnewauthtoken}  from "../RefreshSession/RefreshSession";
 
 const height = Dimensions.get("window").height;
@@ -516,7 +510,8 @@ const AccordionItem = ({ data, token, onRefresh, email }) => {
                     ) : (
                       <TouchableOpacity
                         onPress={() => {
-                          ToastAndroid.show("No responses come back after some minutes", ToastAndroid.SHORT);
+                          {data.status ? (ToastAndroid.show("No responses come back after some minutes", ToastAndroid.SHORT)):(ToastAndroid.show("Sorry you had no response create a new task", ToastAndroid.SHORT))}
+                          
                         }}
                       >
                         <Text style={{ color: COLORS.primary }}>{strings[`${lang}`].noresponse}</Text>

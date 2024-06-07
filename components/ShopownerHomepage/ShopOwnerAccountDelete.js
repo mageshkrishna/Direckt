@@ -14,17 +14,16 @@ import React, { useState, useEffect } from "react";
 import { SafeAreaView, StyleSheet } from "react-native";
 import { COLORS } from "../../constants/Theme";
 import { useNavigation } from "@react-navigation/native";
-import { FontAwesome, Feather } from '@expo/vector-icons';
+import { FontAwesome} from '@expo/vector-icons';
 import axios from "axios";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch} from "react-redux";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as SecureStore from 'expo-secure-store';
 import { clearCustomerToken } from "../../redux/customerAuthActions";
-import { connect } from "react-redux";
-import { setCustomerToken } from "../../redux/customerAuthActions";
+
 
 const Width = Dimensions.get("window").width;
-const Height = Dimensions.get("window").height;
+
 
 
 const ShopOwnerAccountDelete = ({ route }) => {

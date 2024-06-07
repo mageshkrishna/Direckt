@@ -1,6 +1,6 @@
 import React, { useState, useRef,} from 'react';
-import { View, Modal, Image, TouchableOpacity, StyleSheet, Text, Animated } from 'react-native';
-import { FontAwesome } from '@expo/vector-icons';
+import { View, Modal, Image, TouchableOpacity, StyleSheet } from 'react-native';
+
 import { AntDesign } from '@expo/vector-icons';
 
 

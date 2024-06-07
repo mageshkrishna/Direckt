@@ -1,25 +1,22 @@
 import {
   View,
   Text,
-  Dimensions,
   TextInput,
   TouchableOpacity,
   ToastAndroid,
   ActivityIndicator,
-  Alert,
   Modal,
   Pressable
 } from "react-native";
 import React, { useState, useEffect } from "react";
-import { SafeAreaView, StyleSheet } from "react-native";
+import { StyleSheet } from "react-native";
 import { COLORS } from "../../constants/Theme";
 import { useNavigation } from "@react-navigation/native";
-import { FontAwesome, Feather } from '@expo/vector-icons';
+import { Feather } from '@expo/vector-icons';
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as SecureStore from "expo-secure-store";
 
-const Width = Dimensions.get("window").width;
-const Height = Dimensions.get("window").height;
 
 const ReportShop = ({ route }) => {
   const navigation = useNavigation();
@@ -60,13 +57,22 @@ const ReportShop = ({ route }) => {
       showToast("Type your reason for the report");
       return;
     }
+    const token = await SecureStore.getItemAsync("customertoken");
     try {
       setreportindicator(true);
    
       const response = await axios.post(
         "https://server.direckt.site/auth/reportShopOwner",
-        { customerId: customerid, shopOwnerId:shopownerid, reason:reportmsg}
-      );
+        { customerId: customerid, shopOwnerId:shopownerid, reason:reportmsg} ,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "multipart/form-data", // Use multipart form data
+            },
+          }
+        );
+    
+      
    
       if (response.status === 200) {
         setreportindicator(false);
@@ -115,7 +121,7 @@ const ReportShop = ({ route }) => {
                 setModalVisible(!modalVisible);
                 navigation.goBack();
               }}>
-              <Text style={styles.textStyle}>Login</Text>
+              <Text style={styles.textStyle}>Okay</Text>
             </Pressable>
           </View>
         </View>

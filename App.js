@@ -202,7 +202,7 @@ export default function App() {
             <Stack.Screen
             name="CustomerVerification"
             component={CustomerVerification}
-            options={{ headerShown:false }}
+            options={{ headerTransparent: true, title: ""  }}
           />
           <Stack.Screen
             name="UserVerification"

@@ -11,6 +11,7 @@ import {
   ToastAndroid,
   Modal,
   Pressable,
+  Alert,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
@@ -27,7 +28,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useSelector, useDispatch } from "react-redux";
 import { strings } from "../../../locals/translations";
 import {createnewauthtoken } from '../../RefreshSession/RefreshSession'
-import { setCustomerToken } from "../../../redux/customerAuthActions";
+
 
 const Width = Dimensions.get("window").width;
 
@@ -56,22 +57,22 @@ const Createthread = () => {
   const handleSubmit = async () => {
     if (!jobtitle) {
       setindicator(false);
-      showToast("Enter Job Title");
+      showToast("Enter Task Title");
       return;
     }
-    if (jobtitle.length < 8) {
+    if (jobtitle.length < 6) {
       setindicator(false);
-      showToast("Job title should be at least 8 characters...");
+      showToast("Task title should be at least 6 characters...");
       return;
     }
     if (!jobdescription) {
       setindicator(false);
-      showToast("Enter Job Description");
+      showToast("Enter Task Description");
       return;
     }
-    if (jobdescription.length < 8) {
+    if (jobdescription.length < 6) {
       setindicator(false);
-      showToast("Job description should be at least 8 characters...");
+      showToast("Task description should be at least 6 characters...");
       return;
     }
     if (!location) {
@@ -130,6 +131,7 @@ const Createthread = () => {
       setindicator(false);
       setModalVisible(!modalVisible);
     } catch (error) {
+      
       if (error.response) {
 
         if (error.response.status === 429) {
@@ -141,11 +143,20 @@ const Createthread = () => {
             else{
               navigation.replace('Home')
             }
-        } else if (error.response.status === 401) {
+        } else if (error.response.status === 400) {
+          Alert.alert(
+            "Task Limit Reached",
+            "User can only create 5 tasks at a time.\nDelete other tasks to create a new task."
+          );
+        }
+        
+        
+        else if (error.response.status === 401) {
             showToast('Invalid Auth Token');
         } else {
             // Handle other status codes or errors
-            alert('Unexpected Error:', error.response.data);
+            
+            Alert.alert('Unexpected Error:', error.response.error);
         }
     }
     else if (axios.isAxiosError(error)) {

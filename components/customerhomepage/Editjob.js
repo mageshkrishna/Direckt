@@ -24,12 +24,12 @@ const Editjob = () => {
     ToastAndroid.show(message, ToastAndroid.SHORT);
   };
   const handleSaveChanges = async () => {
-    if (!jobtitle || jobtitle.length < 8) {
-      showToast("Job title should be at least 8 characters...");
+    if (!jobtitle || jobtitle.length < 6) {
+      showToast("Task title should be at least 6 characters...");
       return;
     }
-    if (!jobdescription || jobdescription.length < 8) {
-      showToast("Job description should be at least 8 characters...");
+    if (!jobdescription || jobdescription.length < 6) {
+      showToast("Task description should be at least 6 characters...");
       return;
     }
 
@@ -48,7 +48,7 @@ const Editjob = () => {
         }
       );
       setLoading(false);
-      showToast("Job updated successfully");
+      showToast("task updated successfully");
       navigation.navigate("homeCustomer");
       dispatch(setCustomerToken(jobtitle+jobdescription))
       
@@ -90,14 +90,14 @@ const Editjob = () => {
         style={styles.input}
         value={jobtitle}
         onChangeText={text => setJobTitle(text)}
-        placeholder="Enter job title"
+        placeholder="Enter task title"
       />
       <Text style={styles.label}>{strings[`${lang}`].TaskDescription}</Text>
       <TextInput
         style={[styles.input, { height: 100 }]}
         value={jobdescription}
         onChangeText={text => setJobDescription(text)}
-        placeholder="Enter job description"
+        placeholder="Enter task description"
         multiline
       />
       <TouchableOpacity
