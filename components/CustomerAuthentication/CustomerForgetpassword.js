@@ -56,8 +56,9 @@ const CustomerForgetpassword = ({route}) => {
     });
   };
   const validateEmail = (email) => {
+    const trimmedEmail = email.trim();
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
+    return emailRegex.test(trimmedEmail);
   };
   const sendemail = async () => {
     if (!email) {
@@ -73,7 +74,7 @@ const CustomerForgetpassword = ({route}) => {
       setindicator(true);
       const response = await axios.post(
         "https://server.direckt.site/auth/customerforgetpassword",
-        { email: email }
+        { email: email.trim() }
       );
       showToast("otp send succesfully to the email");
       setindicator(false);

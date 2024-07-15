@@ -47,10 +47,10 @@ const UserLogin = ({route,setShopOwnerToken}) => {
     fecthdevicetoken();
   },[])
   const validateEmail = (email) => {
+    const trimmedEmail = email.trim();
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
+    return emailRegex.test(trimmedEmail);
   };
-
   const togglePasswordVisibility = () => {
     setIsPasswordVisible((e) => !e);
   };
@@ -73,7 +73,11 @@ const UserLogin = ({route,setShopOwnerToken}) => {
    
     setLoading(true);
   
-    const formDataLogin = { email, password,devicetoken};
+    const formDataLogin = {
+      email: email.trim(),
+      password: password.trim(),
+      devicetoken: devicetoken
+    };
   
     try {
       const response = await axios.post(

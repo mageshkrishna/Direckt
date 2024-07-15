@@ -55,8 +55,9 @@ const ShopownerForgetpassword = ({route}) => {
     });
   };
   const validateEmail = (email) => {
+    const trimmedEmail = email.trim();
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
+    return emailRegex.test(trimmedEmail);
   };
   const sendemail = async () => {
     if (!email) {
@@ -72,7 +73,7 @@ const ShopownerForgetpassword = ({route}) => {
       setindicator(true);
       const response = await axios.post(
         "https://server.direckt.site/auth/Shopownerforgetpassword",
-        { email: email }
+        { email: email.trim() }
       );
       showToast("otp send succesfully to the email");
       setindicator(false);
@@ -170,7 +171,7 @@ const ShopownerForgetpassword = ({route}) => {
               </Text>
             </View>
           </TouchableOpacity> : <View>
-          <Text style={{ color: 'grey' }}>Otp Sent succesfully! check your mail box</Text>
+          <Text style={{ color: 'grey' }}>Otp Sent succesfully! check your mail box and also spam folder</Text>
           </View>}
         </View>
 

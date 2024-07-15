@@ -84,7 +84,19 @@ const Shopownerhomepage = () => {
   const getJob = async () => {
     if (!shopownerdata || !shopownerdata.location || !shopownerdata.category) {
       setJob([])
-      Alert.alert("Provide both location and category to recieve tasks you can change it in editprofile section")
+      Alert.alert(
+        "Provide both location and category to receive tasks",
+        "You can change this information in the Edit Profile section.",
+        [
+          {
+            text: "OK",
+            onPress: () => {
+             
+            }
+          }
+        ],
+        { cancelable: false }
+      );
       return;
     }
     
@@ -201,6 +213,7 @@ const Shopownerhomepage = () => {
                 <JobCard item={item} ownerdetail={ownerdetail} email={email} />
               </View>
             ))}
+            <View style={{width:"100%" , height:100}}></View>
           </ScrollView>
           <TouchableOpacity
             onPress={onRefresh}

@@ -87,7 +87,11 @@ export const strings = {
     nolocation:"add location details",
     nocategory:"category not added",
     gmap:'Google map location link',
-    photosmore:"photos ( you can only upload 5 image )"
+    photosmore:"photos ( you can only upload 5 image )",
+
+    getLocationlink:"Get Location Link",
+    suggestlink:"Providing your Google My Business link is a better option than using this link."
+
 
   },
   ta: {
@@ -176,6 +180,9 @@ export const strings = {
     nolocation:"இடம் சேர்க்கப்படவில்லை",
     nocategory:"வகை சேர்க்கப்படவில்லை ",
     gmap:'கூகுள் மேப்',
-    photosmore:"புகைப்படங்கள் (நீங்கள் 5 படங்களை மட்டுமே பதிவேற்ற முடியும்)"
+    photosmore:"புகைப்படங்கள் (நீங்கள் 5 படங்களை மட்டுமே பதிவேற்ற முடியும்)",
+
+    getLocationlink:"கூகுள் மாப் இணைப்பைப் பெறுங்கள்",
+    suggestlink:"இந்த இணைப்பைப் பயன்படுத்துவதை விட உங்கள் கூகுள் my Business இணைப்பை வழங்குவதே சிறந்த வழி."
   },
 };

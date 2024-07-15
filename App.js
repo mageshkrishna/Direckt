@@ -8,7 +8,7 @@ import UserLogin from "./components/Userauthentication/UserLogin";
 import Userregister from "./components/Userauthentication/Userregister";
 import Customerhome from "./components/customerhomepage/Customerhome";
 import Direcktsvg from "./components/Home/Homesvg";
-import { StatusBar } from "react-native";
+import { Platform, StatusBar } from "react-native";
 import { COLORS } from "./constants/Theme";
 import CustomerSearchBar from "./components/customerhomepage/Customersearchbar";
 import Shopownerhomepage from "./components/ShopownerHomepage/Shopownerhomepage";

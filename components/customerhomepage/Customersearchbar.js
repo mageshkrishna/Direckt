@@ -182,7 +182,9 @@ const Shopcard = ({ data, index }) => {
           <Text style={{ color: "white" }}>{strings[`${lang}`].direction} </Text>
           <FontAwesome5 name="directions" size={13} color="white" />
         </TouchableOpacity>
+        
       </View>
+      <View style={{width:"100%" , height:10}}></View>
     </View>
   );
 };
@@ -196,7 +198,7 @@ const CustomerSearchBar = () => {
   const [shopowner, setshopowner] = useState([]);
   const [progress, setProgress] = useState(0);
   const [linearProgress, setlinearProgress] = useState(false);
-  const [resultmessage, setresultmessage] = useState("Find shop and service")
+  const [resultmessage, setresultmessage] = useState("Find shop and service and click search icon for results")
   const [token, settoken] = useState(null);
   const [choosedata, setChooseData] = useState([{ key: '1', value: 'loading...', disabled: true }]);
   const [jobselection, setjoblocation] = useState(null)
@@ -492,6 +494,7 @@ const CustomerSearchBar = () => {
         )}
         renderItem={({ item, index }) => (
           <Shopcard data={item} key={index} />
+          
         )}
       />
     </View>

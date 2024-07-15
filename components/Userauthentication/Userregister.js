@@ -38,8 +38,9 @@ const Userregister = ({route}) => {
   }, [route]);
 
   const validateEmail = (email) => {
+    const trimmedEmail = email.trim();
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
+    return emailRegex.test(trimmedEmail);
   };
 
   const validatePassword = (password) => {
@@ -99,8 +100,8 @@ const Userregister = ({route}) => {
       const formdata = {
         businessname: businessname,
         phonenumber: phonenumber,
-        email: email,
-        password: password
+        email: email.trim(),
+        password: password.trim()
       }
       const response = await axios.post('https://server.direckt.site/auth/register', formdata, {
         headers: {

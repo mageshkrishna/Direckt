@@ -39,10 +39,10 @@ const Logincustomer = ({route,setCustomerToken}) => {
   }, [route.params]);
 
   const validateEmail = (email) => {
+    const trimmedEmail = email.trim();
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
+    return emailRegex.test(trimmedEmail);
   };
-
   const togglePasswordVisibility = () => {
     setIsPasswordVisible((e) => !e);
   };
@@ -74,8 +74,11 @@ const handleLogin = async () => {
 
   setLoading(true);
 
-  const formDataLogin = { email, password,devicetoken };
-
+  const formDataLogin = {
+    email: email.trim(),
+    password: password.trim(),
+    devicetoken: devicetoken
+  };
   try {
     const response = await axios.post(
       "https://server.direckt.site/auth/logincus",

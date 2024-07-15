@@ -68,13 +68,13 @@ const Customerhome = () => {
               let iconName;
 
               if (route.name === "homeCustomer") {
-                iconName = focused ? "ios-home" : "ios-home-outline";
+                iconName = focused ? "home" : "home-outline";
               } else if (route.name === "Createthread") {
                 iconName = focused
-                  ? "ios-add-circle"
-                  : "ios-add-circle-outline";
+                  ? "add-circle"
+                  : "add-circle-outline";
               } else if (route.name === "Customerprofile") {
-                iconName = focused ? "ios-person" : "ios-person-outline";
+                iconName = focused ? "person" : "person-outline";
               }
 
               return <Ionicons name={iconName} size={size} color={color} />;

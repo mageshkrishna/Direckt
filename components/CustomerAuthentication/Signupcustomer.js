@@ -37,9 +37,11 @@ const Signupcustomer = ({route}) => {
   };
 
   const validateEmail = (email) => {
+    const trimmedEmail = email.trim();
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
+    return emailRegex.test(trimmedEmail);
   };
+  
 
   const validatePassword = (password) => {
     // Password should be greater than or equal to 8 characters long
@@ -66,10 +68,11 @@ const Signupcustomer = ({route}) => {
       setLoading(true); // Set loading to true when the request starts
 
       const formData = {
-        name,
-        email,
-        password,
+        name: name.trim(),
+        email: email.trim(),
+        password: password.trim(),
       };
+      
 
       const response = await axios.post('https://server.direckt.site/auth/registercus', formData, {
         headers: {

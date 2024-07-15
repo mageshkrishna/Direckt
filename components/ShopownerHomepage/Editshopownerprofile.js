@@ -29,6 +29,7 @@ import ProfilePicker from "./Profilepicker";
 import { useDispatch, useSelector } from "react-redux";
 import { setShopOwnerToken } from "../../redux/shopOwnerAuthActions";
 import { strings } from "../../locals/translations";
+import LocationButton from "./LocationButton";
 const height = Dimensions.get("window").height;
 const width = Dimensions.get("window").width;
 
@@ -81,16 +82,11 @@ const EditOwnerProfile = () => {
 
   const handleButtonPress = () => {
     if (!isButtonDisabled) {
-      // Disable the button to prevent multiple rapid clicks
       setButtonDisabled(true);
-
-      // Use navigation.goBack() to go back
       navigation.goBack();
-
-      // Enable the button after a delay or when the navigation action is completed
       setTimeout(() => {
         setButtonDisabled(false);
-      }, 1000); // Adjust the delay as needed
+      }, 1000); 
     }
   };
 
@@ -130,11 +126,26 @@ const EditOwnerProfile = () => {
   }, []);
 
   function validateGoogleMapLink(link) {
-    var pattern =
-      /^(?:https?:\/\/(?:www\.)?google\.com\/maps\/(?:place\/)?(?:[^/]+)\/@(-?\d+\.\d+),(-?\d+\.\d+)(?:,\d+z)?)|(?:https?:\/\/maps\.app\.goo\.gl\/[a-zA-Z0-9]+)$/;
-
-    return pattern.test(link);
+    var allowedDomains = [
+      "maps.google.com",
+      "mobilemaps.googleapis.com",
+      "mobilemaps-pa-gz.googleapis.com",
+      "maps.app.goo.gl",
+      "www.google.com",
+      "g.co"
+    ];
+    try {
+      var url = new URL(link);
+      var hostname = url.hostname;
+      return allowedDomains.includes(hostname);
+    } catch (error) {
+      return false;
+    }
+  
+ 
   }
+  
+
   const validatePhone = (phone) => {
     const phoneNumberRegex = /^\d{10}$/;
     return phoneNumberRegex.test(phone);
@@ -518,6 +529,7 @@ const EditOwnerProfile = () => {
             closeicon={<AntDesign name="close" size={30} color={COLORS.gray} />}
           />
         </View>
+       
         <View style={styles.editfield}>
           <Text style={styles.editstorenamelabel}>{strings[`${lang}`].address}</Text>
           <TextInput
@@ -568,6 +580,7 @@ const EditOwnerProfile = () => {
             placeholder="Your shop google maps  location link"
           />
         </View>
+        <LocationButton setgmaplink ={setgmaplink}/>
       </View>
       <View style={styles.shopImages}>
         <Text style={styles.heading}>

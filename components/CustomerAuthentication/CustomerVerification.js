@@ -129,7 +129,7 @@ const CustomerVerification = ({ route }) => {
       </Modal>
       <View style={{ alignItems: 'center', gap: 10, marginVertical: 10, }}>
         <Text style={styles.title}>Enter Verification Code</Text>
-        <Text style={{ color: 'grey' }}>(check your email)</Text>
+        <Text style={{ color: 'grey' }}>(check your email and also spam folder)</Text>
       </View>
       <TextInput
         style={styles.input}

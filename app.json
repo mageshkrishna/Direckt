@@ -5,6 +5,11 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/DireckTlogo.png",
+    "splash": {
+      "image": "./assets/DirecKT-removebg-preview.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#8A57E4"
+    },
     "userInterfaceStyle": "light",
     "plugins": [
       [
@@ -20,7 +25,8 @@
             "enableProguardInReleaseBuilds": true
           }
         }
-      ]
+      ],
+      "expo-secure-store"
     ],
     "assetBundlePatterns": [
       "**/*"
@@ -41,7 +47,7 @@
         "android.permission.RECORD_AUDIO"
       ],
       "package": "com.direcktapp.direckt",
-      "versionCode": 5
+      "versionCode": 8
     },
     "web": {
       "favicon": "./assets/DireckTlogo.png"
